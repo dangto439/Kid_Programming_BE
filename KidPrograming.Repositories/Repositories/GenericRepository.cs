@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace KidPrograming.Repositories.Repositories
 {
-    public class GenericRepository<T> : IGenericRepository<T> where T : class
+    public class GenericRepository/*<T> : IGenericRepository<T> where T : class*/
     {
         //protected readonly DBConText _context;
         //protected readonly DbSet<T> _dbSet;
