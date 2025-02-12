@@ -1,8 +1,4 @@
-﻿using KidPrograming.Contract.Repositories.Interfaces;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-
-namespace KidPrograming.Repositories.Repositories
+﻿namespace KidPrograming.Repositories.Repositories
 {
     public class GenericRepository/*<T> : IGenericRepository<T> where T : class*/
     {
