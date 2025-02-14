@@ -17,10 +17,10 @@ namespace KidPrograming.Entity
         public decimal Progress { get; set; }
         public DateTimeOffset? LastAccessed { get; set; }
 
-        public Guid EnrollmentId { get; set; }
-        public required Enrollment Enrollment { get; set; }
-        public Guid ChapterId { get; set; }
-        public required Chapter Chapter { get; set; }
+        public string EnrollmentId { get; set; }
+        public virtual Enrollment Enrollment { get; set; }
+        public string ChapterId { get; set; }
+        public virtual Chapter Chapter { get; set; }
 
         public ICollection<Submission>? Submissions { get; set; }
     }

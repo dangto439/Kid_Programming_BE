@@ -12,11 +12,11 @@ namespace KidPrograming.Entity
         public DateTimeOffset SubmittedTime { get; set; } = CoreHelper.SystemTimeNow;
         public int TimeSpent { get; set; }
 
-        public Guid UserId { get; set; }
-        public required User User { get; set; }
-        public Guid LabId { get; set; }
-        public required Lab Lab { get; set; }
-        public Guid ChapterProgressId { get; set; }
-        public required ChapterProgress ChapterProgress { get; set; }
+        public string UserId { get; set; }
+        public virtual User User { get; set; }
+        public string LabId { get; set; }
+        public virtual Lab Lab { get; set; }
+        public string ChapterProgressId { get; set; }
+        public virtual ChapterProgress ChapterProgress { get; set; }
     }
 }

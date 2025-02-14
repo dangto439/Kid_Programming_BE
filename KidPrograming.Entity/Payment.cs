@@ -16,9 +16,9 @@ namespace KidPrograming.Entity
         public DateTimeOffset PaymentDate { get; set; } = CoreHelper.SystemTimeNow;
         public StatusPayment Status { get; set; }
 
-        public Guid UserId { get; set; }
-        public required User User { get; set; }
-        public Guid CourseId { get; set; }
-        public required Course Course { get; set; }
+        public string UserId { get; set; }
+        public virtual User User { get; set; }
+        public string CourseId { get; set; }
+        public virtual Course Course { get; set; }
     }
 }

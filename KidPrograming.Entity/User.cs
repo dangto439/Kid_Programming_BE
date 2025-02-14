@@ -1,5 +1,6 @@
 ﻿using KidPrograming.Core;
 
+
 namespace KidPrograming.Entity
 {
     public class User : BaseEntity
@@ -11,8 +12,8 @@ namespace KidPrograming.Entity
         public DateTime? DateOfBirth { get; set; }
         public string AvatarUrl { get; set; }
 
-        public virtual Guid? ParentId { get; set; }
-
+        public virtual string? ParentId { get; set; }
+        public virtual User Parent { get; set; }
         public virtual ICollection<User>? Children { get; set; }
         public virtual ICollection<Enrollment>? Enrollments { get; set; }
         public virtual ICollection<Notification>? Notifications { get; set; }
@@ -21,6 +22,5 @@ namespace KidPrograming.Entity
         public virtual ICollection<Submission>? Submissions { get; set; }
     }
 }
-
 
 
