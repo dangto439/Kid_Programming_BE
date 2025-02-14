@@ -19,6 +19,10 @@ namespace KidPrograming.Controllers
             _logger = logger;
         }
 
+        /// <summary>
+        /// test ghi chú
+        /// </summary>
+        /// <returns></returns>
         [HttpGet(Name = "GetWeatherForecast")]
         public IEnumerable<WeatherForecast> Get()
         {           
