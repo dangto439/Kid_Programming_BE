@@ -1,6 +1,12 @@
 ﻿namespace KidPrograming.Contract.Repositories.Interfaces
 {
-    public class IUnitOfWork
+    public interface IUnitOfWork
     {
+        IGenericRepository<T> GetRepository<T>() where T : class;
+        void Save();
+        Task SaveAsync();
+        void BeginTransaction();
+        void CommitTransaction();
+        void RollBack();
     }
 }
