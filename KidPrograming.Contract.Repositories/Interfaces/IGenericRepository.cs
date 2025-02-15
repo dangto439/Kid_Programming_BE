@@ -26,6 +26,7 @@ namespace KidPrograming.Contract.Repositories.Interfaces
         Task<T> FindAsync(Expression<Func<T, bool>> predicate);
         Task<IQueryable<T>> FindAllAsync(Expression<Func<T, bool>> predicate);
         Task<IQueryable<T>> GetAllQueryableAsync();
+        /////
         Task<List<T>> FindListAsync(Expression<Func<T, bool>> predicate);
     }
 }
