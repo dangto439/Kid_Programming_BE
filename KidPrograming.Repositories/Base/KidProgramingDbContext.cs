@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 
 
+
 namespace KidPrograming.Repositories.Base
 {
     public class KidProgramingDbContext : DbContext
@@ -11,6 +12,7 @@ namespace KidPrograming.Repositories.Base
         }
 
         public DbSet<User> Users { get; set; }
+
         public DbSet<Course> Courses { get; set; }
         public DbSet<Chapter> Chapters { get; set; }
         public DbSet<Lesson> Lessons { get; set; }

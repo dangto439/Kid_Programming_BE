@@ -1,4 +1,6 @@
 ﻿using KidPrograming.Core;
+using System.ComponentModel.DataAnnotations.Schema;
+using static KidPrograming.Core.Enums;
 
 
 namespace KidPrograming.Entity
@@ -6,12 +8,13 @@ namespace KidPrograming.Entity
     public class User : BaseEntity
     {
         public string FullName { get; set; }
-        public string Email { get; set; }
-        public string Role { get; set; } // enum Role(Admin, Teacher, Student, Parent)
-        public string PhoneNumber { get; set; }
+        public required string Email { get; set; }
+        public string? PhoneNumber { get; set; }
         public DateTime? DateOfBirth { get; set; }
-        public string AvatarUrl { get; set; }
+        public string? AvatarUrl { get; set; }
 
+        [Column(TypeName = "nvarchar(50)")]
+        public  Role  Role { get; set; }
         public virtual string? ParentId { get; set; }
         public virtual User Parent { get; set; }
         public virtual ICollection<User>? Children { get; set; }

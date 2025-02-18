@@ -25,6 +25,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KidPrograming.Core", "KidPr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KidPrograming.Entity", "KidPrograming.Entity\KidPrograming.Entity.csproj", "{6ADFDB34-6BDB-4A2E-BDC9-4511C44C2999}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KidProgramming.ModelViews", "KidProgramming.ModelViews\KidProgramming.ModelViews.csproj", "{4EFB9BD9-3667-4537-8363-753A12928453}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,10 @@ Global
 		{6ADFDB34-6BDB-4A2E-BDC9-4511C44C2999}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6ADFDB34-6BDB-4A2E-BDC9-4511C44C2999}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6ADFDB34-6BDB-4A2E-BDC9-4511C44C2999}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4EFB9BD9-3667-4537-8363-753A12928453}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4EFB9BD9-3667-4537-8363-753A12928453}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4EFB9BD9-3667-4537-8363-753A12928453}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4EFB9BD9-3667-4537-8363-753A12928453}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -71,6 +77,7 @@ Global
 		{759559F2-A86D-4E74-886A-7E019047D83A} = {1EF23AD5-069F-484E-8258-670976D2A870}
 		{456B7ED2-8E57-496D-8BA2-0DAB4E5D8E2D} = {101B4E14-89D4-4653-945A-D49FE8FB31B3}
 		{6ADFDB34-6BDB-4A2E-BDC9-4511C44C2999} = {1EF23AD5-069F-484E-8258-670976D2A870}
+		{4EFB9BD9-3667-4537-8363-753A12928453} = {AEC706B7-6054-43A1-8F0A-E543708EE96D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4A0AD18F-AB65-47E0-BC51-1AFE58626AF8}
