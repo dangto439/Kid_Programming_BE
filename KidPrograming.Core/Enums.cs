@@ -28,12 +28,19 @@ namespace KidPrograming.Core
             InProgress,
             Completed
         }
+
         public enum Role
         {
-            Admin
-        ,Customer
-        ,Parent
-        ,mTeacher
-    }
+            Admin,
+            Customer,
+            Parent,
+            Teacher
+        }
+
+        public enum CourseStatus
+        {
+            Active,
+            Inactive
+        }
     }
 }
