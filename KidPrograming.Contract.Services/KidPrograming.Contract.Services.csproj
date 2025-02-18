@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Interfaces\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.8">
       <PrivateAssets>all</PrivateAssets>
@@ -20,7 +16,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\KidPrograming.Contract.Repositories\KidPrograming.Contract.Repositories.csproj" />
+    <ProjectReference Include="..\KidPrograming.Entity\KidPrograming.Entity.csproj" />
     <ProjectReference Include="..\KidPrograming.Repositories\KidPrograming.Repositories.csproj" />
+    <ProjectReference Include="..\KidProgramming.ModelViews\KidProgramming.ModelViews.csproj" />
   </ItemGroup>
 
 </Project>

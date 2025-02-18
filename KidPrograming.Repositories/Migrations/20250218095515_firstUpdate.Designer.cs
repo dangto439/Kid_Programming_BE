@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KidPrograming.Repositories.Migrations
 {
     [DbContext(typeof(KidProgramingDbContext))]
-    [Migration("20250213162630_first")]
-    partial class first
+    [Migration("20250218095515_firstUpdate")]
+    partial class firstUpdate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -407,7 +407,6 @@ namespace KidPrograming.Repositories.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("AvatarUrl")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTimeOffset>("CreatedTime")
@@ -434,12 +433,11 @@ namespace KidPrograming.Repositories.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("PhoneNumber")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Role")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 

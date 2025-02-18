@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace KidPrograming.Core
 {
@@ -32,5 +28,12 @@ namespace KidPrograming.Core
             InProgress,
             Completed
         }
+        public enum Role
+        {
+            Admin
+        ,Customer
+        ,Parent
+        ,mTeacher
+    }
     }
 }

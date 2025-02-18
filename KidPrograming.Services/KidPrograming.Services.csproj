@@ -7,10 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Services\" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
+    <PackageReference Include="Google.Apis.Auth" Version="1.69.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.8">
       <PrivateAssets>all</PrivateAssets>
@@ -23,6 +21,7 @@
     <ProjectReference Include="..\KidPrograming.Contract.Repositories\KidPrograming.Contract.Repositories.csproj" />
     <ProjectReference Include="..\KidPrograming.Contract.Services\KidPrograming.Contract.Services.csproj" />
     <ProjectReference Include="..\KidPrograming.Repositories\KidPrograming.Repositories.csproj" />
+    <ProjectReference Include="..\KidProgramming.ModelViews\KidProgramming.ModelViews.csproj" />
   </ItemGroup>
 
 </Project>
