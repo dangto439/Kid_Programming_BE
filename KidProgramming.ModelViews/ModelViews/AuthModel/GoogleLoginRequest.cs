@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace KidProgramming.ModelViews.ModelViews.AuthModel
+﻿namespace KidProgramming.ModelViews.ModelViews.AuthModel
 {
     public class GoogleLoginRequest
     {

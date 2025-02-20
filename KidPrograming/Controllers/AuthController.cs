@@ -1,4 +1,5 @@
 ﻿using KidPrograming.Contract.Services.Interfaces;
+using KidPrograming.Core.Base;
 using KidProgramming.ModelViews.ModelViews.AuthModel;
 using Microsoft.AspNetCore.Mvc;
 namespace KidPrograming.Controllers
@@ -15,7 +16,15 @@ namespace KidPrograming.Controllers
         [HttpPost("login-google")]
         public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginRequest request)
         {
-            return Ok(await _authenticationService.Login(request));
+            var model = await _authenticationService.Login(request);
+            return Ok(BaseResponseModel<string>.OkDataResponse(model, "Đăng nhập thành công"));
+        }
+        [HttpGet]
+        [Route("infor")]
+        public async Task<IActionResult> GetUserInfo()
+        {
+            ResponseUserModel model = await _authenticationService.GetUserInfo();
+            return Ok(BaseResponseModel<string>.OkDataResponse(model, "Lấy thông tin cá nhân thành công"));
         }
     }
 }

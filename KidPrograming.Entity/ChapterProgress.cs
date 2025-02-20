@@ -1,12 +1,8 @@
-using System;
-using System.Collections.Generic;
+using KidPrograming.Core.Base;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
-using KidPrograming.Core;
-using KidPrograming.Core.Base;
 using static KidPrograming.Core.Constants.Enums;
+
 
 namespace KidPrograming.Entity
 {

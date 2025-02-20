@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace KidPrograming.Core
+namespace KidPrograming.Core.Base
 {
     public class BaseResponseModel<T>
     {

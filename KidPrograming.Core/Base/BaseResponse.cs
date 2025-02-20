@@ -1,6 +1,6 @@
 ﻿using KidPrograming.Core.Store;
 
-namespace KidPrograming.Core
+namespace KidPrograming.Core.Base
 {
     public class BaseResponse
     {

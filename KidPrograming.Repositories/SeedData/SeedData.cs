@@ -1,6 +1,4 @@
-﻿using KidPrograming.Core;
-using KidPrograming.Repositories.Base;
-using Microsoft.AspNetCore.Identity;
+﻿using KidPrograming.Repositories.Base;
 using Microsoft.EntityFrameworkCore;
 
 public class SeedData

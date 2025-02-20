@@ -1,5 +1,4 @@
-﻿using KidPrograming.Core;
-using KidPrograming.Core.Base;
+﻿using KidPrograming.Core.Base;
 using static KidPrograming.Core.Constants.Enums;
 
 namespace KidPrograming.Entity

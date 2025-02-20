@@ -1,8 +1,7 @@
 ﻿
-
 using System.ComponentModel.DataAnnotations;
 
-namespace KidPrograming.Core
+namespace KidPrograming.Core.Base
 {
     public class BaseEntity
     {

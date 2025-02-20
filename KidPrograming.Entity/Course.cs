@@ -1,4 +1,5 @@
 ﻿using KidPrograming.Core;
+using KidPrograming.Core.Base;
 using System.ComponentModel.DataAnnotations.Schema;
 using static KidPrograming.Core.Constants.Enums;
 
