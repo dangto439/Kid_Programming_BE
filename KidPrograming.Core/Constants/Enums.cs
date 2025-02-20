@@ -1,5 +1,4 @@
-
-namespace KidPrograming.Core
+namespace KidPrograming.Core.Constants
 {
     public class Enums
     {

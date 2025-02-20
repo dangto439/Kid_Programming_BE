@@ -3,12 +3,13 @@ using FirebaseAdmin.Auth;
 using KidPrograming.Contract.Repositories.Interfaces;
 using KidPrograming.Contract.Services.Interfaces;
 using KidPrograming.Core;
+using KidPrograming.Core.Base;
+using KidPrograming.Core.Constants;
 using KidPrograming.Entity;
 using KidPrograming.Services.Infrastructure;
 using KidProgramming.ModelViews.ModelViews.AuthModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using NhaMayMay.Core.Base;
 
 namespace KidPrograming.Services.Services
 {
@@ -27,7 +28,6 @@ namespace KidPrograming.Services.Services
            , Authentication authentication
             , IMapper mapper
             )
-
         {
             _unitOfWork = unitOfWork;
             _jwtSettings = jwtSettings;
@@ -55,12 +55,13 @@ namespace KidPrograming.Services.Services
 
             var user = await _unitOfWork.GetRepository<User>().Entities.FirstOrDefaultAsync(user => user.Email.Equals(email));
             if (user == null)
+            {
+                user = new User
                 {
-                    user = new User { 
-                         Email = email,
-                        FullName = name,
-                        Role = Enums.Role.Customer
-                    };
+                    Email = email,
+                    FullName = name,
+                    Role = Enums.Role.Customer
+                };
                 await _unitOfWork.GetRepository<User>().InsertAsync(user);
                 await _unitOfWork.GetRepository<User>().SaveAsync();
 
@@ -69,5 +70,4 @@ namespace KidPrograming.Services.Services
         }
     }
 }
-
 

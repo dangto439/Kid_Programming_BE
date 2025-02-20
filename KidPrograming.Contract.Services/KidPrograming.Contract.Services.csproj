@@ -17,8 +17,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\KidPrograming.Contract.Repositories\KidPrograming.Contract.Repositories.csproj" />
+    <ProjectReference Include="..\KidPrograming.Core\KidPrograming.Core.csproj" />
     <ProjectReference Include="..\KidPrograming.Entity\KidPrograming.Entity.csproj" />
-    <ProjectReference Include="..\KidPrograming.Repositories\KidPrograming.Repositories.csproj" />
     <ProjectReference Include="..\KidProgramming.ModelViews\KidProgramming.ModelViews.csproj" />
   </ItemGroup>
 

@@ -1,6 +1,7 @@
 ﻿using KidPrograming.Core;
-using static KidPrograming.Core.Enums;
+using KidPrograming.Core.Base;
 using System.ComponentModel.DataAnnotations.Schema;
+using static KidPrograming.Core.Constants.Enums;
 
 namespace KidPrograming.Entity
 {
@@ -14,9 +15,9 @@ namespace KidPrograming.Entity
         public decimal? Price { get; set; }
         public CourseStatus Status { get; set; }
 
-        public string TeacherId { get; set; }
-        public virtual User Teacher { get; set; }
-        public virtual ICollection<Chapter> Chapters { get; set; }
+        public string? TeacherId { get; set; }
+        public virtual User? Teacher { get; set; }
+        public virtual ICollection<Chapter>? Chapters { get; set; }
         public virtual ICollection<Enrollment>? Enrollments { get; set; }
         public virtual ICollection<Payment>? Payments { get; set; }
     }

@@ -1,6 +1,6 @@
-﻿using KidPrograming.Core;
+﻿using KidPrograming.Core.Base;
 using System.ComponentModel.DataAnnotations.Schema;
-using static KidPrograming.Core.Enums;
+using static KidPrograming.Core.Constants.Enums;
 
 
 namespace KidPrograming.Entity

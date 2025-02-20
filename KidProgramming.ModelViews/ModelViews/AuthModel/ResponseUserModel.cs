@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using static KidPrograming.Core.Enums;
-namespace KidProgramming.ModelViews.ModelViews.AuthModel
+﻿namespace KidProgramming.ModelViews.ModelViews.AuthModel
 {
     public class ResponseUserModel
     {

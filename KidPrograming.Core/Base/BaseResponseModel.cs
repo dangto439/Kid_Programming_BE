@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace KidPrograming.Core
+namespace KidPrograming.Core.Base
 {
     public class BaseResponseModel<T>
     {
@@ -18,13 +18,13 @@ namespace KidPrograming.Core
             this.AdditionalData = additionalData;
             this.Message = message;
         }
+
         public BaseResponseModel(int statusCode, string code, string? message)
         {
             this.StatusCode = statusCode;
             this.Code = code;
             this.Message = message;
         }
-
 
         public static BaseResponseModel<T> OkResponseModel(T data, object? additionalData = null, string code = ResponseCodeConstants.SUCCESS)
         {

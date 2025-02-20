@@ -3,8 +3,8 @@ using System.Net;
 using System.Security.Claims;
 using System.Text;
 using KidPrograming.Core;
+using KidPrograming.Core.Base;
 using Microsoft.IdentityModel.Tokens;
-using NhaMayMay.Core.Base;
 namespace KidPrograming.Midleware
 {
     public class PermissionMiddleware

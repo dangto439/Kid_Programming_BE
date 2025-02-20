@@ -17,7 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\KidPrograming.Contract.Repositories\KidPrograming.Contract.Repositories.csproj" />
     <ProjectReference Include="..\KidPrograming.Core\KidPrograming.Core.csproj" />
   </ItemGroup>
 

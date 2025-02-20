@@ -1,5 +1,5 @@
 ﻿using KidPrograming.Contract.Services.Interfaces;
-using KidPrograming.Core;
+using KidPrograming.Core.Base;
 using KidProgramming.ModelViews.ModelViews.AuthModel;
 using Microsoft.AspNetCore.Mvc;
 namespace KidPrograming.Controllers

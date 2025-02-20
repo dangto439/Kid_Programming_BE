@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using KidPrograming.Contract.Repositories.Interfaces;
 using KidPrograming.Core;
+using KidPrograming.Core.Base;
 using KidPrograming.Entity;
 using KidProgramming.ModelViews.ModelViews.AuthModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using NhaMayMay.Core.Base;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
