@@ -4,6 +4,7 @@ using KidPrograming.Repositories.Base;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KidPrograming.Repositories.Migrations
 {
     [DbContext(typeof(KidProgramingDbContext))]
-    partial class KidProgramingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250219064021_updateCourse")]
+    partial class updateCourse
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -55,7 +58,7 @@ namespace KidPrograming.Repositories.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Chapters", (string)null);
+                    b.ToTable("Chapters");
                 });
 
             modelBuilder.Entity("KidPrograming.Entity.ChapterProgress", b =>
@@ -95,7 +98,7 @@ namespace KidPrograming.Repositories.Migrations
 
                     b.HasIndex("EnrollmentId");
 
-                    b.ToTable("ChapterProgresses", (string)null);
+                    b.ToTable("ChapterProgresses");
                 });
 
             modelBuilder.Entity("KidPrograming.Entity.Course", b =>
@@ -136,7 +139,7 @@ namespace KidPrograming.Repositories.Migrations
 
                     b.HasIndex("TeacherId");
 
-                    b.ToTable("Courses", (string)null);
+                    b.ToTable("Courses");
                 });
 
             modelBuilder.Entity("KidPrograming.Entity.Enrollment", b =>
@@ -173,7 +176,7 @@ namespace KidPrograming.Repositories.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Enrollments", (string)null);
+                    b.ToTable("Enrollments");
                 });
 
             modelBuilder.Entity("KidPrograming.Entity.Lab", b =>
@@ -227,7 +230,7 @@ namespace KidPrograming.Repositories.Migrations
 
                     b.HasIndex("LessonId");
 
-                    b.ToTable("Labs", (string)null);
+                    b.ToTable("Labs");
                 });
 
             modelBuilder.Entity("KidPrograming.Entity.Lesson", b =>
@@ -266,7 +269,7 @@ namespace KidPrograming.Repositories.Migrations
 
                     b.HasIndex("ChapterId");
 
-                    b.ToTable("Lessons", (string)null);
+                    b.ToTable("Lessons");
                 });
 
             modelBuilder.Entity("KidPrograming.Entity.Notification", b =>
@@ -302,7 +305,7 @@ namespace KidPrograming.Repositories.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Notifications", (string)null);
+                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("KidPrograming.Entity.Payment", b =>
@@ -346,7 +349,7 @@ namespace KidPrograming.Repositories.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Payments", (string)null);
+                    b.ToTable("Payments");
                 });
 
             modelBuilder.Entity("KidPrograming.Entity.Submission", b =>
@@ -392,7 +395,7 @@ namespace KidPrograming.Repositories.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Submissions", (string)null);
+                    b.ToTable("Submissions");
                 });
 
             modelBuilder.Entity("KidPrograming.Entity.User", b =>
@@ -436,7 +439,7 @@ namespace KidPrograming.Repositories.Migrations
 
                     b.HasIndex("ParentId");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("KidPrograming.Entity.Chapter", b =>

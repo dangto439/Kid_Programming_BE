@@ -1,4 +1,4 @@
-﻿namespace NhaMayMay.Core.Base
+﻿namespace KidPrograming.Core.Base
 {
     public class JwtSettings
     {

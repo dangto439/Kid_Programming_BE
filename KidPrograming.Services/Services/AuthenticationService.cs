@@ -1,7 +1,8 @@
 ﻿using Google.Apis.Auth;
 using KidPrograming.Contract.Repositories.Interfaces;
 using KidPrograming.Contract.Services.Interfaces;
-using KidPrograming.Core;
+using KidPrograming.Core.Base;
+using KidPrograming.Core.Constants;
 using KidPrograming.Entity;
 using KidPrograming.Repositories.Repositories;
 using KidPrograming.Services.Infrastructure;
@@ -11,7 +12,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Tokens;
-using NhaMayMay.Core.Base;
 using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
