@@ -14,9 +14,9 @@ namespace KidPrograming.Entity
         public decimal? Price { get; set; }
         public CourseStatus Status { get; set; }
 
-        public string TeacherId { get; set; }
-        public virtual User Teacher { get; set; }
-        public virtual ICollection<Chapter> Chapters { get; set; }
+        public string? TeacherId { get; set; }
+        public virtual User? Teacher { get; set; }
+        public virtual ICollection<Chapter>? Chapters { get; set; }
         public virtual ICollection<Enrollment>? Enrollments { get; set; }
         public virtual ICollection<Payment>? Payments { get; set; }
     }

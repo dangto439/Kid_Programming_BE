@@ -1,4 +1,5 @@
-﻿using KidPrograming.Entity;
+﻿using KidPrograming.Core.Base;
+using KidPrograming.Entity;
 using KidPrograming.Repositories.Base;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -6,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
-using NhaMayMay.Core.Base;
 using System.Reflection;
 using System.Text;
 namespace KidPrograming.DI

@@ -2,7 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using KidPrograming.Core;
+using KidPrograming.Core.Base;
+using KidPrograming.Core.Utils;
 
 namespace KidPrograming.Entity
 {
