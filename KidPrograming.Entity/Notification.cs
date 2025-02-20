@@ -1,4 +1,5 @@
-﻿using KidPrograming.Core.Base;
+﻿using KidPrograming.Core;
+using KidPrograming.Core.Base;
 
 namespace KidPrograming.Entity
 {

@@ -1,4 +1,5 @@
-﻿using KidPrograming.Core.Base;
+﻿using KidPrograming.Core;
+using KidPrograming.Core.Base;
 using static KidPrograming.Core.Constants.Enums;
 
 namespace KidPrograming.Entity
@@ -12,7 +13,7 @@ namespace KidPrograming.Entity
         public virtual User User { get; set; }
         public string CourseId { get; set; }
         public virtual Course Course { get; set; }
-        
+
         public virtual ICollection<ChapterProgress> ChapterProgresses { get; set; }
     }
 }

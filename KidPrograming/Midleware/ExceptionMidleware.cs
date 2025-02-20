@@ -1,5 +1,5 @@
 ﻿using KidPrograming.Contract.Repositories.Interfaces;
-using KidPrograming.Core.ExceptionCustom;
+using KidPrograming.Core;
 using System.Text.Json;
 
 namespace KidPrograming.Midleware

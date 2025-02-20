@@ -1,6 +1,6 @@
 ﻿using KidPrograming.Core;
 using Microsoft.AspNetCore.Http;
-using static KidPrograming.Core.Enums;
+using static KidPrograming.Core.Constants.Enums;
 
 namespace KidProgramming.ModelViews.ModelViews.CourseModels
 {

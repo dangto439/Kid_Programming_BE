@@ -1,4 +1,4 @@
-using KidPrograming.Core.Base;
+using KidPrograming.Core;
 using static KidPrograming.Core.Constants.Enums;
 
 namespace KidPrograming.Entity
@@ -14,6 +14,6 @@ namespace KidPrograming.Entity
         public string CorrectAnswer { get; set; } = string.Empty;
 
         public string LessionId { get; set; }
-        public virtual Lesson Lesson { get; set; } 
+        public virtual Lesson Lesson { get; set; }
     }
 }

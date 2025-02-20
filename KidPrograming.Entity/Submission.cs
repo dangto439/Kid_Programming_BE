@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using KidPrograming.Core.Base;
-using KidPrograming.Core.Utils;
+using KidPrograming.Core;
 
 namespace KidPrograming.Entity
 {

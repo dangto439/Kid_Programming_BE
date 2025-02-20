@@ -1,5 +1,4 @@
-﻿using KidPrograming.Core.ExceptionCustom;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 
 namespace KidPrograming.Core
 {

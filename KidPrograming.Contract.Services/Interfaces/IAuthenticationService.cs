@@ -1,7 +1,4 @@
-﻿using KidPrograming.Contract.Repositories.Interfaces;
-using KidPrograming.Entity;
-using KidProgramming.ModelViews.ModelViews.AuthModel;
-using NhaMayMay.Core.Base;
+﻿using KidProgramming.ModelViews.ModelViews.AuthModel;
 
 namespace KidPrograming.Contract.Services.Interfaces
 {

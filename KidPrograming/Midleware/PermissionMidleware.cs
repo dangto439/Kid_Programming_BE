@@ -2,8 +2,8 @@
 using System.Net;
 using System.Security.Claims;
 using System.Text;
+using KidPrograming.Core;
 using KidPrograming.Core.Base;
-using KidPrograming.Core.ExceptionCustom;
 using Microsoft.IdentityModel.Tokens;
 namespace KidPrograming.Midleware
 {
