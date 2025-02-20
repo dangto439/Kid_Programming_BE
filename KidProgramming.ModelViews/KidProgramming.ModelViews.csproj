@@ -6,4 +6,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\KidPrograming.Contract.Repositories\KidPrograming.Contract.Repositories.csproj" />
+    <ProjectReference Include="..\KidPrograming.Core\KidPrograming.Core.csproj" />
+    <ProjectReference Include="..\KidPrograming.Repositories\KidPrograming.Repositories.csproj" />
+  </ItemGroup>
+
 </Project>

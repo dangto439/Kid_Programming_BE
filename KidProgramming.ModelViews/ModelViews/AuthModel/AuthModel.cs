@@ -2,7 +2,7 @@
 {
     public class AuthModel
     {
-        public string Token { get; set; }
-        public UserResponse UserResponse { get; set; }
+        public string? Token { get; set; }
+        public UserResponse? UserResponse { get; set; }
     }
 }

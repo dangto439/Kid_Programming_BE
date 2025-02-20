@@ -1,21 +1,14 @@
-﻿using Google.Apis.Auth;
+﻿using AutoMapper;
+using FirebaseAdmin.Auth;
 using KidPrograming.Contract.Repositories.Interfaces;
 using KidPrograming.Contract.Services.Interfaces;
 using KidPrograming.Core;
 using KidPrograming.Entity;
-using KidPrograming.Repositories.Repositories;
 using KidPrograming.Services.Infrastructure;
 using KidProgramming.ModelViews.ModelViews.AuthModel;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.IdentityModel.Tokens;
 using NhaMayMay.Core.Base;
-using System.Data;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace KidPrograming.Services.Services
 {
@@ -25,11 +18,14 @@ namespace KidPrograming.Services.Services
         private readonly JwtSettings _jwtSettings;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly Authentication _authentication;
-       public AuthenticationService(
+        private readonly IMapper _mapper;
+
+        public AuthenticationService(
               IUnitOfWork unitOfWork
             , JwtSettings jwtSettings
             , IHttpContextAccessor httpContextAccessor
            , Authentication authentication
+            , IMapper mapper
             )
 
         {
@@ -37,15 +33,25 @@ namespace KidPrograming.Services.Services
             _jwtSettings = jwtSettings;
             _httpContextAccessor = httpContextAccessor;
             _authentication = authentication;
+            _mapper = mapper;
 
+        }
+        public async Task<ResponseUserModel> GetUserInfo()
+        {
+            string userId = _authentication.GetUserIdFromHttpContextAccessor(_httpContextAccessor);
+            User user = await _unitOfWork.GetRepository<User>().Entities.FirstOrDefaultAsync(user => user.Id == userId)
+                ?? throw new ErrorException(StatusCodes.Status400BadRequest, ResponseCodeConstants.BADREQUEST, "Không tìm thấy người dùng nào.");
+
+
+            return _mapper.Map<ResponseUserModel>(user);
         }
         public async Task<AuthModel> Login(GoogleLoginRequest request)
         {
 
-                var payload = await GoogleJsonWebSignature.ValidateAsync(request.IdToken) ??  throw new Exception("Invalid Google token."); ;
-                string email = payload.Email;
-                string name = payload.Name;
-                string googleId = payload.Subject;
+            var decodedToken = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(request.IdToken);
+            string uid = decodedToken.Uid; // ID của user
+            string email = decodedToken.Claims["email"].ToString()!;
+            string name = decodedToken.Claims["name"].ToString()!;
 
             var user = await _unitOfWork.GetRepository<User>().Entities.FirstOrDefaultAsync(user => user.Email.Equals(email));
             if (user == null)
@@ -58,9 +64,10 @@ namespace KidPrograming.Services.Services
                 await _unitOfWork.GetRepository<User>().InsertAsync(user);
                 await _unitOfWork.GetRepository<User>().SaveAsync();
 
-
                 }
             return await _authentication.CreateToken(user, _jwtSettings);
         }
     }
 }
+
+

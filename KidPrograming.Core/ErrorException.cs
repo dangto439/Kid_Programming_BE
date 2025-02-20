@@ -30,6 +30,10 @@ namespace KidPrograming.Core
 
         [JsonPropertyName("errorMessage")] public object? ErrorMessage { get; set; }
     }
+    public class UnauthorizedException : Exception
+    {
+        public UnauthorizedException(string message) : base(message) { }
+    }
     public class ResponseCodeConstants
     {
         public const string NOT_FOUND = "Not found!";

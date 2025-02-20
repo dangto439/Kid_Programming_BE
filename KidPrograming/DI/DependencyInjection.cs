@@ -1,4 +1,6 @@
-﻿using KidPrograming.Entity;
+﻿using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
+using KidPrograming.Entity;
 using KidPrograming.Repositories.Base;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -21,6 +23,7 @@ namespace KidPrograming.DI
             services.ConfigSwagger();
             services.ConfigCors();
             services.InitSeedData();
+            services.AddFirebase();
         }
         public static void AddDatabase(this IServiceCollection services, IConfiguration configuration)
         {
@@ -29,6 +32,14 @@ namespace KidPrograming.DI
                 options.UseSqlServer(configuration.GetConnectionString("ConnectionString"));
             });
         }
+        public static void AddFirebase(this IServiceCollection services)
+        {
+            services.AddSingleton(FirebaseApp.Create(new AppOptions()
+            {
+                Credential = GoogleCredential.FromFile("firebase-adminsdk.json")
+            }));
+        }
+
         public static void AddAuthenJwt(this IServiceCollection services, IConfiguration configuration)
         {
             JwtSettings jwtSettings = services.BuildServiceProvider().GetRequiredService<JwtSettings>();

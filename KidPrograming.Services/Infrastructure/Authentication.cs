@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using KidPrograming.Contract.Repositories.Interfaces;
+using KidPrograming.Core;
 using KidPrograming.Entity;
 using KidProgramming.ModelViews.ModelViews.AuthModel;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using NhaMayMay.Core.Base;
 using System.IdentityModel.Tokens.Jwt;
@@ -13,15 +15,9 @@ namespace KidPrograming.Services.Infrastructure
 {
     public class Authentication
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IMapper _mapper;
-        public Authentication(
-              IHttpContextAccessor httpContextAccessor
-            , IMapper mapper
-             )
-
+        public Authentication(IMapper mapper)
         {
-            _httpContextAccessor = httpContextAccessor;
             _mapper = mapper;
 
         }
@@ -56,6 +52,61 @@ namespace KidPrograming.Services.Infrastructure
                 UserResponse = _mapper.Map<UserResponse>(user)
             };
             return response;
+        }
+        public  string GetUserIdFromHttpContextAccessor(IHttpContextAccessor httpContextAccessor)
+        {
+            IUnitOfWork unitOfWork = httpContextAccessor.HttpContext!.RequestServices.GetRequiredService<IUnitOfWork>();;
+            try
+            {
+                if (httpContextAccessor.HttpContext == null || !httpContextAccessor.HttpContext.Request.Headers.ContainsKey("Authorization"))
+                {
+                    throw new UnauthorizedException("Need Authorization");
+                }
+
+                string? authorizationHeader = httpContextAccessor.HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrWhiteSpace(authorizationHeader) || !authorizationHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new UnauthorizedException($"Invalid authorization header: {authorizationHeader}");
+                }
+
+                string jwtToken = authorizationHeader["Bearer ".Length..].Trim();
+
+                var tokenHandler = new JwtSecurityTokenHandler();
+
+                if (!tokenHandler.CanReadToken(jwtToken))
+                {
+                    throw new UnauthorizedException("Invalid token format");
+                }
+
+                var token = tokenHandler.ReadJwtToken(jwtToken);
+                var idClaim = token.Claims.FirstOrDefault(claim => claim.Type == "id");
+
+                return idClaim?.Value ?? "Unknow";
+            }
+            catch (UnauthorizedException ex)
+            {
+                var errorResponse = new
+                {
+                    data = "An unexpected error occurred.",
+                    message = ex.Message,
+                    statusCode = StatusCodes.Status401Unauthorized,
+                    code = "Unauthorized!"
+                };
+
+                var jsonResponse = System.Text.Json.JsonSerializer.Serialize(errorResponse);
+
+                if (httpContextAccessor.HttpContext != null)
+                {
+                    httpContextAccessor.HttpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    httpContextAccessor.HttpContext.Response.ContentType = "application/json";
+                    httpContextAccessor.HttpContext.Response.WriteAsync(jsonResponse).Wait();
+                }
+
+                httpContextAccessor.HttpContext?.Response.WriteAsync(jsonResponse).Wait();
+
+                throw; // Re-throw the exception to maintain the error flow
+            }
         }
     }
 }

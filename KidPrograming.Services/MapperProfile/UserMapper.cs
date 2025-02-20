@@ -9,6 +9,9 @@ namespace KidPrograming.Services.MapperProfile
         public UserMapper()
         {
             CreateMap<User, UserResponse>();
+            CreateMap<User, ResponseUserModel>()
+                .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Role.ToString()));
+
         }
 
     }
