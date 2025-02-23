@@ -1,4 +1,5 @@
 ﻿using KidPrograming.Contract.Repositories.Interfaces;
+using KidPrograming.Contract.Repositories.PaggingItems;
 using KidPrograming.Repositories.Base;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
@@ -128,6 +129,11 @@ namespace KidPrograming.Repositories.Repositories
         public async Task<IEnumerable<T>> GetAllAsync()
         {
             return await _dbSet.ToListAsync();
+        }
+
+        public async Task<PaginatedList<T>> GetPagging(IQueryable<T> query, int index, int pageSize)
+        {
+            return await query.GetPaginatedList(index, pageSize);
         }
     }
 }
