@@ -11,6 +11,7 @@ namespace KidPrograming.Contract.Repositories.Interfaces
         T GetById(object id);
         void Insert(T obj);
         void InsertRange(List<T> obj);
+        Task InsertRangeAsync(List<T> obj);
         Task InsertCollection(ICollection<T> collection);
 
         void Update(T obj);

@@ -1,6 +1,5 @@
 ﻿using KidPrograming.Contract.Repositories.PaggingItems;
 using KidPrograming.Contract.Services.Interfaces;
-using KidPrograming.Core;
 using KidPrograming.Core.Base;
 using KidProgramming.ModelViews.ModelViews.CourseModels;
 using Microsoft.AspNetCore.Mvc;

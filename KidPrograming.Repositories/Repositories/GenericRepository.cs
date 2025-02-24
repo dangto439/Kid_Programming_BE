@@ -98,6 +98,11 @@ namespace KidPrograming.Repositories.Repositories
         {
             _dbSet.AddRange(obj);
         }
+
+        public async Task InsertRangeAsync(List<T> obj)
+        {
+            await _dbSet.AddRangeAsync(obj);
+        }
         public async Task InsertCollection(ICollection<T> collection)
         {
             await _dbSet.AddRangeAsync(collection);

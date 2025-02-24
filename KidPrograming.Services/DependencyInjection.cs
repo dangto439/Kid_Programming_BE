@@ -22,6 +22,7 @@ namespace KidPrograming.Services
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<Authentication>();
             services.AddScoped<ICourseService, CourseService>();
+            services.AddScoped<INotificationService, NotificationService>();
         }
         private static void AddAutoMapper(this IServiceCollection services)
         {
