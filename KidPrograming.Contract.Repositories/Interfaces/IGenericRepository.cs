@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using KidPrograming.Contract.Repositories.PaggingItems;
+using System.Linq.Expressions;
 
 namespace KidPrograming.Contract.Repositories.Interfaces
 {
@@ -6,9 +7,11 @@ namespace KidPrograming.Contract.Repositories.Interfaces
     {
         IEnumerable<T> Get(int index, int pageSize);
         IQueryable<T> Entities { get; }
+        Task<PaginatedList<T>> GetPagging(IQueryable<T> query, int index, int pageSize);
         T GetById(object id);
         void Insert(T obj);
         void InsertRange(List<T> obj);
+        Task InsertRangeAsync(List<T> obj);
         Task InsertCollection(ICollection<T> collection);
 
         void Update(T obj);

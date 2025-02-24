@@ -41,5 +41,13 @@ namespace KidPrograming.Core.Constants
             Active,
             Inactive
         }
+
+        public enum NotificationType
+        {
+            CourseUpdate,
+            Assignment,
+            Payment,
+            System
+        }
     }
 }

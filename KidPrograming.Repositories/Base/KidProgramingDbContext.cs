@@ -90,7 +90,7 @@ namespace KidPrograming.Repositories.Base
             modelBuilder.Entity<Notification>()
                 .HasOne(n => n.User)
                 .WithMany(u => u.Notifications)
-                .HasForeignKey(n => n.UserId)
+                .HasForeignKey(n => n.ReceiverId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Lab>()
