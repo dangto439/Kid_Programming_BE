@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using KidPrograming.Entity;
 using KidProgramming.ModelViews.ModelViews.AuthModel;
+using KidProgramming.ModelViews.ModelViews.EnrollmentModels;
 
 namespace KidPrograming.Services.MapperProfile
 {
@@ -11,7 +12,7 @@ namespace KidPrograming.Services.MapperProfile
             CreateMap<User, UserResponse>();
             CreateMap<User, ResponseUserModel>()
                 .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Role.ToString()));
-
+            CreateMap<User, StudentModel>();
         }
 
     }
