@@ -64,7 +64,6 @@ namespace KidPrograming.Services.Services
                 };
                 await _unitOfWork.GetRepository<User>().InsertAsync(user);
                 await _unitOfWork.GetRepository<User>().SaveAsync();
-
                 }
             return await _authentication.CreateToken(user, _jwtSettings);
         }
