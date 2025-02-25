@@ -15,9 +15,11 @@ namespace KidPrograming.Services.Infrastructure
 {
     public class Authentication
     {
+
         private readonly IMapper _mapper;
         public Authentication(IMapper mapper)
         {
+
             _mapper = mapper;
 
         }
@@ -105,7 +107,7 @@ namespace KidPrograming.Services.Infrastructure
 
                 httpContextAccessor.HttpContext?.Response.WriteAsync(jsonResponse).Wait();
 
-                throw; // Re-throw the exception to maintain the error flow
+                throw;
             }
         }
     }
