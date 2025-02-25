@@ -8,7 +8,7 @@ using static KidPrograming.Core.Constants.Enums;
 namespace KidPrograming.Controllers
 {
     [ApiController]
-    [Route("/api/[controller]")]
+    [Route("/api/course")]
     public class CourseController : ControllerBase
     {
         private readonly ICourseService _courseService;
@@ -19,7 +19,7 @@ namespace KidPrograming.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get(bool? sortByTitle, bool? sortByPrice, CourseStatus? filterByStatus, string? searchByTitle, string? searchByPrice, string? teacherName, decimal? minPrice, decimal? maxPrice, int index = 1, int pageSize = 5)
+        public async Task<IActionResult> Get(bool? sortByTitle, bool? sortByPrice, CourseStatus? filterByStatus, string? searchByTitle, string? searchByPrice, string? teacherName, decimal? minPrice, decimal? maxPrice, int index = 1, int pageSize = 10)
         {
             PaginatedList<ResponseCourseModel> result = await _courseService.GetPage(sortByTitle, sortByPrice, filterByStatus, searchByTitle, searchByPrice, teacherName, minPrice, maxPrice, index, pageSize);
             return Ok(BaseResponseModel<PaginatedList<ResponseCourseModel>>.OkDataResponse(result, "Retrieve course list successfully"));
