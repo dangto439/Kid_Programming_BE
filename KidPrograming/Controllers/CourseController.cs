@@ -8,7 +8,7 @@ using static KidPrograming.Core.Constants.Enums;
 namespace KidPrograming.Controllers
 {
     [ApiController]
-    [Route("/api/course")]
+    [Route("/api/courses")]
     public class CourseController : ControllerBase
     {
         private readonly ICourseService _courseService;
