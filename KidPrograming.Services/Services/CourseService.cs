@@ -27,9 +27,16 @@ namespace KidPrograming.Services.Services
         {
             model.Validate();
 
+            bool teacherExists = await _unitOfWork.GetRepository<User>().Entities.AnyAsync(x => x.Id == model.TeacherId);
+
+            if (!teacherExists)
+            {
+                throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, "Teacher not found");
+            }
+
             bool exists = await _unitOfWork.GetRepository<Course>().Entities.AnyAsync(x => x.Title == model.Title && !x.DeletedTime.HasValue);
 
-            if(exists)
+            if (exists)
             {
                 throw new ErrorException(StatusCodes.Status409Conflict, ResponseCodeConstants.EXISTED, $"Title {nameof(model.Title)} has existed");
             }
@@ -49,7 +56,7 @@ namespace KidPrograming.Services.Services
         {
             Course course = await _unitOfWork.GetRepository<Course>().Entities.FirstOrDefaultAsync(x => x.Id == id && !x.DeletedTime.HasValue)
                 ?? throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, "Course not found");
-            
+
             course.DeletedTime = CoreHelper.SystemTimeNow;
             await _unitOfWork.GetRepository<Course>().UpdateAsync(course);
             await _unitOfWork.SaveAsync();
@@ -64,7 +71,6 @@ namespace KidPrograming.Services.Services
                                                     where !course.DeletedTime.HasValue
                                                     select new ResponseCourseModel
                                                     {
-                                                        Id = course.Id,
                                                         Title = course.Title,
                                                         Description = course.Description,
                                                         Subject = course.Subject,

@@ -19,19 +19,16 @@ namespace KidProgramming.ModelViews.ModelViews.CourseModels
             {
                 throw new ErrorException(StatusCodes.Status400BadRequest, ResponseCodeConstants.INVALID_INPUT, "Please enter a title for the course");
             }
-            else if (Title.Length > 255)
-            {
-                throw new ErrorException(StatusCodes.Status400BadRequest, ResponseCodeConstants.BADREQUEST, "Please do not enter a title longer than 255 characters");
-            }
 
-            if (!string.IsNullOrEmpty(Description) && Description.Length > 500)
+
+            if (!string.IsNullOrEmpty(Description) && Description.Length > 1000)
             {
-                throw new ErrorException(StatusCodes.Status400BadRequest, ResponseCodeConstants.BADREQUEST, "Please do not enter a description longer than 255 characters");
+                throw new ErrorException(StatusCodes.Status400BadRequest, ResponseCodeConstants.BADREQUEST, "Please do not enter a description longer than 1000 characters");
             }
 
             if (string.IsNullOrWhiteSpace(Subject))
             {
-                throw new ErrorException(StatusCodes.Status400BadRequest, ResponseCodeConstants.INVALID_INPUT, "Vui lòng nhập tên môn học cho khóa học");
+                throw new ErrorException(StatusCodes.Status400BadRequest, ResponseCodeConstants.INVALID_INPUT, "Please enter a subject name for the course");
             }
             else if (Subject.Length > 255)
             {
