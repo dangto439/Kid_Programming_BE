@@ -10,8 +10,9 @@ namespace KidPrograming.Entity
         public virtual User User { get; set; }
         public string CourseId { get; set; }
         public virtual Course Course { get; set; }
-        public virtual ICollection<ChapterProgress> ChapterProgresses { get; set; }
         public string PaymentId { get; set; }
         public virtual Payment Payment { get; set; }
+
+        public virtual ICollection<ChapterProgress> ChapterProgresses { get; set; }
     }
 }

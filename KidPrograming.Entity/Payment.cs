@@ -13,8 +13,5 @@ namespace KidPrograming.Entity
         public string PaymentMethod { get; set; } = "VNPAY";
         public DateTimeOffset PaymentDate { get; set; } = CoreHelper.SystemTimeNow;
         public StatusPayment Status { get; set; }
-        public string UserId { get; set; }
-        public virtual User User { get; set; }
-        
     }
 }
