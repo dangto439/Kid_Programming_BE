@@ -43,6 +43,7 @@ namespace KidPrograming.Services.Services
 
             Course newCourse = _mapper.Map<Course>(model);
 
+            newCourse.Status = Enums.CourseStatus.Active;
             newCourse.CreatedTime = CoreHelper.SystemTimeNow;
             newCourse.LastUpdatedTime = CoreHelper.SystemTimeNow;
 
