@@ -20,6 +20,7 @@ namespace KidPrograming.Controllers
 
         [HttpGet]
         public async Task<IActionResult> Get(
+            [FromQuery] string? searchById,
             [FromQuery] string? lessonId,
             [FromQuery] string? searchByTitle,
             [FromQuery] string? searchByQuestion,
@@ -28,7 +29,7 @@ namespace KidPrograming.Controllers
             [FromQuery] int index = 1,
             [FromQuery] int pageSize = 10)
         {
-            var result = await _labService.GetPageAsync(lessonId, searchByTitle, searchByQuestion, sortByTitle, sortByResult, index, pageSize);
+            var result = await _labService.GetPageAsync(searchById, lessonId, searchByTitle, searchByQuestion, sortByTitle, sortByResult, index, pageSize);
             return Ok(BaseResponseModel<PaginatedList<ResponseLabModel>>.OkDataResponse(result, "Retrieve lab list successfully"));
         }
 

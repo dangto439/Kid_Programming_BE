@@ -12,6 +12,7 @@ namespace KidPrograming.Contract.Services.Interfaces
     public interface ILabService
     {
         Task<PaginatedList<ResponseLabModel>> GetPageAsync(
+        string? searchById = null,
         string? lessonId = null,       
         string? searchByTitle = null,  
         string? searchByQuestion = null, 
