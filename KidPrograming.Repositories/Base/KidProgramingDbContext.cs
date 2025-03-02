@@ -42,18 +42,6 @@ namespace KidPrograming.Repositories.Base
                 .HasForeignKey(u => u.ParentId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<Payment>()
-                .HasOne(p => p.User)
-                .WithMany(u => u.Payments)
-                .HasForeignKey(p => p.UserId)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            modelBuilder.Entity<Payment>()
-                .HasOne(p => p.Course)
-                .WithMany(c => c.Payments)
-                .HasForeignKey(p => p.CourseId)
-                .OnDelete(DeleteBehavior.Cascade);
-
             modelBuilder.Entity<ChapterProgress>()
                 .HasOne(cp => cp.Enrollment)
                 .WithMany(e => e.ChapterProgresses)
