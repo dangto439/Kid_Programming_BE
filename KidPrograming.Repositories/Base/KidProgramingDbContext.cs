@@ -24,38 +24,35 @@ namespace KidPrograming.Repositories.Base
         public DbSet<Submission> Submissions { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Quan hệ User - Enrollment
             modelBuilder.Entity<Enrollment>()
                 .HasOne(e => e.User)
                 .WithMany(u => u.Enrollments)
                 .HasForeignKey(e => e.UserId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            // Quan hệ Course - Enrollment
             modelBuilder.Entity<Enrollment>()
                 .HasOne(e => e.Course)
                 .WithMany(c => c.Enrollments)
                 .HasForeignKey(e => e.CourseId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Quan hệ Parent-Child User
             modelBuilder.Entity<User>()
                 .HasOne(u => u.Parent)
                 .WithMany(u => u.Children)
                 .HasForeignKey(u => u.ParentId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            //modelBuilder.Entity<Payment>()
-            //    .HasOne(p => p.User)
-            //    .WithMany(u => u.Payments)
-            //    .HasForeignKey(p => p.UserId)
-            //    .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<Payment>()
+                .HasOne(p => p.User)
+                .WithMany(u => u.Payments)
+                .HasForeignKey(p => p.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
 
-            //modelBuilder.Entity<Payment>()
-            //    .HasOne(p => p.Course)
-            //    .WithMany(c => c.Payments)
-            //    .HasForeignKey(p => p.CourseId)
-            //    .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Payment>()
+                .HasOne(p => p.Course)
+                .WithMany(c => c.Payments)
+                .HasForeignKey(p => p.CourseId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<ChapterProgress>()
                 .HasOne(cp => cp.Enrollment)

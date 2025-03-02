@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KidPrograming.Repositories.Migrations
 {
     [DbContext(typeof(KidProgramingDbContext))]
-    [Migration("20250218140507_secondUpdate")]
-    partial class secondUpdate
+    [Migration("20250227083451_updateDb")]
+    partial class updateDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -129,7 +129,6 @@ namespace KidPrograming.Repositories.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TeacherId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Title")
@@ -158,11 +157,12 @@ namespace KidPrograming.Repositories.Migrations
                     b.Property<DateTimeOffset?>("DeletedTime")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<DateTime>("EnrollmentDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<DateTimeOffset>("LastUpdatedTime")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("PaymentId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -174,6 +174,8 @@ namespace KidPrograming.Repositories.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CourseId");
+
+                    b.HasIndex("PaymentId");
 
                     b.HasIndex("UserId");
 
@@ -294,17 +296,20 @@ namespace KidPrograming.Repositories.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ReceiverId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("ReceiverId");
 
                     b.ToTable("Notifications");
                 });
@@ -316,10 +321,6 @@ namespace KidPrograming.Repositories.Migrations
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(19,0)");
-
-                    b.Property<string>("CourseId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTimeOffset>("CreatedTime")
                         .HasColumnType("datetimeoffset");
@@ -341,12 +342,9 @@ namespace KidPrograming.Repositories.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CourseId");
 
                     b.HasIndex("UserId");
 
@@ -410,8 +408,8 @@ namespace KidPrograming.Repositories.Migrations
                     b.Property<DateTimeOffset>("CreatedTime")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<DateTime?>("DateOfBirth")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset?>("DateOfBirth")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<DateTimeOffset?>("DeletedTime")
                         .HasColumnType("datetimeoffset");
@@ -421,7 +419,6 @@ namespace KidPrograming.Repositories.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FullName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTimeOffset>("LastUpdatedTime")
@@ -479,8 +476,7 @@ namespace KidPrograming.Repositories.Migrations
                     b.HasOne("KidPrograming.Entity.User", "Teacher")
                         .WithMany("Courses")
                         .HasForeignKey("TeacherId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("Teacher");
                 });
@@ -493,6 +489,12 @@ namespace KidPrograming.Repositories.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("KidPrograming.Entity.Payment", "Payment")
+                        .WithMany()
+                        .HasForeignKey("PaymentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("KidPrograming.Entity.User", "User")
                         .WithMany("Enrollments")
                         .HasForeignKey("UserId")
@@ -500,6 +502,8 @@ namespace KidPrograming.Repositories.Migrations
                         .IsRequired();
 
                     b.Navigation("Course");
+
+                    b.Navigation("Payment");
 
                     b.Navigation("User");
                 });
@@ -534,7 +538,7 @@ namespace KidPrograming.Repositories.Migrations
                 {
                     b.HasOne("KidPrograming.Entity.User", "User")
                         .WithMany("Notifications")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("ReceiverId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -543,21 +547,9 @@ namespace KidPrograming.Repositories.Migrations
 
             modelBuilder.Entity("KidPrograming.Entity.Payment", b =>
                 {
-                    b.HasOne("KidPrograming.Entity.Course", "Course")
+                    b.HasOne("KidPrograming.Entity.User", null)
                         .WithMany("Payments")
-                        .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("KidPrograming.Entity.User", "User")
-                        .WithMany("Payments")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Course");
-
-                    b.Navigation("User");
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("KidPrograming.Entity.Submission", b =>
@@ -614,8 +606,6 @@ namespace KidPrograming.Repositories.Migrations
                     b.Navigation("Chapters");
 
                     b.Navigation("Enrollments");
-
-                    b.Navigation("Payments");
                 });
 
             modelBuilder.Entity("KidPrograming.Entity.Enrollment", b =>
