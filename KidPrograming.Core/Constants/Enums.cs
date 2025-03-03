@@ -49,5 +49,12 @@ namespace KidPrograming.Core.Constants
             Payment,
             System
         }
+
+        public enum LessonType
+        {
+            Video,
+            Quiz,
+            Article
+        }
     }
 }

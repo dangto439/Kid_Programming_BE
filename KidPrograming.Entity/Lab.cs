@@ -13,7 +13,7 @@ namespace KidPrograming.Entity
         public int? LimitedTime { get; set; } // có thể có bài lab k giới hạn time => null
         public string CorrectAnswer { get; set; } = string.Empty;
 
-        public string LessionId { get; set; }
+        public string LessonId { get; set; }
         public virtual Lesson Lesson { get; set; }
     }
 }
