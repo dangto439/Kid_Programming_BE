@@ -22,6 +22,7 @@ namespace KidPrograming.Services.Services
         }
 
         public async Task<PaginatedList<ResponseSubmissionModel>> GetPageAsync(
+            string? searchById = null,
             string? userId = null,
             string? labId = null,
             string? chapterProgressId = null,
@@ -33,6 +34,9 @@ namespace KidPrograming.Services.Services
             int pageSize = 10)
         {
             var query = _unitOfWork.GetRepository<Submission>().Entities.Where(x => x.DeletedTime == null);
+
+            if (!string.IsNullOrEmpty(searchById))
+                query = query.Where(x => x.Id == searchById);
 
             if (!string.IsNullOrEmpty(userId))
                 query = query.Where(x => x.UserId == userId);

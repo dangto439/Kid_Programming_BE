@@ -39,7 +39,7 @@ namespace KidPrograming.Services.Services
 
             if (!string.IsNullOrEmpty(lessonId))
             {
-                query = query.Where(l => l.LessionId == lessonId);
+                query = query.Where(l => l.LessonId == lessonId);
             }
 
             if (!string.IsNullOrEmpty(searchByTitle))
@@ -77,7 +77,7 @@ namespace KidPrograming.Services.Services
         public async Task CreateAsync(CreateLabModel model)
         {
             model.Validate();
-            var lesson = await _unitOfWork.GetRepository<Lesson>().Entities.FirstOrDefaultAsync(x => x.Id == model.LessionId);
+            var lesson = await _unitOfWork.GetRepository<Lesson>().Entities.FirstOrDefaultAsync(x => x.Id == model.LessonId);
             if (lesson == null)
             {
                 throw new KeyNotFoundException("Lesson not found or has been deleted");

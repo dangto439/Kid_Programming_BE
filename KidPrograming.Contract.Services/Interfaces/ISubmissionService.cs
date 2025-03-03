@@ -11,6 +11,7 @@ namespace KidPrograming.Contract.Services.Interfaces
     public interface ISubmissionService
     {
         Task<PaginatedList<ResponseSubmissionModel>> GetPageAsync(
+            string? searchById = null,
             string? userId = null,
             string? labId = null,
             string? chapterProgressId = null,

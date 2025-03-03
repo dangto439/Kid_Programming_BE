@@ -21,6 +21,7 @@ namespace KidPrograming.Controllers
 
         [HttpGet]
         public async Task<IActionResult> GetPageAsync(
+            [FromQuery] string? searchById = null,
             [FromQuery] string? userId = null,
             [FromQuery] string? labId = null,
             [FromQuery] string? chapterProgressId = null,
@@ -31,7 +32,7 @@ namespace KidPrograming.Controllers
             [FromQuery] int pageIndex = 1,
             [FromQuery] int pageSize = 10)
         {
-            var result = await _submissionService.GetPageAsync(userId, labId, chapterProgressId,minScore, maxScore, sortByScore, sortByTimeSpent, pageIndex, pageSize);
+            var result = await _submissionService.GetPageAsync(searchById, userId, labId, chapterProgressId,minScore, maxScore, sortByScore, sortByTimeSpent, pageIndex, pageSize);
             return Ok(BaseResponseModel<PaginatedList<ResponseSubmissionModel>>.OkDataResponse(result, "Retrieve Submission list successfully"));
         }
 
