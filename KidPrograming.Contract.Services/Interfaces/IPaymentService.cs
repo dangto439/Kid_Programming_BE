@@ -8,5 +8,6 @@ namespace KidPrograming.Contract.Services.Interfaces
 {
     public interface IPaymentService
     {
+
     }
 }
