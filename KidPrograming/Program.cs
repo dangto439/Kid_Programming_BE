@@ -14,6 +14,7 @@ builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
 var app = builder.Build();
+app.UseCors("CorsPolicy");
 
 app.UseSwagger();
 app.UseSwaggerUI(c =>
@@ -26,7 +27,7 @@ app.UseMiddleware<PermissionMiddleware>();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
-
+app.UseAuthentication();
 app.MapControllers();
 
 app.Run();
