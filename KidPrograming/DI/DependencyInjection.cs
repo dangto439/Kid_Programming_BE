@@ -1,10 +1,13 @@
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
-﻿using KidPrograming.Core.Base;
+using KidPrograming.Contract.Services.Interfaces;
+using KidPrograming.Services.Services;
+using KidPrograming.Core.Base;
 using KidPrograming.Repositories.Base;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using StackExchange.Redis;
 using System.Text;
 namespace KidPrograming.DI
 {
@@ -15,6 +18,7 @@ namespace KidPrograming.DI
             services.AddDatabase(configuration);
             services.JwtSettingsConfig(configuration);
             services.AddAuthenJwt(configuration);
+            services.AddRedis(configuration);
             services.ConfigSwagger();
             services.ConfigCors();
             services.InitSeedData();
@@ -26,6 +30,24 @@ namespace KidPrograming.DI
             {
                 options.UseSqlServer(configuration.GetConnectionString("ConnectionString"));
             });
+        }
+        public static void AddRedis(this IServiceCollection services, IConfiguration configuration)
+        {
+            RedisConfiguration redisSetting = new RedisConfiguration();
+            configuration.GetSection("RedisConfiguration").Bind(redisSetting);
+
+            services.AddSingleton(redisSetting);
+
+            if (!redisSetting.Enabled)
+                return;
+
+            services.AddSingleton<IConnectionMultiplexer>(_ => ConnectionMultiplexer.Connect(redisSetting.ConnectionString));
+                services.AddStackExchangeRedisCache(options =>
+                {
+                    options.Configuration = redisSetting.ConnectionString;
+                });
+            services.AddSingleton<ICacheService,CacheService>();
+
         }
         public static void AddFirebase(this IServiceCollection services)
         {
