@@ -5,6 +5,7 @@ using KidPrograming.Contract.Services.Interfaces;
 using KidPrograming.Core;
 using KidPrograming.Core.Constants;
 using KidPrograming.Entity;
+using KidPrograming.Services.Infrastructure;
 using KidProgramming.ModelViews.ModelViews.NotificationModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -15,11 +16,15 @@ namespace KidPrograming.Services.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly Authentication _authentication;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public NotificationService(IUnitOfWork unitOfWork, IMapper mapper)
+        public NotificationService(IUnitOfWork unitOfWork, IMapper mapper, Authentication authentication, IHttpContextAccessor httpContextAccessor)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _authentication = authentication;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task Create(BulkNotificationCreateModel model)
@@ -72,6 +77,31 @@ namespace KidPrograming.Services.Services
 
             await _unitOfWork.GetRepository<Notification>().DeleteAsync(notification);
             await _unitOfWork.SaveAsync();
+        }
+
+        public async Task<PaginatedList<ResponseNotificationModel>> GetNotificationsByUserId(int index, int pageSize)
+        {
+            string userId = _authentication.GetUserIdFromHttpContextAccessor(_httpContextAccessor);
+
+            IQueryable<ResponseNotificationModel> query = from notification in _unitOfWork.GetRepository<Notification>().Entities
+                                                          join user in _unitOfWork.GetRepository<User>().Entities
+                                                          on notification.ReceiverId equals user.Id into userGroup
+                                                          from user in userGroup.DefaultIfEmpty()
+                                                          where (user.Id == userId && !notification.DeletedTime.HasValue)
+                                                          orderby notification.CreatedTime descending
+                                                          select new ResponseNotificationModel
+                                                          {
+                                                              Title = notification.Title,
+                                                              Message = notification.Message,
+                                                              Type = notification.Type,
+                                                              ReceiverId = notification.ReceiverId,
+                                                              ReceiverName = user.FullName ?? "N/A",
+                                                              IsRead = notification.IsRead,
+                                                              CreatedTime = notification.CreatedTime
+                                                          };
+
+            PaginatedList<ResponseNotificationModel> paginatedCourses = await _unitOfWork.GetRepository<ResponseNotificationModel>().GetPagging(query, index, pageSize);
+            return paginatedCourses;
         }
 
         public async Task<PaginatedList<ResponseNotificationModel>> GetPage(bool? sortByTitle, string? searchByTitle, bool? isRead, Enums.NotificationType? filterByType, int index, int pageSize)
