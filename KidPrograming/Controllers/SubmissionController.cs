@@ -48,6 +48,14 @@ namespace KidPrograming.Controllers
             return Ok(BaseResponse.OkMessageResponse("Updated successfully"));
         }
 
+        [HttpPatch]
+        [Route("/api/submissions/score")]
+        public async Task<IActionResult> UpdateScore(string id, int score)
+        {
+            await _submissionService.UpdateScoreAsync(id, score);
+            return Ok(BaseResponse.OkMessageResponse("Updated score sucessfully"));
+        }
+
         [HttpDelete]
         public async Task<IActionResult> Delete(string id)
         {
