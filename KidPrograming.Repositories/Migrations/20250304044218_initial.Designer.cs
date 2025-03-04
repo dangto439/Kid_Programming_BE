@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KidPrograming.Repositories.Migrations
 {
     [DbContext(typeof(KidProgramingDbContext))]
-    [Migration("20250227083451_updateDb")]
-    partial class updateDb
+    [Migration("20250304044218_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -131,6 +131,9 @@ namespace KidPrograming.Repositories.Migrations
                     b.Property<string>("TeacherId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("ThumbnailUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -203,11 +206,11 @@ namespace KidPrograming.Repositories.Migrations
                     b.Property<DateTimeOffset>("LastUpdatedTime")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("LessionId")
+                    b.Property<string>("LessonId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("LessonId")
+                    b.Property<string>("LessonId1")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int?>("LimitedTime")
@@ -229,9 +232,9 @@ namespace KidPrograming.Repositories.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LessionId");
-
                     b.HasIndex("LessonId");
+
+                    b.HasIndex("LessonId1");
 
                     b.ToTable("Labs");
                 });
@@ -512,13 +515,13 @@ namespace KidPrograming.Repositories.Migrations
                 {
                     b.HasOne("KidPrograming.Entity.Lesson", "Lesson")
                         .WithMany()
-                        .HasForeignKey("LessionId")
+                        .HasForeignKey("LessonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("KidPrograming.Entity.Lesson", null)
                         .WithMany("Labs")
-                        .HasForeignKey("LessonId");
+                        .HasForeignKey("LessonId1");
 
                     b.Navigation("Lesson");
                 });

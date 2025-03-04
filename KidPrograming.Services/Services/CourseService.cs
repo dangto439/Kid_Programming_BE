@@ -76,6 +76,7 @@ namespace KidPrograming.Services.Services
                                                         Description = course.Description,
                                                         Subject = course.Subject,
                                                         Price = course.Price ?? 0,
+                                                        ThumbnailUrl = course.ThumbnailUrl ?? null,
                                                         Status = course.Status,
                                                         TeacherName = user.FullName ?? "N/A",
                                                         CreatedTime = course.CreatedTime
