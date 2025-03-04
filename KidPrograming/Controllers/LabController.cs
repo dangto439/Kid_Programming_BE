@@ -32,6 +32,14 @@ namespace KidPrograming.Controllers
             return Ok(BaseResponseModel<PaginatedList<ResponseLabModel>>.OkDataResponse(result, "Retrieve lab list successfully"));
         }
 
+        [HttpGet]
+        [Route("/api/labs/{labId}/retrieve-answer")]
+        public async Task<IActionResult> GetAnswer(string labId)
+        {
+            string answer =  await _labService.GetAnswerByLabIdAsync(labId);
+            return Ok(BaseResponseModel<string>.OkDataResponse(answer, "Answer is retrieved sucessfully"));
+        }
+
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateLabModel model)
         {
