@@ -7,5 +7,6 @@ namespace KidPrograming.Contract.Services.Interfaces
     {
         public Task CreateEnrollment(string userId, string paymentId,string courseId);
         public Task<PaginatedList<StudentModel>> GetStudentByCourseId(string courseId, string? searchByUserName, int index = 1, int pageSize = 10);
+        public Task<PaginatedList<ResponseEnrollmentModel>> CheckStatusCourseByUserId(int index, int pageSize);
     }
 }
