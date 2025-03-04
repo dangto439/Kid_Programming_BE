@@ -8,7 +8,7 @@ using static KidPrograming.Core.Constants.Enums;
 namespace KidPrograming.Controllers
 {
     [ApiController]
-    [Route("/api/notification")]
+    [Route("/api/notifications")]
     public class NotificationController : ControllerBase
     {
         private readonly INotificationService _notificationService;

@@ -10,7 +10,7 @@ using static KidPrograming.Core.Constants.Enums;
 namespace KidPrograming.Controllers
 {
     [ApiController]
-    [Route("/api/chapter")]
+    [Route("/api/chapters")]
     public class ChapterController : ControllerBase
     {
         private readonly IChapterService _chapterService;
