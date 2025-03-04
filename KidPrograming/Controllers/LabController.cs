@@ -2,12 +2,11 @@
 using KidPrograming.Contract.Services.Interfaces;
 using KidPrograming.Core.Base;
 using KidProgramming.ModelViews.ModelViews.LabModels;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KidPrograming.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/labs")]
     [ApiController]
     public class LabController : ControllerBase
     {

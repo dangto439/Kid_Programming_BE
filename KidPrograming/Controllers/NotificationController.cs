@@ -3,6 +3,7 @@ using KidPrograming.Contract.Services.Interfaces;
 using KidPrograming.Core.Base;
 using KidProgramming.ModelViews.ModelViews.NotificationModels;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading;
 using static KidPrograming.Core.Constants.Enums;
 
 namespace KidPrograming.Controllers
@@ -23,6 +24,14 @@ namespace KidPrograming.Controllers
         {
             PaginatedList<ResponseNotificationModel> result = await _notificationService.GetPage(sortByTitle, searchByTitle, isRead, filterByType, index, pageSize);
             return Ok(BaseResponseModel<PaginatedList<ResponseNotificationModel>>.OkDataResponse(result, "Retrieve notification list successfully"));
+        }
+
+        [HttpGet]
+        [Route("/api/notifications-of-user")]
+        public async Task<IActionResult> GetByUserId(int index = 1, int pageSize = 10)
+        {
+            PaginatedList<ResponseNotificationModel> result = await _notificationService.GetNotificationsByUserId(index, pageSize);
+            return Ok(BaseResponseModel<PaginatedList<ResponseNotificationModel>>.OkDataResponse(result, "Retrieve notification list by userId successfully"));
         }
 
         [HttpPost]

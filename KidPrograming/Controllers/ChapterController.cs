@@ -1,11 +1,9 @@
 ﻿using KidPrograming.Contract.Repositories.PaggingItems;
 using KidPrograming.Contract.Services.Interfaces;
 using KidPrograming.Core.Base;
-using KidPrograming.Services.Services;
 using KidProgramming.ModelViews.ModelViews.ChapterModels;
 using KidProgramming.ModelViews.ModelViews.NotificationModels;
 using Microsoft.AspNetCore.Mvc;
-using static KidPrograming.Core.Constants.Enums;
 
 namespace KidPrograming.Controllers
 {

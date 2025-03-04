@@ -1,14 +1,12 @@
 ﻿using KidPrograming.Contract.Repositories.PaggingItems;
 using KidPrograming.Contract.Services.Interfaces;
 using KidPrograming.Core.Base;
-using KidProgramming.ModelViews.ModelViews.LabModels;
 using KidProgramming.ModelViews.ModelViews.SubmissionModels;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KidPrograming.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/submissions")]
     [ApiController]
     public class SubmissionController : ControllerBase
     {
@@ -32,7 +30,7 @@ namespace KidPrograming.Controllers
             [FromQuery] int pageIndex = 1,
             [FromQuery] int pageSize = 10)
         {
-            var result = await _submissionService.GetPageAsync(searchById, userId, labId, chapterProgressId,minScore, maxScore, sortByScore, sortByTimeSpent, pageIndex, pageSize);
+            var result = await _submissionService.GetPageAsync(searchById, userId, labId, chapterProgressId, minScore, maxScore, sortByScore, sortByTimeSpent, pageIndex, pageSize);
             return Ok(BaseResponseModel<PaginatedList<ResponseSubmissionModel>>.OkDataResponse(result, "Retrieve Submission list successfully"));
         }
 
