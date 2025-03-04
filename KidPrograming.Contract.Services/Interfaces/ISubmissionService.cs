@@ -1,10 +1,5 @@
 ﻿using KidPrograming.Contract.Repositories.PaggingItems;
 using KidProgramming.ModelViews.ModelViews.SubmissionModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KidPrograming.Contract.Services.Interfaces
 {
@@ -22,8 +17,13 @@ namespace KidPrograming.Contract.Services.Interfaces
             int pageIndex = 1,
             int pageSize = 10
         );
+
         Task CreateAsync(CreateSubmissionModel model);
+
         Task UpdateAsync(string id, UpdateSubmissionModel model);
+
         Task DeleteAsync(string id);
+
+        Task UpdateScoreAsync(string submissionId, int score);
     }
 }

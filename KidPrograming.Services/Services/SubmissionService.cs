@@ -2,8 +2,10 @@
 using KidPrograming.Contract.Repositories.Interfaces;
 using KidPrograming.Contract.Repositories.PaggingItems;
 using KidPrograming.Contract.Services.Interfaces;
+using KidPrograming.Core;
 using KidPrograming.Entity;
 using KidProgramming.ModelViews.ModelViews.SubmissionModels;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace KidPrograming.Services.Services
@@ -112,6 +114,23 @@ namespace KidPrograming.Services.Services
                 throw new KeyNotFoundException("Submission not found");
 
             submission.DeletedTime = DateTimeOffset.UtcNow;
+            await _unitOfWork.GetRepository<Submission>().UpdateAsync(submission);
+            await _unitOfWork.SaveAsync();
+        }
+
+        public async Task UpdateScoreAsync(string submissionId, int score)
+        {
+            Submission submission = await _unitOfWork.GetRepository<Submission>().GetByIdAsync(submissionId) ??
+                throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, "Submission not found");
+
+            if (score > 100 || score < 0)
+            {
+                throw new ErrorException(StatusCodes.Status400BadRequest, ResponseCodeConstants.INVALID_INPUT, "Score must be ranges from 0 to 100");
+            }
+
+            submission.Score = score;
+            submission.LastUpdatedTime = CoreHelper.SystemTimeNow;
+
             await _unitOfWork.GetRepository<Submission>().UpdateAsync(submission);
             await _unitOfWork.SaveAsync();
         }

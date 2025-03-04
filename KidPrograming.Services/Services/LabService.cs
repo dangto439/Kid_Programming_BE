@@ -2,8 +2,10 @@
 using KidPrograming.Contract.Repositories.Interfaces;
 using KidPrograming.Contract.Repositories.PaggingItems;
 using KidPrograming.Contract.Services.Interfaces;
+using KidPrograming.Core;
 using KidPrograming.Entity;
 using KidProgramming.ModelViews.ModelViews.LabModels;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace KidPrograming.Services.Services
@@ -117,6 +119,14 @@ namespace KidPrograming.Services.Services
             lab.DeletedTime = DateTime.Now;
             await _unitOfWork.GetRepository<Lab>().UpdateAsync(lab);
             await _unitOfWork.SaveAsync();
+        }
+
+        public async Task<string> GetAnswerByLabIdAsync(string id)
+        {
+            Lab lab = await _unitOfWork.GetRepository<Lab>().GetByIdAsync(id) ??
+                throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, "Lab not found");
+
+            return lab.CorrectAnswer;
         }
     }
 }
