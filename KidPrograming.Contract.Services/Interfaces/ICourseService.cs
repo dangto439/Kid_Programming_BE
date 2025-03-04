@@ -1,4 +1,5 @@
 ﻿using KidPrograming.Contract.Repositories.PaggingItems;
+using KidPrograming.Entity;
 using KidProgramming.ModelViews.ModelViews.CourseModels;
 using static KidPrograming.Core.Constants.Enums;
 

@@ -11,5 +11,6 @@ namespace KidPrograming.Contract.Services.Interfaces
         Task MarkAsRead(string notificationId);
         Task Delete(string notificationId);
         Task<PaginatedList<ResponseNotificationModel>> GetPage(bool? sortByTitle, string? searchByTitle, bool? isRead, NotificationType? filterByType, int index, int pageSize);
+        Task<PaginatedList<ResponseNotificationModel>> GetNotificationsByUserId(int index, int pageSize);
     }
 }
