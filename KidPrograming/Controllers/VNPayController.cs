@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace KidPrograming.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/vnpay")]
     [ApiController]
     public class VNPayController : ControllerBase
     {
@@ -16,7 +16,7 @@ namespace KidPrograming.Controllers
             _vnPayService = vnPayService;
         }
 
-        [HttpPost("create-payment-url")]
+        [HttpPost("payment-url")]
         public IActionResult CreatePaymentUrl([FromBody] PaymentInformationModel model)
         {
             var url = _vnPayService.CreatePaymentUrl(model, HttpContext);

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace KidPrograming.Controllers
 {
     [ApiController]
-    [Route("/api/lesson")]
+    [Route("/api/lessons")]
     public class LessonController : ControllerBase
     {
         private readonly ILessonService _lessonService;
