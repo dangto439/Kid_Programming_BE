@@ -29,6 +29,14 @@ namespace KidPrograming.Controllers
             return Ok(BaseResponseModel<PaginatedList<ResponseCourseModel>>.OkDataResponse(result, "Retrieve course list successfully"));
         }
 
+        [HttpGet]
+        [Route("/api/course/{id}")]
+        public async Task<IActionResult> GetById(string id)
+        {
+            ResponseCourseModel result =  await _courseService.GetById(id);
+            return Ok(BaseResponseModel<ResponseCourseModel>.OkDataResponse(result, "Retrieve course successfully"));
+        }
+
         [HttpPost]
         public async Task<IActionResult> Create(CreateCourseModel model)
         {
