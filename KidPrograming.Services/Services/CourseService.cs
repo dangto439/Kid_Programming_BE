@@ -63,28 +63,6 @@ namespace KidPrograming.Services.Services
             await _unitOfWork.SaveAsync();
         }
 
-        public async Task<ResponseCourseModel> GetById(string id)
-        {
-            Course course = await _unitOfWork.GetRepository<Course>()
-                .Entities
-                .Include(c => c.Teacher)
-                .FirstOrDefaultAsync(c => c.Id == id && !c.DeletedTime.HasValue) ?? throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, "Course not found");
-
-            ResponseCourseModel model = new ResponseCourseModel
-            {
-                Id = course.Id,
-                Title = course.Title,
-                Description = course.Description,
-                Subject = course.Subject,
-                ThumbnailUrl = course.ThumbnailUrl,
-                Price = course.Price,
-                Status = course.Status,
-                TeacherName = course.Teacher?.FullName ?? "Unknown"
-            };
-
-            return model;
-        }
-
         public async Task<PaginatedList<ResponseCourseModel>> GetPage(bool? sortByTitle, bool? sortByPrice, Enums.CourseStatus? filterByStatus, string? searchById, string? searchByTitle, string? searchBySubject, string? teacherName, decimal? minPrice, decimal? maxPrice, int index, int pageSize)
         {
             IQueryable<ResponseCourseModel> query = from course in _unitOfWork.GetRepository<Course>().Entities

@@ -13,6 +13,5 @@ namespace KidPrograming.Contract.Services.Interfaces
         Task Update(string id, UpdateCourseModel model);
 
         Task Delete(string id);
-        Task<ResponseCourseModel> GetById(string id);
     }
 }
