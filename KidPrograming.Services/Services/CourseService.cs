@@ -63,29 +63,7 @@ namespace KidPrograming.Services.Services
             await _unitOfWork.SaveAsync();
         }
 
-        public async Task<ResponseCourseModel> GetById(string id)
-        {
-            Course course = await _unitOfWork.GetRepository<Course>()
-                .Entities
-                .Include(c => c.Teacher)
-                .FirstOrDefaultAsync(c => c.Id == id && !c.DeletedTime.HasValue) ?? throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, "Course not found");
-
-            ResponseCourseModel model = new ResponseCourseModel
-            {
-                Id = course.Id,
-                Title = course.Title,
-                Description = course.Description,
-                Subject = course.Subject,
-                ThumbnailUrl = course.ThumbnailUrl,
-                Price = course.Price,
-                Status = course.Status,
-                TeacherName = course.Teacher?.FullName ?? "Unknown"
-            };
-
-            return model;
-        }
-
-        public async Task<PaginatedList<ResponseCourseModel>> GetPage(bool? sortByTitle, bool? sortByPrice, Enums.CourseStatus? filterByStatus, string? searchByTitle, string? searchBySubject, string? teacherName, decimal? minPrice, decimal? maxPrice, int index, int pageSize)
+        public async Task<PaginatedList<ResponseCourseModel>> GetPage(bool? sortByTitle, bool? sortByPrice, Enums.CourseStatus? filterByStatus, string? searchById, string? searchByTitle, string? searchBySubject, string? teacherName, decimal? minPrice, decimal? maxPrice, int index, int pageSize)
         {
             IQueryable<ResponseCourseModel> query = from course in _unitOfWork.GetRepository<Course>().Entities
                                                     join user in _unitOfWork.GetRepository<User>().Entities
@@ -94,6 +72,7 @@ namespace KidPrograming.Services.Services
                                                     where !course.DeletedTime.HasValue
                                                     select new ResponseCourseModel
                                                     {
+                                                        Id = course.Id,
                                                         Title = course.Title,
                                                         Description = course.Description,
                                                         Subject = course.Subject,
@@ -103,6 +82,13 @@ namespace KidPrograming.Services.Services
                                                         TeacherName = user.FullName ?? "N/A",
                                                         CreatedTime = course.CreatedTime
                                                     };
+            if (!string.IsNullOrWhiteSpace(searchById))
+            {
+                searchById = searchById.Trim();
+                query = query.Where(x => EF.Functions.Like(x.Id, $"%{searchById}%"));
+
+                //query = query.Where(x => x.Title != null && x.Title.ToLower().Contains(searchByTitle));
+            }
 
             if (!string.IsNullOrWhiteSpace(searchByTitle))
             {
