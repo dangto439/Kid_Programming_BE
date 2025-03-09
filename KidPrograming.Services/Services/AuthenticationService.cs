@@ -52,6 +52,7 @@ namespace KidPrograming.Services.Services
             string uid = decodedToken.Uid; // ID của user
             string email = decodedToken.Claims["email"].ToString()!;
             string name = decodedToken.Claims["name"].ToString()!;
+            string picture = decodedToken.Claims["picture"].ToString()!;
 
             var user = await _unitOfWork.GetRepository<User>().Entities.FirstOrDefaultAsync(user => user.Email.Equals(email));
             if (user == null)
@@ -60,11 +61,13 @@ namespace KidPrograming.Services.Services
                 {
                     Email = email,
                     FullName = name,
-                    Role = Enums.Role.Customer
-                };
-                await _unitOfWork.GetRepository<User>().InsertAsync(user);
-                await _unitOfWork.GetRepository<User>().SaveAsync();
-                }
+                    Role = Enums.Role.Customer,
+                    AvatarUrl = picture
+                };         
+            }
+            user.DeviceToken = request.FcmToken;
+            await _unitOfWork.GetRepository<User>().InsertAsync(user);
+            await _unitOfWork.GetRepository<User>().SaveAsync();
             return await _authentication.CreateToken(user, _jwtSettings);
         }
     }

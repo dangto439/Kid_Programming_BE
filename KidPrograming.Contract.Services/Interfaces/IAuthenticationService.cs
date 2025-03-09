@@ -6,6 +6,7 @@ namespace KidPrograming.Contract.Services.Interfaces
     {
         public Task<AuthModel> Login(GoogleLoginRequest request);
         Task<ResponseUserModel> GetUserInfo();
+      // public Task<ResponseUserModel> GetUserInfo();
 
     }
 }

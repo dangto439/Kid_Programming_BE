@@ -79,10 +79,10 @@ namespace KidPrograming.Repositories.Base
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Lab>()
-                .HasOne(l => l.Lesson)
-                .WithMany()
-                .HasForeignKey(l => l.LessonId)
-                .OnDelete(DeleteBehavior.Cascade);
+                  .HasOne(l => l.Lesson) // Lab có 1 Lesson
+                  .WithMany(ls => ls.Labs) // Lesson có nhiều Labs
+                  .HasForeignKey(l => l.LessonId)
+                  .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Course>()
                .HasOne(c => c.Teacher)

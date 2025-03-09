@@ -9,6 +9,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using StackExchange.Redis;
 using System.Text;
+using FirebaseAdmin.Auth;
+using FirebaseAdmin.Messaging;
+using KidPrograming.Core.Utils;
 namespace KidPrograming.DI
 {
     public static class DependencyInjection
@@ -51,11 +54,38 @@ namespace KidPrograming.DI
         }
         public static void AddFirebase(this IServiceCollection services)
         {
-            services.AddSingleton(FirebaseApp.Create(new AppOptions()
+            string credentialPath = "firebase-adminsdk.json";
+
+            if (!File.Exists(credentialPath))
             {
-                Credential = GoogleCredential.FromFile("firebase-adminsdk.json")
-            }));
+                throw new FileNotFoundException("Firebase credential file not found!", credentialPath);
+            }
+
+            var credential = GoogleCredential.FromFile(credentialPath)
+                .CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+
+            FirebaseApp app;
+            if (FirebaseApp.DefaultInstance == null)
+            {
+                app = FirebaseApp.Create(new AppOptions
+                {
+                    Credential = credential
+                });
+            }
+            else
+            {
+                app = FirebaseApp.DefaultInstance;
+            }
+
+            services.AddSingleton(credential);
+
+            services.AddSingleton(app);
+            services.AddSingleton(provider => FirebaseAuth.GetAuth(provider.GetRequiredService<FirebaseApp>()));
+            services.AddSingleton(provider => FirebaseMessaging.GetMessaging(provider.GetRequiredService<FirebaseApp>()));
+
+            services.AddSingleton<FirebaseAuthHelper>();
         }
+
 
         public static void AddAuthenJwt(this IServiceCollection services, IConfiguration configuration)
         {

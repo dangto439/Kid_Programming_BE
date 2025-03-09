@@ -1,5 +1,6 @@
 ﻿using KidPrograming.Contract.Repositories.Interfaces;
 using KidPrograming.Contract.Services.Interfaces;
+using KidPrograming.Core.Utils;
 using KidPrograming.Repositories.Repositories;
 using KidPrograming.Services.Infrastructure;
 using KidPrograming.Services.Services;
@@ -30,6 +31,8 @@ namespace KidPrograming.Services
             services.AddScoped<IChapterProgressService, ChapterProgressSevice>();
             services.AddScoped<ISubmissionService, SubmissionService>();
             services.AddScoped<IVnPayService, VnPayService>();
+            services.AddScoped<FcmService>();
+            
         }
         private static void AddAutoMapper(this IServiceCollection services)
         {

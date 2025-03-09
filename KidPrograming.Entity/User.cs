@@ -12,7 +12,7 @@ namespace KidPrograming.Entity
         public string? PhoneNumber { get; set; }
         public DateTimeOffset? DateOfBirth { get; set; }
         public string? AvatarUrl { get; set; }
-
+        public string? DeviceToken { get; set; }
         [Column(TypeName = "nvarchar(50)")]
         public  Role  Role { get; set; }
         public virtual string? ParentId { get; set; }
