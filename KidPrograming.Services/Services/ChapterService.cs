@@ -5,7 +5,6 @@ using KidPrograming.Contract.Services.Interfaces;
 using KidPrograming.Core;
 using KidPrograming.Entity;
 using KidProgramming.ModelViews.ModelViews.ChapterModels;
-using KidProgramming.ModelViews.ModelViews.CourseModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
@@ -66,6 +65,7 @@ namespace KidPrograming.Services
                 .Where(chapter => chapter.CourseId == courseId && !chapter.DeletedTime.HasValue)
                 .Select(chapter => new ResponseChapterModel
                 {
+                    Id = chapter.Id,
                     Title = chapter.Title,
                     Description = chapter.Description,
                     Order = chapter.Order,

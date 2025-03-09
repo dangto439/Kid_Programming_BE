@@ -91,6 +91,7 @@ namespace KidPrograming.Services.Services
                                                           orderby notification.CreatedTime descending
                                                           select new ResponseNotificationModel
                                                           {
+                                                              Id = notification.Id,
                                                               Title = notification.Title,
                                                               Message = notification.Message,
                                                               Type = notification.Type,
@@ -113,6 +114,7 @@ namespace KidPrograming.Services.Services
                                                           where !notification.DeletedTime.HasValue
                                                           select new ResponseNotificationModel
                                                           {
+                                                              Id = notification.Id,
                                                               Title = notification.Title,
                                                               Message = notification.Message,
                                                               Type = notification.Type,
