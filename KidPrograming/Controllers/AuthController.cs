@@ -13,18 +13,28 @@ namespace KidPrograming.Controllers
         {
             _authenticationService = authenticationService;
         }
+
         [HttpPost("login-google")]
         public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginRequest request)
         {
             var model = await _authenticationService.Login(request);
-            return Ok(BaseResponseModel<string>.OkDataResponse(model, "Đăng nhập thành công"));
+            return Ok(BaseResponseModel<string>.OkDataResponse(model, "Login successfully"));
         }
+
         [HttpGet]
         [Route("infor")]
         public async Task<IActionResult> GetUserInfo()
         {
             ResponseUserModel model = await _authenticationService.GetUserInfo();
-            return Ok(BaseResponseModel<string>.OkDataResponse(model, "Lấy thông tin cá nhân thành công"));
+            return Ok(BaseResponseModel<string>.OkDataResponse(model, "Retrieve user info successfully"));
+        }
+
+        [HttpPut]
+        [Route("/api/auth/user-get-infor")]
+        public async Task<IActionResult> UpdateUser([FromBody] UpdateUserModel request)
+        {
+            ResponseUserModel model = await _authenticationService.UpdateUserInfo(request);
+            return Ok(BaseResponseModel<string>.OkDataResponse(model, "Updated successfully"));
         }
     }
 }
