@@ -1,4 +1,5 @@
-﻿using KidProgramming.ModelViews.ModelViews.AuthModel;
+﻿using Azure.Core;
+using KidProgramming.ModelViews.ModelViews.AuthModel;
 
 namespace KidPrograming.Contract.Services.Interfaces
 {
@@ -6,7 +7,7 @@ namespace KidPrograming.Contract.Services.Interfaces
     {
         public Task<AuthModel> Login(GoogleLoginRequest request);
         Task<ResponseUserModel> GetUserInfo();
-      // public Task<ResponseUserModel> GetUserInfo();
+        Task<ResponseUserModel> UpdateUserInfo(UpdateUserModel request);
 
     }
 }

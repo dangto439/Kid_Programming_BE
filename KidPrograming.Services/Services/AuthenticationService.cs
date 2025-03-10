@@ -65,10 +65,56 @@ namespace KidPrograming.Services.Services
                     AvatarUrl = picture
                 };         
             }
-            user.DeviceToken = request.FcmToken;
+            if (!string.IsNullOrWhiteSpace(request.FcmToken))
+            {
+                user.DeviceToken = request.FcmToken;
+            }
             await _unitOfWork.GetRepository<User>().InsertAsync(user);
             await _unitOfWork.GetRepository<User>().SaveAsync();
+
             return await _authentication.CreateToken(user, _jwtSettings);
+        }
+
+        public async Task<ResponseUserModel> UpdateUserInfo(UpdateUserModel request)
+        {
+            string userId = _authentication.GetUserIdFromHttpContextAccessor(_httpContextAccessor);
+
+            User user = await _unitOfWork.GetRepository<User>().Entities
+                .FirstOrDefaultAsync(u => u.Id == userId)
+                ?? throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, "User not found");
+
+            if (!string.IsNullOrEmpty(request.PhoneNumber) && request.PhoneNumber != user.PhoneNumber)
+            {
+                bool phoneExists = await _unitOfWork.GetRepository<User>().Entities
+                    .AnyAsync(u => u.PhoneNumber == request.PhoneNumber && u.Id != userId && !u.DeletedTime.HasValue);
+
+                if (phoneExists)
+                {
+                    throw new ErrorException(StatusCodes.Status400BadRequest, ResponseCodeConstants.BADREQUEST, "Phone number is already in use.");
+                }
+            }
+
+            if (request.ParentId != user.ParentId)
+            {
+                if (!string.IsNullOrEmpty(request.ParentId))
+                {
+                    bool parentExists = await _unitOfWork.GetRepository<User>().Entities
+                        .AnyAsync(u => u.Id == request.ParentId && !u.DeletedTime.HasValue);
+                    if (!parentExists)
+                    {
+                        throw new ErrorException(StatusCodes.Status400BadRequest, ResponseCodeConstants.BADREQUEST, "Parent ID does not exist or was deleted.");
+                    }
+                }
+            }
+
+            _mapper.Map(request, user);
+
+            user.LastUpdatedTime = CoreHelper.SystemTimeNow;
+
+            await _unitOfWork.GetRepository<User>().UpdateAsync(user);
+            await _unitOfWork.SaveAsync();
+
+            return _mapper.Map<ResponseUserModel>(user);
         }
     }
 }
