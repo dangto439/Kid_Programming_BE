@@ -1,4 +1,5 @@
-﻿using KidPrograming.Contract.Repositories.PaggingItems;
+﻿using KidPrograming.Attributes;
+using KidPrograming.Contract.Repositories.PaggingItems;
 using KidPrograming.Contract.Services.Interfaces;
 using KidPrograming.Core.Base;
 using KidProgramming.ModelViews.ModelViews.ChapterProgressModels;
@@ -12,13 +13,16 @@ namespace KidPrograming.Controllers
     public class ChapterProgressController : ControllerBase
     {
         private readonly IChapterProgressService _chapterProgressService;
+        private readonly ICacheService _cacheService;
 
-        public ChapterProgressController(IChapterProgressService chapterProgressService)
+        public ChapterProgressController(IChapterProgressService chapterProgressService, ICacheService cacheService)
         {
             _chapterProgressService = chapterProgressService;
+            _cacheService = cacheService;
         }
 
         [HttpGet]
+        [CacheAtribute(1000)]
         public async Task<IActionResult> GetPageAsync(
            [FromQuery] string? searchById,
            [FromQuery] string? chapterId,
@@ -40,6 +44,7 @@ namespace KidPrograming.Controllers
         public async Task<IActionResult> CreateAsync([FromBody] CreateChapterProgressModel model)
         {
             await _chapterProgressService.CreateAsync(model);
+            await _cacheService.RemoveCacheResponseAsync("api/chapter-progress");
             return Ok(BaseResponse.OkMessageResponse("Created successfully"));
         }
 
@@ -47,6 +52,7 @@ namespace KidPrograming.Controllers
         public async Task<IActionResult> UpdateAsync(string id, [FromBody] UpdateChapterProgressModel model)
         {
             await _chapterProgressService.UpdateAsync(id, model);
+            await _cacheService.RemoveCacheResponseAsync("api/chapter-progress");
             return Ok(BaseResponse.OkMessageResponse("Updated successfully"));
         }
 
@@ -54,6 +60,7 @@ namespace KidPrograming.Controllers
         public async Task<IActionResult> DeleteAsync(string id)
         {
             await _chapterProgressService.DeleteAsync(id);
+            await _cacheService.RemoveCacheResponseAsync("api/chapter-progress");
             return Ok(BaseResponse.OkMessageResponse("Deleted successfully"));
         }
     }
