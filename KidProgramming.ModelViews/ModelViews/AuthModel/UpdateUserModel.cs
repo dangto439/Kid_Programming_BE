@@ -7,6 +7,8 @@ namespace KidProgramming.ModelViews.ModelViews.AuthModel
     public class UpdateUserModel
     {
         public string? FullName { get; set; }
+
+        [RegularExpression(@"^(0|\+84)[3-9][0-9]{8}$", ErrorMessage = "Phone number is not validation")]
         public string? PhoneNumber { get; set; }
 
         [DataType(DataType.Date)]
