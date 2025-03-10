@@ -4,7 +4,6 @@ using KidPrograming.Contract.Repositories.PaggingItems;
 using KidPrograming.Contract.Services.Interfaces;
 using KidPrograming.Entity;
 using KidPrograming.Services.Infrastructure;
-using KidProgramming.ModelViews.ModelViews.CourseModels;
 using KidProgramming.ModelViews.ModelViews.EnrollmentModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;

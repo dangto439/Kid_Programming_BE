@@ -13,7 +13,11 @@ namespace KidPrograming.Services.MapperProfile
             CreateMap<User, ResponseUserModel>()
                 .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Role.ToString()));
             CreateMap<User, StudentModel>();
+            CreateMap<UpdateUserModel, User>()
+            .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
         }
 
     }
 }
+
