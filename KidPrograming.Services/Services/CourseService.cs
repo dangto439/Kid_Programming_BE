@@ -1,14 +1,13 @@
 ﻿using AutoMapper;
-using KidPrograming.Entity;
 using KidPrograming.Contract.Repositories.Interfaces;
+using KidPrograming.Contract.Repositories.PaggingItems;
 using KidPrograming.Contract.Services.Interfaces;
+using KidPrograming.Core;
+using KidPrograming.Core.Constants;
+using KidPrograming.Entity;
 using KidProgramming.ModelViews.ModelViews.CourseModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using KidPrograming.Core;
-using KidPrograming.Contract.Repositories.PaggingItems;
-using KidPrograming.Core.Constants;
-using System.Linq;
 
 
 namespace KidPrograming.Services.Services

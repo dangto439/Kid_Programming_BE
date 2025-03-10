@@ -1,4 +1,5 @@
-﻿using KidPrograming.Contract.Repositories.PaggingItems;
+﻿using KidPrograming.Attributes;
+using KidPrograming.Contract.Repositories.PaggingItems;
 using KidPrograming.Contract.Services.Interfaces;
 using KidPrograming.Core.Base;
 using KidProgramming.ModelViews.ModelViews.SubmissionModels;
@@ -11,13 +12,16 @@ namespace KidPrograming.Controllers
     public class SubmissionController : ControllerBase
     {
         private readonly ISubmissionService _submissionService;
+        private readonly ICacheService _cacheService;
 
-        public SubmissionController(ISubmissionService submissionService)
+        public SubmissionController(ISubmissionService submissionService, ICacheService cacheService)
         {
             _submissionService = submissionService;
+            _cacheService = cacheService;
         }
 
         [HttpGet]
+        [CacheAtribute(1000)]
         public async Task<IActionResult> GetPageAsync(
             [FromQuery] string? searchById = null,
             [FromQuery] string? userId = null,
@@ -38,6 +42,7 @@ namespace KidPrograming.Controllers
         public async Task<IActionResult> Create([FromBody] CreateSubmissionModel model)
         {
             await _submissionService.CreateAsync(model);
+            await _cacheService.RemoveCacheResponseAsync("api/submissions");
             return Ok(BaseResponse.OkMessageResponse("Created successfully"));
         }
 
@@ -45,6 +50,7 @@ namespace KidPrograming.Controllers
         public async Task<IActionResult> Update(string id, [FromBody] UpdateSubmissionModel model)
         {
             await _submissionService.UpdateAsync(id, model);
+            await _cacheService.RemoveCacheResponseAsync("api/submissions");
             return Ok(BaseResponse.OkMessageResponse("Updated successfully"));
         }
 
@@ -53,6 +59,7 @@ namespace KidPrograming.Controllers
         public async Task<IActionResult> UpdateScore(string id, int score)
         {
             await _submissionService.UpdateScoreAsync(id, score);
+            await _cacheService.RemoveCacheResponseAsync("api/submissions");
             return Ok(BaseResponse.OkMessageResponse("Updated score sucessfully"));
         }
 

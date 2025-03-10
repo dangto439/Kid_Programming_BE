@@ -63,13 +63,14 @@ namespace KidPrograming.Services.Services
                     FullName = name,
                     Role = Enums.Role.Customer,
                     AvatarUrl = picture
-                };         
+                };
+                await _unitOfWork.GetRepository<User>().InsertAsync(user);
             }
             if (!string.IsNullOrWhiteSpace(request.FcmToken))
             {
                 user.DeviceToken = request.FcmToken;
             }
-            await _unitOfWork.GetRepository<User>().InsertAsync(user);
+            await _unitOfWork.GetRepository<User>().UpdateAsync(user);
             await _unitOfWork.GetRepository<User>().SaveAsync();
 
             return await _authentication.CreateToken(user, _jwtSettings);

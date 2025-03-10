@@ -1,4 +1,5 @@
-﻿using KidPrograming.Contract.Repositories.PaggingItems;
+﻿using KidPrograming.Attributes;
+using KidPrograming.Contract.Repositories.PaggingItems;
 using KidPrograming.Contract.Services.Interfaces;
 using KidPrograming.Core.Base;
 using KidProgramming.ModelViews.ModelViews.LessonModels;
@@ -11,13 +12,16 @@ namespace KidPrograming.Controllers
     public class LessonController : ControllerBase
     {
         private readonly ILessonService _lessonService;
+        private readonly ICacheService _cacheService;
 
-        public LessonController(ILessonService lessonService)
+        public LessonController(ILessonService lessonService, ICacheService cacheService)
         {
             _lessonService = lessonService;
+            _cacheService = cacheService;
         }
 
         [HttpGet]
+        [CacheAtribute(1000)]
         public async Task<IActionResult> Get(
             bool? sortByTitle,
             bool? sortByOrder,
@@ -38,6 +42,7 @@ namespace KidPrograming.Controllers
         public async Task<IActionResult> Create([FromBody] CreateLessonModel model)
         {
             await _lessonService.CreateAsync(model);
+            await _cacheService.RemoveCacheResponseAsync("api/lessons");
             return Ok(BaseResponse.OkMessageResponse("Created successfully"));
         }
 
@@ -45,6 +50,7 @@ namespace KidPrograming.Controllers
         public async Task<IActionResult> Update(string id, [FromBody] UpdateLessonModel model)
         {
             await _lessonService.UpdateAsync(id, model);
+            await _cacheService.RemoveCacheResponseAsync("api/lessons");
             return Ok(BaseResponse.OkMessageResponse("Updated successfully"));
         }
 
@@ -52,6 +58,7 @@ namespace KidPrograming.Controllers
         public async Task<IActionResult> Delete(string id)
         {
             await _lessonService.DeleteAsync(id);
+            await _cacheService.RemoveCacheResponseAsync("api/lessons");
             return Ok(BaseResponse.OkMessageResponse("Deleted successfully"));
         }
     }

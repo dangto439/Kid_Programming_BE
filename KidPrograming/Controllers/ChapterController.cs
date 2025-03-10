@@ -1,4 +1,5 @@
-﻿using KidPrograming.Contract.Repositories.PaggingItems;
+﻿using KidPrograming.Attributes;
+using KidPrograming.Contract.Repositories.PaggingItems;
 using KidPrograming.Contract.Services.Interfaces;
 using KidPrograming.Core.Base;
 using KidProgramming.ModelViews.ModelViews.ChapterModels;
@@ -11,14 +12,17 @@ namespace KidPrograming.Controllers
     [Route("/api/chapters")]
     public class ChapterController : ControllerBase
     {
+        private readonly ICacheService _cacheService;
         private readonly IChapterService _chapterService;
 
-        public ChapterController(IChapterService chapterService)
+        public ChapterController(IChapterService chapterService, ICacheService cacheService)
         {
             _chapterService = chapterService;
+            _cacheService = cacheService;
         }
 
         [HttpGet]
+        [CacheAtribute(1000)]
         public async Task<IActionResult> Get(string courseId, string? searchByTitle, bool? sortByOrder, int index = 1, int pageSize = 10)
         {
             PaginatedList<ResponseChapterModel> result = await _chapterService.GetPage(courseId, searchByTitle, sortByOrder, index, pageSize);
@@ -29,6 +33,7 @@ namespace KidPrograming.Controllers
         public async Task<IActionResult> Create(CreateChapterModel model)
         {
             await _chapterService.Create(model);
+            await _cacheService.RemoveCacheResponseAsync("api/chapters");
             return Ok(BaseResponse.OkMessageResponse("Created sucessfully"));
         }
 
@@ -36,6 +41,7 @@ namespace KidPrograming.Controllers
         public async Task<IActionResult> Update(string id, UpdateChapterModel model)
         {
             await _chapterService.Update(id, model);
+            await _cacheService.RemoveCacheResponseAsync("api/chapters");
             return Ok(BaseResponse.OkMessageResponse("Updated sucessfully"));
         }
 
@@ -43,6 +49,7 @@ namespace KidPrograming.Controllers
         public async Task<IActionResult> Delete(string id)
         {
             await _chapterService.Delete(id);
+            await _cacheService.RemoveCacheResponseAsync("api/chapters");
             return Ok(BaseResponse.OkMessageResponse("Deleted sucessfully"));
         }
     }
