@@ -11,6 +11,7 @@
         public string? PhoneNumber { get; set; }
 
         public string? Role { get; set; }
+        public string? AvatarUrl { get; set; }
 
         public DateTimeOffset CreatedTime { get; set; }
     }

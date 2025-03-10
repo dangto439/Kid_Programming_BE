@@ -1,4 +1,5 @@
-﻿using KidProgramming.ModelViews.ModelViews.AuthModel;
+﻿using Azure.Core;
+using KidProgramming.ModelViews.ModelViews.AuthModel;
 
 namespace KidPrograming.Contract.Services.Interfaces
 {

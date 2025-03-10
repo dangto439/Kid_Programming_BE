@@ -4,14 +4,7 @@ using KidPrograming.Contract.Repositories.PaggingItems;
 using KidPrograming.Contract.Services.Interfaces;
 using KidPrograming.Entity;
 using KidProgramming.ModelViews.ModelViews.ChapterProgressModels;
-using KidProgramming.ModelViews.ModelViews.LabModels;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KidPrograming.Services.Services
 {

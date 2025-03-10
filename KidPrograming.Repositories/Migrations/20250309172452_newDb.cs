@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace KidPrograming.Repositories.Migrations
 {
     /// <inheritdoc />
-    public partial class initial : Migration
+    public partial class newDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -21,6 +21,7 @@ namespace KidPrograming.Repositories.Migrations
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DateOfBirth = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
                     AvatarUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DeviceToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Role = table.Column<string>(type: "nvarchar(50)", nullable: false),
                     ParentId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     CreatedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
@@ -239,7 +240,6 @@ namespace KidPrograming.Repositories.Migrations
                     LimitedTime = table.Column<int>(type: "int", nullable: true),
                     CorrectAnswer = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LessonId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    LessonId1 = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     CreatedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     LastUpdatedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     DeletedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true)
@@ -253,11 +253,6 @@ namespace KidPrograming.Repositories.Migrations
                         principalTable: "Lessons",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Labs_Lessons_LessonId1",
-                        column: x => x.LessonId1,
-                        principalTable: "Lessons",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -335,11 +330,6 @@ namespace KidPrograming.Repositories.Migrations
                 name: "IX_Labs_LessonId",
                 table: "Labs",
                 column: "LessonId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Labs_LessonId1",
-                table: "Labs",
-                column: "LessonId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Lessons_ChapterId",

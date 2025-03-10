@@ -16,13 +16,15 @@ namespace KidPrograming.Services.Services
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly Authentication _authentication;
+        private readonly FcmService _fcmService;
 
-        public EnrollmentService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor httpContextAccessor, Authentication authentication)
+        public EnrollmentService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor httpContextAccessor, Authentication authentication, FcmService fcmService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
             _authentication = authentication;
+            _fcmService = fcmService;
         }
 
         public async Task<PaginatedList<ResponseEnrollmentModel>> CheckStatusCourseByUserId(int index, int pageSize)
@@ -56,8 +58,14 @@ namespace KidPrograming.Services.Services
                 CourseId = courseId,
                 Status = Core.Constants.Enums.StatusEnrollment.InProgress
             };
+            Course course = await _unitOfWork.GetRepository<Course>().GetByIdAsync(courseId);
             await _unitOfWork.GetRepository<Enrollment>().InsertAsync(enrollment);
             await _unitOfWork.GetRepository<Enrollment>().SaveAsync();
+            User user = await _unitOfWork.GetRepository<User>().GetByIdAsync(userId);
+            if (!string.IsNullOrEmpty(user.DeviceToken))
+            {
+                await _fcmService.SendNotificationAsync(user.DeviceToken, "Đăng ký khóa học thành công", $"Bạn đã đăng ký khóa học {course.Title} thành công");
+            }
         }
 
         public async Task<PaginatedList<StudentModel>> GetStudentByCourseId(string courseId, string searchByUserName, int index = 1, int pageSize = 10)

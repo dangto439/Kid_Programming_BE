@@ -207,9 +207,6 @@ namespace KidPrograming.Repositories.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("LessonId1")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<int?>("LimitedTime")
                         .HasColumnType("int");
 
@@ -230,8 +227,6 @@ namespace KidPrograming.Repositories.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("LessonId");
-
-                    b.HasIndex("LessonId1");
 
                     b.ToTable("Labs");
                 });
@@ -414,6 +409,9 @@ namespace KidPrograming.Repositories.Migrations
                     b.Property<DateTimeOffset?>("DeletedTime")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<string>("DeviceToken")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -511,14 +509,10 @@ namespace KidPrograming.Repositories.Migrations
             modelBuilder.Entity("KidPrograming.Entity.Lab", b =>
                 {
                     b.HasOne("KidPrograming.Entity.Lesson", "Lesson")
-                        .WithMany()
+                        .WithMany("Labs")
                         .HasForeignKey("LessonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("KidPrograming.Entity.Lesson", null)
-                        .WithMany("Labs")
-                        .HasForeignKey("LessonId1");
 
                     b.Navigation("Lesson");
                 });
