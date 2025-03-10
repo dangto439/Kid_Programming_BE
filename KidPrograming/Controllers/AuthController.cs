@@ -30,7 +30,7 @@ namespace KidPrograming.Controllers
         }
 
         [HttpPut]
-        [Route("/api/auth/user-get-infor")]
+        [Route("user-update-infor")]
         public async Task<IActionResult> UpdateUser([FromBody] UpdateUserModel request)
         {
             ResponseUserModel model = await _authenticationService.UpdateUserInfo(request);
