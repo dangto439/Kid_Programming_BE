@@ -23,9 +23,9 @@ namespace KidPrograming.Controllers
 
         [HttpGet]
         [CacheAtribute(1000)]
-        public async Task<IActionResult> Get(string courseId, string? searchByTitle, bool? sortByOrder, int index = 1, int pageSize = 10)
+        public async Task<IActionResult> Get(string courseId, string? searchById, string? searchByTitle, bool? sortByOrder, int index = 1, int pageSize = 10)
         {
-            PaginatedList<ResponseChapterModel> result = await _chapterService.GetPage(courseId, searchByTitle, sortByOrder, index, pageSize);
+            PaginatedList<ResponseChapterModel> result = await _chapterService.GetPage(courseId, searchById, searchByTitle, sortByOrder, index, pageSize);
             return Ok(BaseResponseModel<PaginatedList<ResponseNotificationModel>>.OkDataResponse(result, "Retrieve chapter list successfully"));
         }
 
