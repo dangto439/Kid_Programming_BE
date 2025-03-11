@@ -29,6 +29,15 @@ namespace KidPrograming.Controllers
             return Ok(BaseResponseModel<string>.OkDataResponse(model, "Retrieve user info successfully"));
         }
 
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<IActionResult> GetUserById(string id)
+        {
+            ResponseUserModel model = await _authenticationService.GetUserById(id);
+            return Ok(BaseResponseModel<string>.OkDataResponse(model, "Retrieve user info successfully"));
+        }
+
+
         [HttpPut]
         [Route("user-update-infor")]
         public async Task<IActionResult> UpdateUser([FromBody] UpdateUserModel request)

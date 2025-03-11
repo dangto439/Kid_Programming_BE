@@ -2,8 +2,10 @@
 using KidPrograming.Contract.Repositories.Interfaces;
 using KidPrograming.Contract.Repositories.PaggingItems;
 using KidPrograming.Contract.Services.Interfaces;
+using KidPrograming.Core;
 using KidPrograming.Entity;
 using KidProgramming.ModelViews.ModelViews.LessonModels;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace KidPrograming.Services.Services
@@ -20,14 +22,14 @@ namespace KidPrograming.Services.Services
         }
 
         public async Task<PaginatedList<ResponseLessonModel>> GetPageAsync(
-            bool? sortByTitle = null,
-            bool? sortByOrder = null,
-            string? searchByTitle = null,
-            string? searchByContent = null,
-            string? searchById = null,
-            string? chapterId = null,
-            int index = 1,
-            int pageSize = 10)
+            bool? sortByTitle,
+            bool? sortByOrder,
+            string? searchByTitle,
+            string? searchByContent,
+            string? searchById,
+            string chapterId,
+            int index,
+            int pageSize)
         {
             var query = _unitOfWork.GetRepository<Lesson>().Entities.Where(l => l.DeletedTime == null);
 
@@ -76,13 +78,24 @@ namespace KidPrograming.Services.Services
         public async Task CreateAsync(CreateLessonModel model)
         {
             model.Validate();
-            var lessonExit = await _unitOfWork.GetRepository<Lesson>().Entities.FirstOrDefaultAsync(x => x.Title == model.Title);
-            if (lessonExit != null)
+
+            bool chapterExist = await _unitOfWork.GetRepository<Chapter>().Entities.AnyAsync(x => x.Id == model.ChapterId);
+
+            if (!chapterExist)
             {
-                throw new InvalidOperationException("Lesson has already Titilư");
+                throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, "Chapter not found");
             }
-            var lesson = _mapper.Map<Lesson>(model);
-            lesson.CreatedTime = DateTime.Now;
+
+            bool exists = await _unitOfWork.GetRepository<Lesson>().Entities.AnyAsync(x => x.ChapterId == model.ChapterId && x.Order == model.Order && !x.DeletedTime.HasValue);
+
+            if (exists)
+            {
+                throw new ErrorException(StatusCodes.Status409Conflict, ResponseCodeConstants.EXISTED, $"Lesson {(model.Title)} has order duplicated");
+            }
+
+            Lesson lesson = _mapper.Map<Lesson>(model);
+            lesson.CreatedTime = CoreHelper.SystemTimeNow;
+
             await _unitOfWork.GetRepository<Lesson>().InsertAsync(lesson);
             await _unitOfWork.SaveAsync();
         }
@@ -90,24 +103,24 @@ namespace KidPrograming.Services.Services
         public async Task UpdateAsync(string id, UpdateLessonModel model)
         {
             model.Validate();
-            var lesson = await _unitOfWork.GetRepository<Lesson>().Entities.FirstOrDefaultAsync(x => x.Id == id);
-            if (lesson == null) throw new KeyNotFoundException("Lesson not found");
+
+            Lesson lesson = await _unitOfWork.GetRepository<Lesson>().Entities.FirstOrDefaultAsync(x => x.Id == id && !x.DeletedTime.HasValue) 
+                ?? throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, "Lesson not found");
 
             _mapper.Map(model, lesson);
-            lesson.LastUpdatedTime = DateTime.UtcNow;
+            lesson.LastUpdatedTime = CoreHelper.SystemTimeNow;
+
             await _unitOfWork.GetRepository<Lesson>().UpdateAsync(lesson);
             await _unitOfWork.SaveAsync();
         }
 
         public async Task DeleteAsync(string id)
         {
-            var lesson = await _unitOfWork.GetRepository<Lesson>().Entities.FirstOrDefaultAsync(x => x.Id == id);
-            if (lesson == null) throw new KeyNotFoundException("Lesson not found");
-            if (lesson.DeletedTime != null)
-            {
-                throw new InvalidOperationException("Lesson has already been deleted");
-            }
-            lesson.DeletedTime = DateTime.Now;
+            Lesson lesson = await _unitOfWork.GetRepository<Lesson>().Entities.FirstOrDefaultAsync(x => x.Id == id && !x.DeletedTime.HasValue) ?? 
+                throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, "Lesson not found");
+            
+            lesson.DeletedTime = CoreHelper.SystemTimeNow;
+
             await _unitOfWork.GetRepository<Lesson>().UpdateAsync(lesson);
             await _unitOfWork.SaveAsync();
         }

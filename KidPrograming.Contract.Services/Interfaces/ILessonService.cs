@@ -6,14 +6,14 @@ namespace KidPrograming.Contract.Services.Interfaces
     public interface ILessonService
     {
         Task<PaginatedList<ResponseLessonModel>> GetPageAsync(
-            bool? sortByTitle = null,
-            bool? sortByOrder = null,
-            string? searchByTitle = null,
-            string? searchByContent = null,
-            string? searchById = null,
-            string? chapterId = null,
-            int index = 1,
-            int pageSize = 10
+            bool? sortByTitle,
+            bool? sortByOrder,
+            string? searchByTitle,
+            string? searchByContent,
+            string? searchById,
+            string chapterId,
+            int index,
+            int pageSize
         );
 
         Task CreateAsync(CreateLessonModel model);
