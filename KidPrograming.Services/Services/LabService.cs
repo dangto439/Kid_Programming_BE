@@ -23,7 +23,7 @@ namespace KidPrograming.Services.Services
 
         public async Task<PaginatedList<ResponseLabModel>> GetPageAsync(
             string? searchById = null,
-            string? lessonId = null,
+            string? chapterId = null,
             string? searchByTitle = null,
             string? searchByQuestion = null,
             bool? sortByTitle = null,
@@ -39,9 +39,9 @@ namespace KidPrograming.Services.Services
                 query = query.Where(l => l.Id == searchById);
             }
 
-            if (!string.IsNullOrEmpty(lessonId))
+            if (!string.IsNullOrEmpty(chapterId))
             {
-                query = query.Where(l => l.LessonId == lessonId);
+                query = query.Where(l => l.ChapterId == chapterId);
             }
 
             if (!string.IsNullOrEmpty(searchByTitle))
@@ -79,7 +79,7 @@ namespace KidPrograming.Services.Services
         public async Task CreateAsync(CreateLabModel model)
         {
             model.Validate();
-            var lesson = await _unitOfWork.GetRepository<Lesson>().Entities.FirstOrDefaultAsync(x => x.Id == model.LessonId);
+            var lesson = await _unitOfWork.GetRepository<Lesson>().Entities.FirstOrDefaultAsync(x => x.Id == model.ChapterId);
             if (lesson == null)
             {
                 throw new KeyNotFoundException("Lesson not found or has been deleted");

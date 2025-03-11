@@ -1,4 +1,5 @@
 ﻿using KidPrograming.Core.Base;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace KidPrograming.Entity
 {
@@ -10,6 +11,9 @@ namespace KidPrograming.Entity
 
         public string CourseId { get; set; }
         public virtual Course Course { get; set; }
+
+        public string LabId { get; set; }
+        public virtual Lab Lab { get; set; }
 
         public virtual ICollection<Lesson> Lessons { get; set; }
         public virtual ICollection<ChapterProgress> ChapterProgresses { get; set; }

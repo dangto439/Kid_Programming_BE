@@ -10,7 +10,6 @@ namespace KidProgramming.ModelViews.ModelViews.CourseModels
         public string? Description { get; set; }
         public string Subject { get; set; }
         public decimal? Price { get; set; }
-        public CourseStatus Status { get; set; } 
         public string? TeacherId { get; set; }
 
         public void Validate()
@@ -57,11 +56,6 @@ namespace KidProgramming.ModelViews.ModelViews.CourseModels
             else if (!Guid.TryParse(TeacherId, out _))
             {
                 throw new ErrorException(StatusCodes.Status400BadRequest, ResponseCodeConstants.INVALID_INPUT, "Invalid TeacherId format. It must be a valid GUID.");
-            }
-
-            if (!Enum.IsDefined(typeof(CourseStatus), Status))
-            {
-                throw new ErrorException(StatusCodes.Status400BadRequest, ResponseCodeConstants.INVALID_INPUT, "Invalid course status. Allowed values: 0 (Active), 1 (Inactive).");
             }
         }
     }

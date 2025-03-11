@@ -12,9 +12,6 @@ namespace KidPrograming.Entity
 
         [Column(TypeName = "decimal(19,0)")]
         public decimal? Price { get; set; }
-
-        public string Status { get; set; }
-
         public string? TeacherId { get; set; }
         public virtual User? Teacher { get; set; }
         public virtual ICollection<Chapter>? Chapters { get; set; }

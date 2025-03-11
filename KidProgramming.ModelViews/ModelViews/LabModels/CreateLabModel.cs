@@ -16,7 +16,7 @@ namespace KidProgramming.ModelViews.ModelViews.LabModels
         public LabType Type { get; set; }
         public int? LimitedTime { get; set; }
         public string CorrectAnswer { get; set; } = string.Empty;
-        public string LessonId { get; set; }
+        public string ChapterId { get; set; }
 
         public List<string> Validate()
         {
@@ -34,8 +34,8 @@ namespace KidProgramming.ModelViews.ModelViews.LabModels
             if (Result <= 0)
                 errors.Add("Result must be greater than 0.");
 
-            if (string.IsNullOrWhiteSpace(LessonId))
-                errors.Add("LessonId is required.");
+            if (string.IsNullOrWhiteSpace(ChapterId))
+                errors.Add("ChapterId is required.");
 
             if (LimitedTime.HasValue && LimitedTime <= 0)
                 errors.Add("LimitedTime must be greater than 0 if specified.");

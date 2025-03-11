@@ -17,6 +17,6 @@ namespace KidProgramming.ModelViews.ModelViews.LabModels
         public LabType Type { get; set; }
         public int? LimitedTime { get; set; }
         public string CorrectAnswer { get; set; }
-        public string LessonId { get; set; }
+        public string ChapterId { get; set; }
     }
 }
