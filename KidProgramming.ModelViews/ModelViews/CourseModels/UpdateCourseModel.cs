@@ -9,6 +9,7 @@ namespace KidProgramming.ModelViews.ModelViews.CourseModels
         public string Title { get; set; }
         public string? Description { get; set; }
         public string Subject { get; set; }
+        public string thumbnailUrl { get; set; }
         public decimal? Price { get; set; }
         public string? TeacherId { get; set; }
 
@@ -17,6 +18,10 @@ namespace KidProgramming.ModelViews.ModelViews.CourseModels
             if (string.IsNullOrWhiteSpace(Title))
             {
                 throw new ErrorException(StatusCodes.Status400BadRequest, ResponseCodeConstants.INVALID_INPUT, "Please enter a title for the course");
+            }
+            if (string.IsNullOrWhiteSpace(thumbnailUrl))
+            {
+                throw new ErrorException(StatusCodes.Status400BadRequest, ResponseCodeConstants.INVALID_INPUT, "Please enter a link thumbnail for the course");
             }
             else if (Title.Length > 255)
             {
