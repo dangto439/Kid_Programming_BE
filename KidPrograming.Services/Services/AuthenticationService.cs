@@ -40,7 +40,7 @@ namespace KidPrograming.Services.Services
         {
             string userId = _authentication.GetUserIdFromHttpContextAccessor(_httpContextAccessor);
             User user = await _unitOfWork.GetRepository<User>().Entities.FirstOrDefaultAsync(user => user.Id == userId)
-                ?? throw new ErrorException(StatusCodes.Status400BadRequest, ResponseCodeConstants.BADREQUEST, "Không tìm thấy người dùng nào.");
+                ?? throw new ErrorException(StatusCodes.Status400BadRequest, ResponseCodeConstants.BADREQUEST, "User not found");
 
 
             return _mapper.Map<ResponseUserModel>(user);
@@ -66,12 +66,30 @@ namespace KidPrograming.Services.Services
                 };
                 await _unitOfWork.GetRepository<User>().InsertAsync(user);
             }
-            if (!string.IsNullOrWhiteSpace(request.FcmToken))
+            else
             {
-                user.DeviceToken = request.FcmToken;
+                bool isUpdated = false;
+
+                if (!string.IsNullOrWhiteSpace(request.FcmToken) && user.DeviceToken != request.FcmToken)
+                {
+                    user.DeviceToken = request.FcmToken;
+                    isUpdated = true;
+                }
+
+                if (isUpdated)
+                {
+                    await _unitOfWork.GetRepository<User>().UpdateAsync(user);
+                }
             }
-            await _unitOfWork.GetRepository<User>().UpdateAsync(user);
-            await _unitOfWork.GetRepository<User>().SaveAsync();
+
+            await _unitOfWork.SaveAsync();
+
+            //if (!string.IsNullOrWhiteSpace(request.FcmToken))
+            //{
+            //    user.DeviceToken = request.FcmToken;
+            //}
+            //await _unitOfWork.GetRepository<User>().UpdateAsync(user);
+            //await _unitOfWork.GetRepository<User>().SaveAsync();
 
             return await _authentication.CreateToken(user, _jwtSettings);
         }
