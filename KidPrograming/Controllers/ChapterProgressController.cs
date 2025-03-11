@@ -44,7 +44,7 @@ namespace KidPrograming.Controllers
         public async Task<IActionResult> CreateAsync([FromBody] CreateChapterProgressModel model)
         {
             await _chapterProgressService.CreateAsync(model);
-            await _cacheService.RemoveCacheResponseAsync("api/chapter-progress");
+            await _cacheService.RemoveCacheResponseAsync("/api/chapter-progress");
             return Ok(BaseResponse.OkMessageResponse("Created successfully"));
         }
 
@@ -52,7 +52,7 @@ namespace KidPrograming.Controllers
         public async Task<IActionResult> UpdateAsync(string id, [FromBody] UpdateChapterProgressModel model)
         {
             await _chapterProgressService.UpdateAsync(id, model);
-            await _cacheService.RemoveCacheResponseAsync("api/chapter-progress");
+            await _cacheService.RemoveCacheResponseAsync("/api/chapter-progress");
             return Ok(BaseResponse.OkMessageResponse("Updated successfully"));
         }
 
@@ -60,7 +60,7 @@ namespace KidPrograming.Controllers
         public async Task<IActionResult> DeleteAsync(string id)
         {
             await _chapterProgressService.DeleteAsync(id);
-            await _cacheService.RemoveCacheResponseAsync("api/chapter-progress");
+            await _cacheService.RemoveCacheResponseAsync("/api/chapter-progress");
             return Ok(BaseResponse.OkMessageResponse("Deleted successfully"));
         }
     }
