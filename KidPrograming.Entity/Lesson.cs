@@ -13,7 +13,5 @@ namespace KidPrograming.Entity
 
         public string ChapterId { get; set; }
         public virtual Chapter Chapter { get; set; }
-
-        public ICollection<Lab>? Labs { get; set; }
     }
 }

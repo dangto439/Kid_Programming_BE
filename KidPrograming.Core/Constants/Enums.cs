@@ -36,12 +36,6 @@ namespace KidPrograming.Core.Constants
             Teacher
         }
 
-        public enum CourseStatus
-        {
-            Active,
-            Inactive
-        }
-
         public enum NotificationType
         {
             CourseUpdate,

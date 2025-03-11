@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KidPrograming.Repositories.Migrations
 {
     [DbContext(typeof(KidProgramingDbContext))]
-    [Migration("20250310191035_configEnumToString")]
-    partial class configEnumToString
+    [Migration("20250311143409_initDB")]
+    partial class initDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -41,6 +41,10 @@ namespace KidPrograming.Repositories.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LabId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -122,10 +126,6 @@ namespace KidPrograming.Repositories.Migrations
                     b.Property<decimal?>("Price")
                         .HasColumnType("decimal(19,0)");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Subject")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -193,6 +193,10 @@ namespace KidPrograming.Repositories.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("ChapterId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("CorrectAnswer")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -208,10 +212,6 @@ namespace KidPrograming.Repositories.Migrations
 
                     b.Property<DateTimeOffset>("LastUpdatedTime")
                         .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("LessonId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int?>("LimitedTime")
                         .HasColumnType("int");
@@ -233,7 +233,8 @@ namespace KidPrograming.Repositories.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LessonId");
+                    b.HasIndex("ChapterId")
+                        .IsUnique();
 
                     b.ToTable("Labs");
                 });
@@ -512,13 +513,13 @@ namespace KidPrograming.Repositories.Migrations
 
             modelBuilder.Entity("KidPrograming.Entity.Lab", b =>
                 {
-                    b.HasOne("KidPrograming.Entity.Lesson", "Lesson")
-                        .WithMany("Labs")
-                        .HasForeignKey("LessonId")
+                    b.HasOne("KidPrograming.Entity.Chapter", "Chapter")
+                        .WithOne("Lab")
+                        .HasForeignKey("KidPrograming.Entity.Lab", "ChapterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Lesson");
+                    b.Navigation("Chapter");
                 });
 
             modelBuilder.Entity("KidPrograming.Entity.Lesson", b =>
@@ -584,6 +585,9 @@ namespace KidPrograming.Repositories.Migrations
                 {
                     b.Navigation("ChapterProgresses");
 
+                    b.Navigation("Lab")
+                        .IsRequired();
+
                     b.Navigation("Lessons");
                 });
 
@@ -602,11 +606,6 @@ namespace KidPrograming.Repositories.Migrations
             modelBuilder.Entity("KidPrograming.Entity.Enrollment", b =>
                 {
                     b.Navigation("ChapterProgresses");
-                });
-
-            modelBuilder.Entity("KidPrograming.Entity.Lesson", b =>
-                {
-                    b.Navigation("Labs");
                 });
 
             modelBuilder.Entity("KidPrograming.Entity.User", b =>

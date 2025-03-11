@@ -3,12 +3,10 @@ using KidPrograming.Contract.Repositories.Interfaces;
 using KidPrograming.Contract.Repositories.PaggingItems;
 using KidPrograming.Contract.Services.Interfaces;
 using KidPrograming.Core;
-using KidPrograming.Core.Constants;
 using KidPrograming.Entity;
 using KidProgramming.ModelViews.ModelViews.CourseModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-
 
 namespace KidPrograming.Services.Services
 {
@@ -22,6 +20,7 @@ namespace KidPrograming.Services.Services
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
+
         public async Task Create(CreateCourseModel model)
         {
             model.Validate();
@@ -42,7 +41,6 @@ namespace KidPrograming.Services.Services
 
             Course newCourse = _mapper.Map<Course>(model);
 
-            newCourse.Status = Enums.CourseStatus.Active.ToString();
             newCourse.CreatedTime = CoreHelper.SystemTimeNow;
             newCourse.LastUpdatedTime = CoreHelper.SystemTimeNow;
 
@@ -62,7 +60,7 @@ namespace KidPrograming.Services.Services
             await _unitOfWork.SaveAsync();
         }
 
-        public async Task<PaginatedList<ResponseCourseModel>> GetPage(bool? sortByTitle, bool? sortByPrice, Enums.CourseStatus? filterByStatus, string? searchById, string? searchByTitle, string? searchBySubject, string? teacherName, decimal? minPrice, decimal? maxPrice, int index, int pageSize)
+        public async Task<PaginatedList<ResponseCourseModel>> GetPage(bool? sortByTitle, bool? sortByPrice, string? searchById, string? searchByTitle, string? searchBySubject, string? teacherName, decimal? minPrice, decimal? maxPrice, int index, int pageSize)
         {
             IQueryable<ResponseCourseModel> query = from course in _unitOfWork.GetRepository<Course>().Entities
                                                     join user in _unitOfWork.GetRepository<User>().Entities
@@ -77,7 +75,6 @@ namespace KidPrograming.Services.Services
                                                         Subject = course.Subject,
                                                         Price = course.Price ?? 0,
                                                         ThumbnailUrl = course.ThumbnailUrl ?? null,
-                                                        Status = course.Status.ToString(),
                                                         NumOfChapter = course.Chapters != null ? course.Chapters.Count() : 0,
                                                         TeacherName = user.FullName ?? "N/A",
                                                         CreatedTime = course.CreatedTime
@@ -85,7 +82,7 @@ namespace KidPrograming.Services.Services
             if (!string.IsNullOrWhiteSpace(searchById))
             {
                 searchById = searchById.Trim();
-                query = query.Where(x => EF.Functions.Like(x.Id, $"%{searchById}%"));
+                query = query.Where(x => x.Id.Equals(searchById));
 
                 //query = query.Where(x => x.Title != null && x.Title.ToLower().Contains(searchByTitle));
             }
@@ -104,11 +101,6 @@ namespace KidPrograming.Services.Services
                 query = query.Where(x => EF.Functions.Like(x.Subject, $"%{searchBySubject}%"));
 
                 //query = query.Where(x => x.Subject != null && x.Subject.ToLower().Contains(searchBySubject));
-            }
-
-            if (filterByStatus.HasValue)
-            {
-                query = query.Where(x => x.Status == filterByStatus.ToString());
             }
 
             if (minPrice.HasValue)
@@ -143,7 +135,6 @@ namespace KidPrograming.Services.Services
             {
                 query = sortByPrice.Value ? query.OrderBy(c => c.Price) : query.OrderByDescending(c => c.Price);
             }
-
 
             PaginatedList<ResponseCourseModel> paginatedCourses = await _unitOfWork.GetRepository<ResponseCourseModel>().GetPagging(query, index, pageSize);
             return paginatedCourses;
