@@ -59,7 +59,7 @@ namespace KidPrograming.Services
             await _unitOfWork.SaveAsync();
         }
 
-        public async Task<PaginatedList<ResponseChapterModel>> GetPage(string courseId, string? searchByTitle, bool? sortByOrder, int index, int pageSize)
+        public async Task<PaginatedList<ResponseChapterModel>> GetPage(string courseId, string? searchById, string? searchByTitle, bool? sortByOrder, int index, int pageSize)
         {
             IQueryable<ResponseChapterModel> query = _unitOfWork.GetRepository<Chapter>().Entities
                 .Where(chapter => chapter.CourseId == courseId && !chapter.DeletedTime.HasValue)
@@ -72,6 +72,10 @@ namespace KidPrograming.Services
                     CreatedTime = chapter.CreatedTime
                 });
 
+            if (!string.IsNullOrWhiteSpace(searchById))
+            {
+                query = query.Where(x => x.Id.Equals(searchById));
+            }
 
             if (!string.IsNullOrWhiteSpace(searchByTitle))
             {
