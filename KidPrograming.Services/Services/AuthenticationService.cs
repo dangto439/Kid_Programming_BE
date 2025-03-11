@@ -38,10 +38,11 @@ namespace KidPrograming.Services.Services
         }
 
         public async Task<List<ResponseUserModel>> GetAllUser(
-    string? searchById = null,
-    string? searchKeyword = null,
-    int pageIndex = 1,
-    int pageSize = 10)
+            string? searchById,
+            Enums.Role? searchByRole,
+            string? searchByName,
+            int pageIndex = 1,
+            int pageSize = 10)
         {
             var query = _unitOfWork.GetRepository<User>().Entities
                 .Where(x => !x.DeletedTime.HasValue);
@@ -51,9 +52,15 @@ namespace KidPrograming.Services.Services
                 query = query.Where(x => x.Id.Equals(searchById));
             }
 
-            if (!string.IsNullOrEmpty(searchKeyword))
+            if (!string.IsNullOrEmpty(searchByName))
             {
-                query = query.Where(x => x.FullName!.ToLower().Contains(searchKeyword.ToLower()));
+                query = query.Where(x => x.FullName!.ToLower().Contains(searchByName.ToLower()));
+            }
+
+            if (searchByRole.HasValue)
+            {
+                string roleString = Enum.GetName(typeof(Enums.Role), searchByRole.Value);
+                query = query.Where(x => x.Role == roleString);
             }
 
             query = query.OrderByDescending(x => x.CreatedTime);
