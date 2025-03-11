@@ -9,6 +9,7 @@ namespace KidPrograming.Contract.Services.Interfaces
         Task<ResponseUserModel> GetUserInfo();
         Task<ResponseUserModel> UpdateUserInfo(UpdateUserModel request);
         Task<ResponseUserModel> GetUserById(string id);
+        Task<List<ResponseUserModel>> GetAllUser(string? searchById = null, string? searchKeyword = null,int pageIndex = 1, int pageSize = 10);
 
     }
 }

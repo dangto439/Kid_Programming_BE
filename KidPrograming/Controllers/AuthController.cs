@@ -28,7 +28,13 @@ namespace KidPrograming.Controllers
             ResponseUserModel model = await _authenticationService.GetUserInfo();
             return Ok(BaseResponseModel<string>.OkDataResponse(model, "Retrieve user info successfully"));
         }
-
+        [HttpGet]
+        [Route("get-all")]
+        public async Task<IActionResult> GetAllUser(string? searchById = null, string? searchKeyword = null, int pageIndex = 1, int pageSize = 10)
+        {
+            List<ResponseUserModel> model = await _authenticationService.GetAllUser(searchById ,searchKeyword, pageIndex = 1,pageSize = 10);
+            return Ok(BaseResponseModel<string>.OkDataResponse(model, "Retrieve user info successfully"));
+        }
         [HttpGet]
         [Route("{id}")]
         public async Task<IActionResult> GetUserById(string id)
@@ -45,5 +51,6 @@ namespace KidPrograming.Controllers
             ResponseUserModel model = await _authenticationService.UpdateUserInfo(request);
             return Ok(BaseResponseModel<string>.OkDataResponse(model, "Updated successfully"));
         }
+
     }
 }
