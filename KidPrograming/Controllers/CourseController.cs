@@ -1,10 +1,9 @@
-﻿using KidPrograming.Contract.Repositories.PaggingItems;
+﻿using KidPrograming.Attributes;
+using KidPrograming.Contract.Repositories.PaggingItems;
 using KidPrograming.Contract.Services.Interfaces;
 using KidPrograming.Core.Base;
-using KidPrograming.Attributes;
 using KidProgramming.ModelViews.ModelViews.CourseModels;
 using Microsoft.AspNetCore.Mvc;
-using static KidPrograming.Core.Constants.Enums;
 
 namespace KidPrograming.Controllers
 {
@@ -32,24 +31,24 @@ namespace KidPrograming.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CreateCourseModel model)
         {
-            await _cacheService.RemoveCacheResponseAsync("api/courses");
             await _courseService.Create(model);
+            await _cacheService.RemoveCacheResponseAsync("/api/courses");           
             return Ok(BaseResponse.OkMessageResponse("Created successfully"));
         }
 
         [HttpPut]
         public async Task<IActionResult> Update(string id, UpdateCourseModel model)
         {
-            await _cacheService.RemoveCacheResponseAsync("api/courses");
             await _courseService.Update(id, model);
+            await _cacheService.RemoveCacheResponseAsync("/api/courses");           
             return Ok(BaseResponse.OkMessageResponse("Updated successfully"));
         }
 
         [HttpDelete]
         public async Task<IActionResult> Delete(string id)
         {
-            await _cacheService.RemoveCacheResponseAsync("api/courses");
             await _courseService.Delete(id);
+            await _cacheService.RemoveCacheResponseAsync("/api/courses");           
             return Ok(BaseResponse.OkMessageResponse("Deleted successfully"));
         }
     }

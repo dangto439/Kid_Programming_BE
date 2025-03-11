@@ -41,7 +41,7 @@ namespace KidPrograming.Controllers
         public async Task<IActionResult> GetAnswer(string labId)
         {
             string answer =  await _labService.GetAnswerByLabIdAsync(labId);
-            await _cacheService.RemoveCacheResponseAsync("api/labs");
+            await _cacheService.RemoveCacheResponseAsync("/api/labs");
             return Ok(BaseResponseModel<string>.OkDataResponse(answer, "Answer is retrieved sucessfully"));
         }
 
@@ -49,7 +49,7 @@ namespace KidPrograming.Controllers
         public async Task<IActionResult> Create([FromBody] CreateLabModel model)
         {
             await _labService.CreateAsync(model);
-            await _cacheService.RemoveCacheResponseAsync("api/labs");
+            await _cacheService.RemoveCacheResponseAsync("/api/labs");
             return Ok(BaseResponse.OkMessageResponse("Created successfully"));
         }
 
@@ -57,7 +57,7 @@ namespace KidPrograming.Controllers
         public async Task<IActionResult> Update(string id, [FromBody] UpdateLabModel model)
         {
             await _labService.UpdateAsync(id, model);
-            await _cacheService.RemoveCacheResponseAsync("api/labs");
+            await _cacheService.RemoveCacheResponseAsync("/api/labs");
             return Ok(BaseResponse.OkMessageResponse("Updated successfully"));
         }
 
@@ -65,7 +65,7 @@ namespace KidPrograming.Controllers
         public async Task<IActionResult> Delete(string id)
         {
             await _labService.DeleteAsync(id);
-            await _cacheService.RemoveCacheResponseAsync("api/labs");
+            await _cacheService.RemoveCacheResponseAsync("/api/labs");
             return Ok(BaseResponse.OkMessageResponse("Deleted successfully"));
         }
     }
