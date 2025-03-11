@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace KidProgramming.ModelViews.ModelViews.PaymentModels
+﻿namespace KidProgramming.ModelViews.ModelViews.PaymentModels
 {
     public class PaymentResponseModel
     {
@@ -13,6 +7,8 @@ namespace KidProgramming.ModelViews.ModelViews.PaymentModels
         public string OrderId { get; set; }
         public string PaymentMethod { get; set; }
         public string PaymentId { get; set; }
+        public string PaymentDate { get; set; }
+        public string Amount { get; set; }
         public bool Success { get; set; }
         public string Token { get; set; }
         public string VnPayResponseCode { get; set; }

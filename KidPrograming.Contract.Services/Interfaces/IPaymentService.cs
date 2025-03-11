@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace KidPrograming.Contract.Services.Interfaces
+﻿namespace KidPrograming.Contract.Services.Interfaces
 {
     public interface IPaymentService
     {
-
+        Task<string> CreateAsync(decimal amount, DateTimeOffset paymentDate);
     }
 }

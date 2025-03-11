@@ -1,14 +1,10 @@
 ﻿using KidProgramming.ModelViews.ModelViews.PaymentModels;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Net.Sockets;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+using System.Net.Sockets;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace KidPrograming.Services.Services
 {
@@ -32,6 +28,8 @@ namespace KidPrograming.Services.Services
             var orderId = Convert.ToInt64(vnPay.GetResponseData("vnp_TxnRef"));
             var vnPayTranId = Convert.ToInt64(vnPay.GetResponseData("vnp_TransactionNo"));
             var vnpResponseCode = vnPay.GetResponseData("vnp_ResponseCode");
+            var amount = vnPay.GetResponseData("vnp_Amount");
+            var paymentDate = vnPay.GetResponseData("vnp_PayDate");
             var vnpSecureHash =
                 collection.FirstOrDefault(k => k.Key == "vnp_SecureHash").Value; //hash của dữ liệu trả về
             var orderInfo = vnPay.GetResponseData("vnp_OrderInfo");
@@ -49,14 +47,17 @@ namespace KidPrograming.Services.Services
             {
                 Success = vnpResponseCode.Equals("00"),
                 PaymentMethod = "VnPay",
+                PaymentDate = paymentDate.ToString(),
                 OrderDescription = orderInfo,
                 OrderId = orderId.ToString(),
                 PaymentId = vnPayTranId.ToString(),
                 TransactionId = vnPayTranId.ToString(),
+                Amount = amount.ToString(),
                 Token = vnpSecureHash,
                 VnPayResponseCode = vnpResponseCode
             };
         }
+
         public string GetIpAddress(HttpContext context)
         {
             var ipAddress = string.Empty;
@@ -84,6 +85,7 @@ namespace KidPrograming.Services.Services
 
             return "127.0.0.1";
         }
+
         public void AddRequestData(string key, string value)
         {
             if (!string.IsNullOrEmpty(value))

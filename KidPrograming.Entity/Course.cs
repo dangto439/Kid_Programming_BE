@@ -1,6 +1,5 @@
 ﻿using KidPrograming.Core.Base;
 using System.ComponentModel.DataAnnotations.Schema;
-using static KidPrograming.Core.Constants.Enums;
 
 namespace KidPrograming.Entity
 {
@@ -14,7 +13,7 @@ namespace KidPrograming.Entity
         [Column(TypeName = "decimal(19,0)")]
         public decimal? Price { get; set; }
 
-        public CourseStatus Status { get; set; }
+        public string Status { get; set; }
 
         public string? TeacherId { get; set; }
         public virtual User? Teacher { get; set; }

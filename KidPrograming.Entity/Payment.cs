@@ -1,7 +1,6 @@
 using KidPrograming.Core;
 using KidPrograming.Core.Base;
 using System.ComponentModel.DataAnnotations.Schema;
-using static KidPrograming.Core.Constants.Enums;
 
 namespace KidPrograming.Entity
 {
@@ -12,6 +11,6 @@ namespace KidPrograming.Entity
 
         public string PaymentMethod { get; set; } = "VNPAY";
         public DateTimeOffset PaymentDate { get; set; } = CoreHelper.SystemTimeNow;
-        public StatusPayment Status { get; set; }
+        public string Status { get; set; }
     }
 }

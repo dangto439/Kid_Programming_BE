@@ -1,5 +1,4 @@
 ﻿using KidPrograming.Core.Base;
-using static KidPrograming.Core.Constants.Enums;
 
 namespace KidProgramming.ModelViews.ModelViews.CourseModels
 {
@@ -11,7 +10,9 @@ namespace KidProgramming.ModelViews.ModelViews.CourseModels
         public string? Subject { get; set; }
         public string? ThumbnailUrl { get; set; }
         public decimal? Price { get; set; }
-        public CourseStatus? Status { get; set; }
+        public string? Status { get; set; }
+        public int? NumOfChapter { get; set; }
+
         // public string TeacherId { get; set; }
         public string? TeacherName { get; set; }
     }

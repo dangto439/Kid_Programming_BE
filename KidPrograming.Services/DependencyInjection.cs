@@ -30,6 +30,7 @@ namespace KidPrograming.Services
             services.AddScoped<ILabService, LabService>();
             services.AddScoped<IChapterProgressService, ChapterProgressSevice>();
             services.AddScoped<ISubmissionService, SubmissionService>();
+            services.AddScoped<IPaymentService, PaymentService>();
             services.AddScoped<IVnPayService, VnPayService>();
             services.AddScoped<FcmService>();
             
