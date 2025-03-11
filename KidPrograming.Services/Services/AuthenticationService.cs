@@ -37,6 +37,37 @@ namespace KidPrograming.Services.Services
 
         }
 
+        public async Task<List<ResponseUserModel>> GetAllUser(
+    string? searchById = null,
+    string? searchKeyword = null,
+    int pageIndex = 1,
+    int pageSize = 10)
+        {
+            var query = _unitOfWork.GetRepository<User>().Entities
+                .Where(x => !x.DeletedTime.HasValue);
+
+            if (!string.IsNullOrEmpty(searchById))
+            {
+                query = query.Where(x => x.Id.Equals(searchById));
+            }
+
+            if (!string.IsNullOrEmpty(searchKeyword))
+            {
+                query = query.Where(x => x.FullName!.ToLower().Contains(searchKeyword.ToLower()));
+            }
+
+            query = query.OrderByDescending(x => x.CreatedTime);
+            var users = await query
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+
+            var response = _mapper.Map<List<ResponseUserModel>>(users);
+
+            return response;
+        }
+
         public async Task<ResponseUserModel> GetUserById(string id)
         {
             User user = await _unitOfWork.GetRepository<User>().Entities.FirstOrDefaultAsync(x => x.Id == id && !x.DeletedTime.HasValue) ??
