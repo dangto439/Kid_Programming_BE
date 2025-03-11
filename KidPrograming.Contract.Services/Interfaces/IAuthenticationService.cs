@@ -1,4 +1,5 @@
 ﻿using Azure.Core;
+using KidPrograming.Core.Constants;
 using KidProgramming.ModelViews.ModelViews.AuthModel;
 
 namespace KidPrograming.Contract.Services.Interfaces
@@ -9,7 +10,7 @@ namespace KidPrograming.Contract.Services.Interfaces
         Task<ResponseUserModel> GetUserInfo();
         Task<ResponseUserModel> UpdateUserInfo(UpdateUserModel request);
         Task<ResponseUserModel> GetUserById(string id);
-        Task<List<ResponseUserModel>> GetAllUser(string? searchById = null, string? searchKeyword = null,int pageIndex = 1, int pageSize = 10);
+        Task<List<ResponseUserModel>> GetAllUser(string? searchById, Enums.Role? searchByRole, string? searchByName,int pageIndex = 1, int pageSize = 10);
 
     }
 }

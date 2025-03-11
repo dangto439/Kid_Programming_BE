@@ -1,5 +1,6 @@
 ﻿using KidPrograming.Contract.Services.Interfaces;
 using KidPrograming.Core.Base;
+using KidPrograming.Core.Constants;
 using KidProgramming.ModelViews.ModelViews.AuthModel;
 using Microsoft.AspNetCore.Mvc;
 namespace KidPrograming.Controllers
@@ -30,9 +31,9 @@ namespace KidPrograming.Controllers
         }
         [HttpGet]
         [Route("get-all")]
-        public async Task<IActionResult> GetAllUser(string? searchById = null, string? searchKeyword = null, int pageIndex = 1, int pageSize = 10)
+        public async Task<IActionResult> GetAllUser(string? searchById, Enums.Role? searchByRole, string? searchKeyword, int pageIndex = 1, int pageSize = 10)
         {
-            List<ResponseUserModel> model = await _authenticationService.GetAllUser(searchById ,searchKeyword, pageIndex = 1,pageSize = 10);
+            List<ResponseUserModel> model = await _authenticationService.GetAllUser(searchById, searchByRole, searchKeyword, pageIndex = 1, pageSize = 10);
             return Ok(BaseResponseModel<string>.OkDataResponse(model, "Retrieve user info successfully"));
         }
         [HttpGet]
