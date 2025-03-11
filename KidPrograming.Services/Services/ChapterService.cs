@@ -36,7 +36,7 @@ namespace KidPrograming.Services
 
             if (exists)
             {
-                throw new ErrorException(StatusCodes.Status409Conflict, ResponseCodeConstants.EXISTED, $"Chapter {nameof(model.Title)} has order duplicated");
+                throw new ErrorException(StatusCodes.Status409Conflict, ResponseCodeConstants.EXISTED, $"Chapter {(model.Title)} has order duplicated");
             }
 
             Chapter newChapter = _mapper.Map<Chapter>(model);

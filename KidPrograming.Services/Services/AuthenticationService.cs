@@ -36,6 +36,15 @@ namespace KidPrograming.Services.Services
             _mapper = mapper;
 
         }
+
+        public async Task<ResponseUserModel> GetUserById(string id)
+        {
+            User user = await _unitOfWork.GetRepository<User>().Entities.FirstOrDefaultAsync(x => x.Id == id && !x.DeletedTime.HasValue) ??
+                throw new ErrorException(StatusCodes.Status400BadRequest, ResponseCodeConstants.BADREQUEST, "User not found");
+
+            return _mapper.Map<ResponseUserModel>(user);
+        }
+
         public async Task<ResponseUserModel> GetUserInfo()
         {
             string userId = _authentication.GetUserIdFromHttpContextAccessor(_httpContextAccessor);

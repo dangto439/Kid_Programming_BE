@@ -8,6 +8,7 @@ namespace KidPrograming.Contract.Services.Interfaces
         public Task<AuthModel> Login(GoogleLoginRequest request);
         Task<ResponseUserModel> GetUserInfo();
         Task<ResponseUserModel> UpdateUserInfo(UpdateUserModel request);
+        Task<ResponseUserModel> GetUserById(string id);
 
     }
 }

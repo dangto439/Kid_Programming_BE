@@ -28,7 +28,7 @@ namespace KidPrograming.Controllers
             string? searchByTitle,
             string? searchByContent,
             string? searchById,
-            string? chapterId,
+            string chapterId,
             int index = 1,
             int pageSize = 10)
         {
