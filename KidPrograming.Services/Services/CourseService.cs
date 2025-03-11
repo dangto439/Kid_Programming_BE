@@ -3,6 +3,7 @@ using KidPrograming.Contract.Repositories.Interfaces;
 using KidPrograming.Contract.Repositories.PaggingItems;
 using KidPrograming.Contract.Services.Interfaces;
 using KidPrograming.Core;
+using KidPrograming.Core.Constants;
 using KidPrograming.Entity;
 using KidProgramming.ModelViews.ModelViews.CourseModels;
 using Microsoft.AspNetCore.Http;
@@ -25,7 +26,7 @@ namespace KidPrograming.Services.Services
         {
             model.Validate();
 
-            bool teacherExists = await _unitOfWork.GetRepository<User>().Entities.AnyAsync(x => x.Id == model.TeacherId);
+            bool teacherExists = await _unitOfWork.GetRepository<User>().Entities.AnyAsync(x => x.Id == model.TeacherId && x.Role == Enums.Role.Teacher.ToString());
 
             if (!teacherExists)
             {

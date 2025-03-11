@@ -23,7 +23,7 @@ namespace KidPrograming.Controllers
 
         [HttpGet]
         [CacheAtribute(1000)]
-        public async Task<IActionResult> Get(bool? sortByTitle, bool? sortByPrice, string? searchById, string? searchByTitle, string? searchByPrice, string? teacherName, decimal? minPrice, decimal? maxPrice, int index = 1, int pageSize = 5)
+        public async Task<IActionResult> Get(bool? sortByTitle, bool? sortByPrice, string? searchById, string? searchByTitle, string? searchByPrice, string? teacherName, decimal? minPrice, decimal? maxPrice, int index = 1, int pageSize = 10)
         {
             PaginatedList<ResponseCourseModel> result = await _courseService.GetPage(sortByTitle, sortByPrice, searchById, searchByTitle, searchByPrice, teacherName, minPrice, maxPrice, index, pageSize);
             return Ok(BaseResponseModel<PaginatedList<ResponseCourseModel>>.OkDataResponse(result, "Retrieve course list successfully"));
