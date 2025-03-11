@@ -4,6 +4,7 @@ using KidPrograming.Repositories.Base;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KidPrograming.Repositories.Migrations
 {
     [DbContext(typeof(KidProgramingDbContext))]
-    partial class KidProgramingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250311151248_updateChapter")]
+    partial class updateChapter
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
