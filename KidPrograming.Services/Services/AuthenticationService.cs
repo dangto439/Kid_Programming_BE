@@ -65,6 +65,7 @@ namespace KidPrograming.Services.Services
                     AvatarUrl = picture
                 };
                 await _unitOfWork.GetRepository<User>().InsertAsync(user);
+                await _unitOfWork.GetRepository<User>().SaveAsync();
             }
             else
             {

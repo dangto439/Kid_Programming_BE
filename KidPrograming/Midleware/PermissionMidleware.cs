@@ -32,16 +32,21 @@ namespace KidPrograming.Midleware
             }
 
             var publicEndpoints = new HashSet<string>
-                            {
-                                "/api/auth/login-google"
-                            };
+            {
+                "POST:/api/auth/login-google",
+                "GET:/api/courses"
+            };
 
+            var method = context.Request.Method.ToUpper();
             var path = context.Request.Path.Value?.ToLower();
-            if (publicEndpoints.Any(p => path.StartsWith(p)))
+            var key = $"{method}:{path}";
+
+            if (publicEndpoints.Any(p => key.StartsWith(p)))
             {
                 await _next(context);
                 return;
             }
+
             var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
             if (string.IsNullOrEmpty(token))
             {
