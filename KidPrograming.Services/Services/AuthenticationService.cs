@@ -61,7 +61,7 @@ namespace KidPrograming.Services.Services
                 {
                     Email = email,
                     FullName = name,
-                    Role = Enums.Role.Customer,
+                    Role = Enums.Role.Customer.ToString(),
                     AvatarUrl = picture
                 };
                 await _unitOfWork.GetRepository<User>().InsertAsync(user);
@@ -118,7 +118,7 @@ namespace KidPrograming.Services.Services
                 if (!string.IsNullOrEmpty(request.ParentId))
                 {
                     bool parentExists = await _unitOfWork.GetRepository<User>().Entities
-                        .AnyAsync(u => u.Id == request.ParentId && u.Role == Enums.Role.Parent && !u.DeletedTime.HasValue);
+                        .AnyAsync(u => u.Id == request.ParentId && u.Role == Enums.Role.Parent.ToString() && !u.DeletedTime.HasValue);
                     if (!parentExists)
                     {
                         throw new ErrorException(StatusCodes.Status400BadRequest, ResponseCodeConstants.BADREQUEST, "Parent ID does not exist or was deleted.");

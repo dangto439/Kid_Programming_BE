@@ -60,7 +60,7 @@ namespace KidPrograming.Services.Services
                         Title = item.Title,
                         Message = item.Message,
                         ReceiverId = receiverId,
-                        Type = item.Type,
+                        Type = item.Type.ToString(),
                         IsRead = false,
                         CreatedTime = CoreHelper.SystemTimeNow
                     });
@@ -94,7 +94,7 @@ namespace KidPrograming.Services.Services
                                                               Id = notification.Id,
                                                               Title = notification.Title,
                                                               Message = notification.Message,
-                                                              Type = notification.Type,
+                                                              Type = notification.Type.ToString(),
                                                               ReceiverId = notification.ReceiverId,
                                                               ReceiverName = user.FullName ?? "N/A",
                                                               IsRead = notification.IsRead,
@@ -117,7 +117,7 @@ namespace KidPrograming.Services.Services
                                                               Id = notification.Id,
                                                               Title = notification.Title,
                                                               Message = notification.Message,
-                                                              Type = notification.Type,
+                                                              Type = notification.Type.ToString(),
                                                               ReceiverId = notification.ReceiverId,
                                                               ReceiverName = user.FullName ?? "N/A",
                                                               IsRead = notification.IsRead,
@@ -131,7 +131,8 @@ namespace KidPrograming.Services.Services
 
             if (filterByType.HasValue)
             {
-                query = query.Where(x => x.Type == filterByType);
+                string typeString = Enum.GetName(typeof(Enums.NotificationType), filterByType.Value);
+                query = query.Where(x => x.Type == typeString);
             }
 
             if (sortByTitle.HasValue)

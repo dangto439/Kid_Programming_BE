@@ -1,12 +1,5 @@
 ﻿using KidPrograming.Contract.Repositories.PaggingItems;
-using KidProgramming.ModelViews.ModelViews.CourseModels;
 using KidProgramming.ModelViews.ModelViews.LessonModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static KidPrograming.Core.Constants.Enums;
 
 namespace KidPrograming.Contract.Services.Interfaces
 {
@@ -24,7 +17,9 @@ namespace KidPrograming.Contract.Services.Interfaces
         );
 
         Task CreateAsync(CreateLessonModel model);
+
         Task UpdateAsync(string id, UpdateLessonModel model);
+
         Task DeleteAsync(string id);
     }
 }

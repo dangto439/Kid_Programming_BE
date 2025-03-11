@@ -42,7 +42,7 @@ namespace KidPrograming.Services.Services
 
             Course newCourse = _mapper.Map<Course>(model);
 
-            newCourse.Status = Enums.CourseStatus.Active;
+            newCourse.Status = Enums.CourseStatus.Active.ToString();
             newCourse.CreatedTime = CoreHelper.SystemTimeNow;
             newCourse.LastUpdatedTime = CoreHelper.SystemTimeNow;
 
@@ -77,7 +77,8 @@ namespace KidPrograming.Services.Services
                                                         Subject = course.Subject,
                                                         Price = course.Price ?? 0,
                                                         ThumbnailUrl = course.ThumbnailUrl ?? null,
-                                                        Status = course.Status,
+                                                        Status = course.Status.ToString(),
+                                                        NumOfChapter = course.Chapters != null ? course.Chapters.Count() : 0,
                                                         TeacherName = user.FullName ?? "N/A",
                                                         CreatedTime = course.CreatedTime
                                                     };
@@ -107,7 +108,7 @@ namespace KidPrograming.Services.Services
 
             if (filterByStatus.HasValue)
             {
-                query = query.Where(x => x.Status == filterByStatus);
+                query = query.Where(x => x.Status == filterByStatus.ToString());
             }
 
             if (minPrice.HasValue)

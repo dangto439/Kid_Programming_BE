@@ -42,7 +42,7 @@ namespace KidPrograming.Services.Services
                 {
                     Id = course.Id,
                     Title = course.Title,
-                    Status = enrollment != null && !enrollment.DeletedTime.HasValue
+                    Status = enrollment != null && !enrollment.DeletedTime.HasValue && !course.DeletedTime.HasValue
                 };
 
             return await PaginatedList<ResponseEnrollmentModel>.CreateAsync(query, index, pageSize);
@@ -56,15 +56,19 @@ namespace KidPrograming.Services.Services
                 UserId = userId,
                 PaymentId = paymentId,
                 CourseId = courseId,
-                Status = Core.Constants.Enums.StatusEnrollment.InProgress
+                Status = Core.Constants.Enums.StatusEnrollment.InProgress.ToString()
             };
+
             Course course = await _unitOfWork.GetRepository<Course>().GetByIdAsync(courseId);
+
             await _unitOfWork.GetRepository<Enrollment>().InsertAsync(enrollment);
-            await _unitOfWork.GetRepository<Enrollment>().SaveAsync();
+            await _unitOfWork.SaveAsync();
+
             User user = await _unitOfWork.GetRepository<User>().GetByIdAsync(userId);
+
             if (!string.IsNullOrEmpty(user.DeviceToken))
             {
-                await _fcmService.SendNotificationAsync(user.DeviceToken, "Đăng ký khóa học thành công", $"Bạn đã đăng ký khóa học {course.Title} thành công");
+                await _fcmService.SendNotificationAsync(user.DeviceToken, "Register course successfully", $"You have registed {course.Title} sucessfully");
             }
         }
 

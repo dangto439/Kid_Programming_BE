@@ -26,9 +26,9 @@ namespace KidPrograming.Controllers
         [AllowAnonymous]
         [ApiExplorerSettings(IgnoreApi = true)]
         [HttpGet("payment-callback")]
-        public IActionResult PaymentCallback()
+        public async Task<IActionResult> PaymentCallback()
         {
-            var response = _vnPayService.PaymentExecute(Request.Query);
+            var response = await _vnPayService.PaymentExecute(Request.Query);
             if (response.Success)
             {
                 return Redirect("https://www.youtube.com/results?search_query=setup+vnpay+v%E1%BB%9Bi+asp.net");

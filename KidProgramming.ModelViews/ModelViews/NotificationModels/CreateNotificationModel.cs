@@ -8,7 +8,7 @@ namespace KidProgramming.ModelViews.ModelViews.NotificationModels
     {
         public string Title { get; set; }
         public string Message { get; set; }
-        public NotificationType Type { get; set; }
+        public string Type { get; set; }
         public List<string> ReceiverIds { get; set; }
 
         public void Validate()

@@ -1,17 +1,17 @@
 using KidPrograming.Core.Base;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using static KidPrograming.Core.Constants.Enums;
-
 
 namespace KidPrograming.Entity
 {
     public class ChapterProgress : BaseEntity
     {
-        public CompletionStatus Status { get; set; }
+        public string Status { get; set; }
+
         [Column(TypeName = "decimal(5,2)")]
         [Range(0, 100)]
         public decimal Progress { get; set; }
+
         public DateTimeOffset? LastAccessed { get; set; }
 
         public string EnrollmentId { get; set; }
