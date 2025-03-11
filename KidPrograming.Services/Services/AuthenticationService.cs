@@ -114,30 +114,16 @@ namespace KidPrograming.Services.Services
                 await _unitOfWork.GetRepository<User>().InsertAsync(user);
                 await _unitOfWork.GetRepository<User>().SaveAsync();
             }
-            else
+
+            if (!string.IsNullOrWhiteSpace(request.FcmToken))
             {
-                bool isUpdated = false;
-
-                if (!string.IsNullOrWhiteSpace(request.FcmToken) && user.DeviceToken != request.FcmToken)
-                {
-                    user.DeviceToken = request.FcmToken;
-                    isUpdated = true;
-                }
-
-                if (isUpdated)
-                {
-                    await _unitOfWork.GetRepository<User>().UpdateAsync(user);
-                }
+                user.DeviceToken = request.FcmToken;
+                await _unitOfWork.GetRepository<User>().UpdateAsync(user);
+                await _unitOfWork.SaveAsync();
             }
 
-            await _unitOfWork.SaveAsync();
-
-            //if (!string.IsNullOrWhiteSpace(request.FcmToken))
-            //{
-            //    user.DeviceToken = request.FcmToken;
-            //}
-            //await _unitOfWork.GetRepository<User>().UpdateAsync(user);
-            //await _unitOfWork.GetRepository<User>().SaveAsync();
+               
+                
 
             return await _authentication.CreateToken(user, _jwtSettings);
         }
