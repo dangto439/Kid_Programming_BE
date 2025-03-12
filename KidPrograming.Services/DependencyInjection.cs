@@ -32,6 +32,7 @@ namespace KidPrograming.Services
             services.AddScoped<ISubmissionService, SubmissionService>();
             services.AddScoped<IPaymentService, PaymentService>();
             services.AddScoped<IVnPayService, VnPayService>();
+            services.AddScoped<IDashboardService, DashboardService>();
             services.AddScoped<FcmService>();
             
         }
