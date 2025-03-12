@@ -23,7 +23,6 @@ namespace KidPrograming.Services.Services
 
         public async Task<PaginatedList<ResponseLessonModel>> GetPageAsync(
             bool? sortByTitle,
-            bool? sortByOrder,
             string? searchByTitle,
             string? searchByContent,
             string? searchById,
@@ -31,7 +30,7 @@ namespace KidPrograming.Services.Services
             int index,
             int pageSize)
         {
-            var query = _unitOfWork.GetRepository<Lesson>().Entities.Where(l => l.DeletedTime == null);
+            var query = _unitOfWork.GetRepository<Lesson>().Entities.Where(l => !l.DeletedTime.HasValue);
 
             if (!string.IsNullOrEmpty(searchByTitle))
             {
@@ -62,24 +61,27 @@ namespace KidPrograming.Services.Services
                 query = query.OrderByDescending(l => l.Title);
             }
 
-            if (sortByOrder == true)
-            {
-                query = query.OrderBy(l => l.Order);
-            }
-            else if (sortByOrder == false)
-            {
-                query = query.OrderByDescending(l => l.Order);
-            }
+            var lessons = await query
+                .OrderBy(l => l.Order)
+                .ToListAsync();
 
-            var mappedQuery = query.Select(l => _mapper.Map<ResponseLessonModel>(l));
-            return await _unitOfWork.GetRepository<ResponseLessonModel>().GetPagging(mappedQuery, index, pageSize);
+            var mappedLessons = _mapper.Map<List<ResponseLessonModel>>(lessons);
+
+            int totalCount = mappedLessons.Count;
+
+            var pagedLessons = mappedLessons
+                .Skip((index - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            return new PaginatedList<ResponseLessonModel>(pagedLessons, totalCount, index, pageSize);
         }
 
         public async Task CreateAsync(CreateLessonModel model)
         {
             model.Validate();
 
-            bool chapterExist = await _unitOfWork.GetRepository<Chapter>().Entities.AnyAsync(x => x.Id == model.ChapterId);
+            bool chapterExist = await _unitOfWork.GetRepository<Chapter>().Entities.AnyAsync(x => x.Id == model.ChapterId && !x.DeletedTime.HasValue);
 
             if (!chapterExist)
             {
@@ -106,6 +108,13 @@ namespace KidPrograming.Services.Services
 
             Lesson lesson = await _unitOfWork.GetRepository<Lesson>().Entities.FirstOrDefaultAsync(x => x.Id == id && !x.DeletedTime.HasValue) 
                 ?? throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, "Lesson not found");
+
+            bool exists = await _unitOfWork.GetRepository<Lesson>().Entities.AnyAsync(x => x.ChapterId == lesson.ChapterId && x.Order == model.Order && !x.DeletedTime.HasValue);
+
+            if (exists)
+            {
+                throw new ErrorException(StatusCodes.Status409Conflict, ResponseCodeConstants.EXISTED, $"Lesson {(model.Title)} has order duplicated");
+            }
 
             _mapper.Map(model, lesson);
             lesson.LastUpdatedTime = CoreHelper.SystemTimeNow;

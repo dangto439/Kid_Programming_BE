@@ -7,7 +7,6 @@ namespace KidPrograming.Contract.Services.Interfaces
     {
         Task<PaginatedList<ResponseLessonModel>> GetPageAsync(
             bool? sortByTitle,
-            bool? sortByOrder,
             string? searchByTitle,
             string? searchByContent,
             string? searchById,

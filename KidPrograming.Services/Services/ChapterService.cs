@@ -25,7 +25,7 @@ namespace KidPrograming.Services
         {
             model.Validate();
 
-            bool courseExist = await _unitOfWork.GetRepository<Course>().Entities.AnyAsync(x => x.Id == model.CourseId);
+            bool courseExist = await _unitOfWork.GetRepository<Course>().Entities.AnyAsync(x => x.Id == model.CourseId && !x.DeletedTime.HasValue);
 
             if (!courseExist)
             {
@@ -59,7 +59,7 @@ namespace KidPrograming.Services
             await _unitOfWork.SaveAsync();
         }
 
-        public async Task<PaginatedList<ResponseChapterModel>> GetPage(string courseId, string? searchById, string? searchByTitle, bool? sortByOrder, int index, int pageSize)
+        public async Task<PaginatedList<ResponseChapterModel>> GetPage(string courseId, string? searchById, string? searchByTitle, int index, int pageSize)
         {
             IQueryable<ResponseChapterModel> query = _unitOfWork.GetRepository<Chapter>().Entities
                 .Where(chapter => chapter.CourseId == courseId && !chapter.DeletedTime.HasValue)
@@ -70,7 +70,8 @@ namespace KidPrograming.Services
                     Description = chapter.Description,
                     Order = chapter.Order,
                     CreatedTime = chapter.CreatedTime
-                });
+                })
+                .OrderBy(chapter => chapter.Order);
 
             if (!string.IsNullOrWhiteSpace(searchById))
             {
@@ -82,12 +83,6 @@ namespace KidPrograming.Services
                 query = query.Where(x => EF.Functions.Like(x.Title, $"%{searchByTitle.Trim()}%"));
             }
 
-            if (sortByOrder.HasValue)
-            {
-                query = sortByOrder.Value ? query.OrderBy(x => x.Order) : query.OrderByDescending(x => x.Order);
-            }
-
-
             PaginatedList<ResponseChapterModel> paginatedCourses = await _unitOfWork.GetRepository<ResponseChapterModel>().GetPagging(query, index, pageSize);
             return paginatedCourses;
         }
@@ -96,7 +91,7 @@ namespace KidPrograming.Services
         {
             model.Validate();
 
-            Chapter chapter = await _unitOfWork.GetRepository<Chapter>().Entities.FirstOrDefaultAsync(x => x.Id == id) ??
+            Chapter chapter = await _unitOfWork.GetRepository<Chapter>().Entities.FirstOrDefaultAsync(x => x.Id == id && !x.DeletedTime.HasValue) ??
                 throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, "Chapter not found");
 
             bool isDuplicateOrder = await _unitOfWork.GetRepository<Chapter>().Entities.AnyAsync(x => x.CourseId == chapter.CourseId && x.Order == model.Order && x.Id != chapter.Id && !x.DeletedTime.HasValue);

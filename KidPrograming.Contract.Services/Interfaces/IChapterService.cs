@@ -5,7 +5,7 @@ namespace KidPrograming.Contract.Services.Interfaces
 {
     public interface IChapterService
     {
-        Task<PaginatedList<ResponseChapterModel>> GetPage(string courseId, string? searchbyId, string? searchByTitle, bool? sortByOrder, int index, int pageSize);
+        Task<PaginatedList<ResponseChapterModel>> GetPage(string courseId, string? searchbyId, string? searchByTitle, int index, int pageSize);
 
         Task Create(CreateChapterModel model);
 

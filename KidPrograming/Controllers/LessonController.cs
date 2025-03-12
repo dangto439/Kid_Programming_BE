@@ -24,7 +24,6 @@ namespace KidPrograming.Controllers
         [CacheAtribute(1000)]
         public async Task<IActionResult> Get(
             bool? sortByTitle,
-            bool? sortByOrder,
             string? searchByTitle,
             string? searchByContent,
             string? searchById,
@@ -33,7 +32,7 @@ namespace KidPrograming.Controllers
             int pageSize = 10)
         {
             PaginatedList<ResponseLessonModel> result = await _lessonService.GetPageAsync(
-                sortByTitle, sortByOrder, searchByTitle, searchByContent, searchById,chapterId, index, pageSize);
+                sortByTitle, searchByTitle, searchByContent, searchById, chapterId, index, pageSize);
 
             return Ok(BaseResponseModel<PaginatedList<ResponseLessonModel>>.OkDataResponse(result, "Retrieve lesson list successfully"));
         }
