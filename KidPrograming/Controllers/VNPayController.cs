@@ -10,10 +10,12 @@ namespace KidPrograming.Controllers
     public class VNPayController : ControllerBase
     {
         private readonly IVnPayService _vnPayService;
+        private readonly ICacheService _cacheService;
 
-        public VNPayController(IVnPayService vnPayService)
+        public VNPayController(IVnPayService vnPayService, ICacheService cacheService)
         {
             _vnPayService = vnPayService;
+            _cacheService = cacheService;
         }
 
         [HttpPost("payment-url")]
@@ -31,6 +33,8 @@ namespace KidPrograming.Controllers
             var response = await _vnPayService.PaymentExecute(Request.Query);
             if (response.Success)
             {
+                 await _cacheService.RemoveCacheResponseAsync("/api/dashboards/revenue");
+                await _cacheService.RemoveCacheResponseAsync("/api/dashboards/top-course");
                 return Redirect("https://www.youtube.com/results?search_query=setup+vnpay+v%E1%BB%9Bi+asp.net");
             }
             else
