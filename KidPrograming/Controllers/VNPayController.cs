@@ -11,11 +11,13 @@ namespace KidPrograming.Controllers
     {
         private readonly IVnPayService _vnPayService;
         private readonly ICacheService _cacheService;
-
-        public VNPayController(IVnPayService vnPayService, ICacheService cacheService)
+        private readonly IConfiguration _configuration;
+        
+        public VNPayController(IVnPayService vnPayService, ICacheService cacheService, IConfiguration configuration)
         {
             _vnPayService = vnPayService;
             _cacheService = cacheService;
+            _configuration = configuration;
         }
 
         [HttpPost("payment-url")]
@@ -31,15 +33,18 @@ namespace KidPrograming.Controllers
         public async Task<IActionResult> PaymentCallback()
         {
             var response = await _vnPayService.PaymentExecute(Request.Query);
+            var successUrl = _configuration["Vnpay:SuccessUrl"];
+            var errorUrl = _configuration["Vnpay:ErrorUrl"];
+
             if (response.Success)
             {
-                 await _cacheService.RemoveCacheResponseAsync("/api/dashboards/revenue");
+                await _cacheService.RemoveCacheResponseAsync("/api/dashboards/revenue");
                 await _cacheService.RemoveCacheResponseAsync("/api/dashboards/top-course");
-                return Redirect("https://www.youtube.com/results?search_query=setup+vnpay+v%E1%BB%9Bi+asp.net");
+                return Redirect(successUrl);
             }
             else
             {
-                return Redirect("https://www.facebook.com/");
+                return Redirect(errorUrl);
             }
         }
     }

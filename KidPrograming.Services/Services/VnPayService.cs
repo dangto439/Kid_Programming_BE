@@ -53,11 +53,6 @@ namespace KidPrograming.Services.Services
 
         public async Task<PaymentResponseModel> PaymentExecute(IQueryCollection collections)
         {
-            //foreach (var (key, value) in collections)
-            //{
-            //    Console.WriteLine($"VNPay Response: Key = {key}, Value = {value}");
-            //}
-
             var pay = new VnPayLibrary();
             var response = pay.GetFullResponseData(collections, _configuration["Vnpay:HashSecret"]);
 
