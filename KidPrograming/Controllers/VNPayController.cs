@@ -10,11 +10,13 @@ namespace KidPrograming.Controllers
     public class VNPayController : ControllerBase
     {
         private readonly IVnPayService _vnPayService;
+        private readonly ICacheService _cacheService;
         private readonly IConfiguration _configuration;
-
-        public VNPayController(IVnPayService vnPayService, IConfiguration configuration)
+        
+        public VNPayController(IVnPayService vnPayService, ICacheService cacheService, IConfiguration configuration)
         {
             _vnPayService = vnPayService;
+            _cacheService = cacheService;
             _configuration = configuration;
         }
 
@@ -36,6 +38,8 @@ namespace KidPrograming.Controllers
 
             if (response.Success)
             {
+                await _cacheService.RemoveCacheResponseAsync("/api/dashboards/revenue");
+                await _cacheService.RemoveCacheResponseAsync("/api/dashboards/top-course");
                 return Redirect(successUrl);
             }
             else

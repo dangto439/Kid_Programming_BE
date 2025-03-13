@@ -35,7 +35,7 @@ namespace KidPrograming.Controllers
         public async Task<IActionResult> GetByUserId(int index = 1, int pageSize = 10)
         {
             PaginatedList<ResponseNotificationModel> result = await _notificationService.GetNotificationsByUserId(index, pageSize);
-            await _cacheService.RemoveCacheResponseAsync("api/notifications");
+            await _cacheService.RemoveCacheResponseAsync("/api/notifications");
             return Ok(BaseResponseModel<PaginatedList<ResponseNotificationModel>>.OkDataResponse(result, "Retrieve notification list by userId successfully"));
         }
 
@@ -43,7 +43,7 @@ namespace KidPrograming.Controllers
         public async Task<IActionResult> Create(BulkNotificationCreateModel model)
         {
             await _notificationService.Create(model);
-            await _cacheService.RemoveCacheResponseAsync("api/notifications");
+            await _cacheService.RemoveCacheResponseAsync("/api/notifications");
             return Ok(BaseResponse.OkMessageResponse("Created sucessfully"));
         }
 
@@ -51,7 +51,7 @@ namespace KidPrograming.Controllers
         public async Task<IActionResult> MarkAsRead(string notificationId)
         {
             await _notificationService.MarkAsRead(notificationId);
-            await _cacheService.RemoveCacheResponseAsync("api/notifications");
+            await _cacheService.RemoveCacheResponseAsync("/api/notifications");
             return Ok(BaseResponse.OkMessageResponse("Notification marked as read successfully"));
         }
 
@@ -59,7 +59,7 @@ namespace KidPrograming.Controllers
         public async Task<IActionResult> Delete(string notificationId)
         {
             await _notificationService.Delete(notificationId);
-            await _cacheService.RemoveCacheResponseAsync("api/notifications");
+            await _cacheService.RemoveCacheResponseAsync("/api/notifications");
             return Ok(BaseResponse.OkMessageResponse("Deleted sucessfully"));
         }
     }

@@ -41,7 +41,7 @@ namespace KidPrograming.Controllers
         public async Task<IActionResult> Create([FromBody] CreateLessonModel model)
         {
             await _lessonService.CreateAsync(model);
-            await _cacheService.RemoveCacheResponseAsync("api/lessons");
+            await _cacheService.RemoveCacheResponseAsync("/api/lessons");
             return Ok(BaseResponse.OkMessageResponse("Created successfully"));
         }
 
@@ -49,7 +49,7 @@ namespace KidPrograming.Controllers
         public async Task<IActionResult> Update(string id, [FromBody] UpdateLessonModel model)
         {
             await _lessonService.UpdateAsync(id, model);
-            await _cacheService.RemoveCacheResponseAsync("api/lessons");
+            await _cacheService.RemoveCacheResponseAsync("/api/lessons");
             return Ok(BaseResponse.OkMessageResponse("Updated successfully"));
         }
 
@@ -57,7 +57,7 @@ namespace KidPrograming.Controllers
         public async Task<IActionResult> Delete(string id)
         {
             await _lessonService.DeleteAsync(id);
-            await _cacheService.RemoveCacheResponseAsync("api/lessons");
+            await _cacheService.RemoveCacheResponseAsync("/api/lessons");
             return Ok(BaseResponse.OkMessageResponse("Deleted successfully"));
         }
     }

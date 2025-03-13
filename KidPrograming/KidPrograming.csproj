@@ -6,6 +6,9 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<UserSecretsId>6cffd459-0865-4364-bc89-9fa9bf746ddb</UserSecretsId>
 		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>1591</NoWarn>
+		<DocumentationFile>bin\Debug\net8.0\KidPrograming.xml</DocumentationFile>
 	</PropertyGroup>
 
 	<ItemGroup>
