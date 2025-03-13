@@ -73,8 +73,17 @@ namespace KidPrograming.Services.Services
 
             if (response.Success)
             {
-                string paymentId = await _paymentService.CreateAsync(amount, paymentDate);
-                await _enrollmentService.CreateEnrollment(userId, paymentId, courseId);
+                try
+                {
+                    string paymentId = await _paymentService.CreateAsync(amount, paymentDate);
+
+                    await _enrollmentService.CreateEnrollment(userId, paymentId, courseId);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error: {ex.Message}");
+                }
+
             }
 
             return response;
