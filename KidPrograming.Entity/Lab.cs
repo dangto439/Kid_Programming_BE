@@ -7,11 +7,12 @@ namespace KidPrograming.Entity
         public string Question { get; set; } = string.Empty;
         public string Title { get; set; } = string.Empty;
         public string? Description { get; set; }
-        public int Result { get; set; } // điểm tối đa có thể đạt được khi làm bài thực hành này
+        public int Result { get; set; }
         public string Type { get; set; }
-        public int? LimitedTime { get; set; } // có thể có bài lab k giới hạn time => null
+        public int? LimitedTime { get; set; } 
         public string CorrectAnswer { get; set; } = string.Empty;
-
+        public string ToolBox { get; set; }
+        public string Solution { get; set; }
         public string ChapterId { get; set; }
         public virtual Chapter Chapter { get; set; }
     }

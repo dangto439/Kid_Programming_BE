@@ -72,12 +72,11 @@ namespace KidPrograming.Services.Services
             }
         }
 
-        public async Task<PaginatedList<StudentModel>> GetStudentByCourseId(string courseId, string searchByUserName, int index = 1, int pageSize = 10)
+        public async Task<PaginatedList<StudentModel>> GetStudentByCourseId(string courseId, string? searchByUserName, int index = 1, int pageSize = 10)
         {
             IQueryable<StudentModel> enrollments = _unitOfWork.GetRepository<Enrollment>().Entities
                                     .Where(enrollment => enrollment.CourseId == courseId && !enrollment.DeletedTime.HasValue)
-                                    .Include(enrollment => enrollment.User)
-                                    .Where(en => en.User.FullName!.ToLower().Contains(searchByUserName.ToLower()))
+                                    .Include(enrollment => enrollment.User)                                   
                                     .Select(user => new StudentModel
                                     {
                                         Id = user.User.Id,
@@ -89,7 +88,10 @@ namespace KidPrograming.Services.Services
                                         ParentId = user.User.ParentId,
                                         Role = user.User.Role.ToString()
                                     });
-
+            if (!string.IsNullOrWhiteSpace(searchByUserName))
+            {
+                enrollments = enrollments.Where(en => en.FullName!.ToLower().Contains(searchByUserName.ToLower()));
+            }
             return await PaginatedList<StudentModel>.CreateAsync(enrollments, index, pageSize);
         }
     }
