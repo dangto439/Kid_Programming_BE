@@ -62,7 +62,7 @@ namespace KidPrograming.Repositories.Base
 
             modelBuilder.Entity<Submission>()
                 .HasOne(s => s.Lab)
-                .WithMany()
+                .WithMany(l => l.Submissions) 
                 .HasForeignKey(s => s.LabId)
                 .OnDelete(DeleteBehavior.Cascade);
 

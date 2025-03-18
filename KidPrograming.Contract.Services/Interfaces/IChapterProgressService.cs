@@ -23,7 +23,9 @@ namespace KidPrograming.Contract.Services.Interfaces
         );
 
         Task CreateAsync(CreateChapterProgressModel model);
-        Task UpdateAsync(string id, UpdateChapterProgressModel model);
+        //Task UpdateAsync(string id, UpdateChapterProgressModel model);
         Task DeleteAsync(string id);
+        Task UpdateChapterProgressAsync(string chapterProgressId, int score);
+        Task UpdateLastAccessedAsync(string chapterId);
     }
 }

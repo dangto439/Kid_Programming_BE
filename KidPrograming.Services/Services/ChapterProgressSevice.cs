@@ -2,8 +2,12 @@
 using KidPrograming.Contract.Repositories.Interfaces;
 using KidPrograming.Contract.Repositories.PaggingItems;
 using KidPrograming.Contract.Services.Interfaces;
+using KidPrograming.Core;
+using KidPrograming.Core.Constants;
 using KidPrograming.Entity;
+using KidPrograming.Services.Infrastructure;
 using KidProgramming.ModelViews.ModelViews.ChapterProgressModels;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace KidPrograming.Services.Services
@@ -12,11 +16,15 @@ namespace KidPrograming.Services.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly Authentication _authentication;
+        private IHttpContextAccessor _httpContextAccessor;
 
-        public ChapterProgressSevice(IUnitOfWork unitOfWork, IMapper mapper)
+        public ChapterProgressSevice(IUnitOfWork unitOfWork, IMapper mapper, Authentication authentication, IHttpContextAccessor httpContextAccessor)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _authentication = authentication;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<PaginatedList<ResponseChapterProgressModel>> GetPageAsync(
@@ -82,17 +90,17 @@ namespace KidPrograming.Services.Services
             await _unitOfWork.SaveAsync();
         }
 
-        public async Task UpdateAsync(string id, UpdateChapterProgressModel model)
-        {
-            var entity = await _unitOfWork.GetRepository<ChapterProgress>().Entities.FirstOrDefaultAsync(x => x.Id == id);
-            if (entity == null) throw new KeyNotFoundException("Chapter progress not found");
+        //public async Task UpdateAsync(string id, UpdateChapterProgressModel model)
+        //{
+        //    var entity = await _unitOfWork.GetRepository<ChapterProgress>().Entities.FirstOrDefaultAsync(x => x.Id == id);
+        //    if (entity == null) throw new KeyNotFoundException("Chapter progress not found");
 
-            _mapper.Map(model, entity);
-            entity.LastUpdatedTime = DateTime.UtcNow;
+        //    _mapper.Map(model, entity);
+        //    entity.LastUpdatedTime = DateTime.UtcNow;
 
-            await _unitOfWork.GetRepository<ChapterProgress>().UpdateAsync(entity);
-            await _unitOfWork.SaveAsync();
-        }
+        //    await _unitOfWork.GetRepository<ChapterProgress>().UpdateAsync(entity);
+        //    await _unitOfWork.SaveAsync();
+        //}
 
         public async Task DeleteAsync(string id)
         {
@@ -101,6 +109,41 @@ namespace KidPrograming.Services.Services
 
             entity.DeletedTime = DateTime.UtcNow;
             await _unitOfWork.GetRepository<ChapterProgress>().UpdateAsync(entity);
+            await _unitOfWork.SaveAsync();
+        }
+        // ==================== //
+        public async Task UpdateChapterProgressAsync(string chapterProgressId, int score)
+        {
+            ChapterProgress chapterProgress = await _unitOfWork.GetRepository<ChapterProgress>().GetByIdAsync(chapterProgressId)
+                ?? throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, "ChapterProgress not found");
+
+            if (score == 10)
+            {
+                chapterProgress.Progress = 100;
+                chapterProgress.Status = Enums.ProgressStatus.Completed.ToString();
+            }
+            else
+            {
+                chapterProgress.Status = Enums.ProgressStatus.InProgress.ToString();
+            }
+
+            chapterProgress.LastUpdatedTime = CoreHelper.SystemTimeNow;
+
+            await _unitOfWork.SaveAsync();
+        }
+
+        public async Task UpdateLastAccessedAsync(string chapterId)
+        {
+            string userId = _authentication.GetUserIdFromHttpContextAccessor(_httpContextAccessor);
+
+            Enrollment enrollment = await _unitOfWork.GetRepository<Enrollment>().Entities.FirstOrDefaultAsync(e => e.UserId == userId && e.Course.Chapters.Any(c => c.Id == chapterId) && !e.DeletedTime.HasValue) ?? throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, "Enrollment not found");
+
+            ChapterProgress chapterProgress = await _unitOfWork.GetRepository<ChapterProgress>().Entities.FirstOrDefaultAsync(cp => cp.EnrollmentId == enrollment.Id && cp.ChapterId == chapterId && !cp.DeletedTime.HasValue) ?? throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, "ChapterProgress not found");
+
+            chapterProgress.Status = Enums.ProgressStatus.InProgress.ToString();
+            chapterProgress.LastAccessed = CoreHelper.SystemTimeNow;
+
+            await _unitOfWork.GetRepository<ChapterProgress>().UpdateAsync(chapterProgress);
             await _unitOfWork.SaveAsync();
         }
     }

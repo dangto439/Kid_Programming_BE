@@ -2,6 +2,8 @@
 using KidPrograming.Contract.Repositories.Interfaces;
 using KidPrograming.Contract.Repositories.PaggingItems;
 using KidPrograming.Contract.Services.Interfaces;
+using KidPrograming.Core;
+using KidPrograming.Core.Constants;
 using KidPrograming.Entity;
 using KidPrograming.Services.Infrastructure;
 using KidProgramming.ModelViews.ModelViews.EnrollmentModels;
@@ -62,6 +64,20 @@ namespace KidPrograming.Services.Services
             Course course = await _unitOfWork.GetRepository<Course>().GetByIdAsync(courseId);
 
             await _unitOfWork.GetRepository<Enrollment>().InsertAsync(enrollment);
+
+            var chapters = await _unitOfWork.GetRepository<Chapter>()
+                .Entities
+                .Where(c => c.CourseId == courseId)
+                .ToListAsync();
+
+            var chapterProgresses = chapters.Select(chapter => new ChapterProgress
+            {
+                EnrollmentId = enrollment.Id,
+                ChapterId = chapter.Id,
+            }).ToList();
+
+            await _unitOfWork.GetRepository<ChapterProgress>().InsertRangeAsync(chapterProgresses);
+
             await _unitOfWork.SaveAsync();
 
             User user = await _unitOfWork.GetRepository<User>().GetByIdAsync(userId);

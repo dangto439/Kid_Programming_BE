@@ -11,7 +11,7 @@ namespace KidProgramming.ModelViews.ModelViews.ChapterProgressModels
     public class CreateChapterProgressModel
     {
         [Required]
-        public CompletionStatus Status { get; set; }
+        public ProgressStatus Status { get; set; }
 
         [Required]
         [Range(0, 100, ErrorMessage = "Progress must be between 0 and 100.")]

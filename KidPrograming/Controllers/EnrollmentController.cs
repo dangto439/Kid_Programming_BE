@@ -21,14 +21,15 @@ namespace KidPrograming.Controllers
         public async Task<IActionResult> GetStudentByCourseId(string courseId, string? searchByName, int index = 1, int pageSize = 10)
         {
             var result = await _enrollmentService.GetStudentByCourseId(courseId, searchByName, index, pageSize);
-            return Ok(BaseResponseModel<string>.OkDataResponse(result, "Login success"));
+            return Ok(BaseResponseModel<string>.OkDataResponse(result, "Retrieved student list for course successfully"));
         }
 
         [HttpGet]
         public async Task<IActionResult> GetCourseForUser(int index = 1, int pageSize = 10)
         {
             PaginatedList<ResponseEnrollmentModel> result = await _enrollmentService.CheckStatusCourseByUserId(index, pageSize);
-            return Ok(BaseResponseModel<PaginatedList<ResponseEnrollmentModel>>.OkDataResponse(result, "Retrieved course status list for user sucessfully"));
+            return Ok(BaseResponseModel<PaginatedList<ResponseEnrollmentModel>>.OkDataResponse(result, "Retrieved course status list for user successfully"));
         }
+
     }
 }

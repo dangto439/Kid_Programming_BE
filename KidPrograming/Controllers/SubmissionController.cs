@@ -55,12 +55,20 @@ namespace KidPrograming.Controllers
         }
 
         [HttpPatch]
-        [Route("/api/submissions/score")]
+        [Route("score")]
         public async Task<IActionResult> UpdateScore(string id, int score)
         {
             await _submissionService.UpdateScoreAsync(id, score);
             await _cacheService.RemoveCacheResponseAsync("/api/submissions");
             return Ok(BaseResponse.OkMessageResponse("Updated score sucessfully"));
+        }
+
+        [HttpPost]
+        [Route("submit-lab")]
+        public async Task<IActionResult> SubmitLab(string labId, int timeSpent, int score)
+        {
+            await _submissionService.SubmitLab(labId, timeSpent, score);
+            return Ok(BaseResponse.OkMessageResponse($"Created submission for lab: {labId} sucessfully "));
         }
 
         [HttpDelete]

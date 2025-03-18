@@ -1,11 +1,13 @@
 using KidPrograming.Core;
 using KidPrograming.Core.Base;
+using System.ComponentModel.DataAnnotations;
 
 namespace KidPrograming.Entity
 {
     public class Submission : BaseEntity
     {
-        public int Score { get; set; }
+        [Range(1, 10, ErrorMessage = "Score must be between 1 to 10")]
+        public int Score { get; set; } // 1 - 10 only
         public DateTimeOffset SubmittedTime { get; set; } = CoreHelper.SystemTimeNow;
         public int TimeSpent { get; set; }
 

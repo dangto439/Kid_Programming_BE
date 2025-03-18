@@ -4,7 +4,6 @@ using KidPrograming.Contract.Services.Interfaces;
 using KidPrograming.Core.Base;
 using KidProgramming.ModelViews.ModelViews.NotificationModels;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading;
 using static KidPrograming.Core.Constants.Enums;
 
 namespace KidPrograming.Controllers
@@ -24,9 +23,9 @@ namespace KidPrograming.Controllers
 
         [HttpGet]
         [CacheAtribute(1000)]
-        public async Task<IActionResult> Get(bool? sortByTitle, string? searchByTitle, bool? isRead, NotificationType? filterByType, int index = 1, int pageSize = 10)
+        public async Task<IActionResult> Get(string? searchById, bool? sortByTitle, string? searchByTitle, bool? isRead, NotificationType? filterByType, int index = 1, int pageSize = 10)
         {
-            PaginatedList<ResponseNotificationModel> result = await _notificationService.GetPage(sortByTitle, searchByTitle, isRead, filterByType, index, pageSize);
+            PaginatedList<ResponseNotificationModel> result = await _notificationService.GetPage(searchById, sortByTitle, searchByTitle, isRead, filterByType, index, pageSize);
             return Ok(BaseResponseModel<PaginatedList<ResponseNotificationModel>>.OkDataResponse(result, "Retrieve notification list successfully"));
         }
 

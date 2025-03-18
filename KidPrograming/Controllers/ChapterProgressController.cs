@@ -49,10 +49,20 @@ namespace KidPrograming.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateAsync(string id, [FromBody] UpdateChapterProgressModel model)
+        [Route("update-last-accessed/{chapterId}")]
+        public async Task<IActionResult> UpdateLastAccessed(string chapterId)
         {
-            await _chapterProgressService.UpdateAsync(id, model);
+            await _chapterProgressService.UpdateLastAccessedAsync(chapterId);
             await _cacheService.RemoveCacheResponseAsync("/api/chapter-progress");
+            return Ok(BaseResponse.OkMessageResponse("Updated successfully"));
+        }
+
+        [HttpPut]
+        [Route("update-score/{chapterProgressId}")]
+        public async Task<IActionResult> UpdateProgress(string chapterProgressId, int score)
+        {
+            await _chapterProgressService.UpdateChapterProgressAsync(chapterProgressId, score);
+            await _cacheService.RemoveCacheResponseAsync("api/chapter-progress");
             return Ok(BaseResponse.OkMessageResponse("Updated successfully"));
         }
 

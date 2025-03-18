@@ -22,14 +22,14 @@ namespace KidPrograming.Services.Services
         }
 
         public async Task<PaginatedList<ResponseLabModel>> GetPageAsync(
-            string? searchById = null,
-            string? chapterId = null,
-            string? searchByTitle = null,
-            string? searchByQuestion = null,
-            bool? sortByTitle = null,
-            bool? sortByResult = null,
-            int index = 1,
-            int pageSize = 10)
+            string? searchById,
+            string chapterId,
+            string? searchByTitle,
+            string? searchByQuestion,
+            bool? sortByTitle,
+            bool? sortByResult,
+            int index,
+            int pageSize)
         {
             var query = _unitOfWork.GetRepository<Lab>().Entities
                 .Where(l => l.DeletedTime == null);
@@ -79,13 +79,25 @@ namespace KidPrograming.Services.Services
         public async Task CreateAsync(CreateLabModel model)
         {
             model.Validate();
-            var lesson = await _unitOfWork.GetRepository<Lesson>().Entities.FirstOrDefaultAsync(x => x.Id == model.ChapterId);
-            if (lesson == null)
+
+            bool chapterExist = await _unitOfWork.GetRepository<Chapter>().Entities.AnyAsync(x => x.Id == model.ChapterId && !x.DeletedTime.HasValue);
+
+            if (!chapterExist)
             {
-                throw new KeyNotFoundException("Lesson not found or has been deleted");
+                throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, "Chapter not found");
             }
-            var lab = _mapper.Map<Lab>(model);
-            lab.CreatedTime = DateTime.Now;
+
+            bool exists = await _unitOfWork.GetRepository<Lab>().Entities.AnyAsync(x => x.ChapterId == model.ChapterId && x.Question == model.Question && !x.DeletedTime.HasValue);
+
+            if (exists)
+            {
+                throw new ErrorException(StatusCodes.Status409Conflict, ResponseCodeConstants.EXISTED, $"Lab: {(model.Question)} has duplicated");
+            }
+
+            Lab lab = _mapper.Map<Lab>(model);
+
+            lab.CreatedTime = CoreHelper.SystemTimeNow;
+
             await _unitOfWork.GetRepository<Lab>().InsertAsync(lab);
             await _unitOfWork.SaveAsync();
         }
@@ -93,30 +105,32 @@ namespace KidPrograming.Services.Services
         public async Task UpdateAsync(string id, UpdateLabModel model)
         {
             model.Validate();
-            var lab = await _unitOfWork.GetRepository<Lab>().Entities
-                .FirstOrDefaultAsync(x => x.Id == id && x.DeletedTime == null);
 
-            if (lab == null)
-                throw new KeyNotFoundException("Lab not found or has been deleted");
+            Lab lab = await _unitOfWork.GetRepository<Lab>().Entities.FirstOrDefaultAsync(x => x.Id == id && !x.DeletedTime.HasValue)
+                ?? throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, "Lab not found");
 
-            lab.LastUpdatedTime = DateTime.Now;
+            bool exists = await _unitOfWork.GetRepository<Lab>().Entities.AnyAsync(x => x.ChapterId == lab.ChapterId && x.Question == model.Question && !x.DeletedTime.HasValue);
+
+            if (exists)
+            {
+                throw new ErrorException(StatusCodes.Status409Conflict, ResponseCodeConstants.EXISTED, $"Lab {(model.Question)} has duplicated");
+            }
+
+            lab.LastUpdatedTime = CoreHelper.SystemTimeNow;
+
             _mapper.Map(model, lab);
+
             await _unitOfWork.GetRepository<Lab>().UpdateAsync(lab);
             await _unitOfWork.SaveAsync();
         }
 
         public async Task DeleteAsync(string id)
         {
-            var lab = await _unitOfWork.GetRepository<Lab>().Entities
-                .FirstOrDefaultAsync(x => x.Id == id);
+            Lab lab = await _unitOfWork.GetRepository<Lab>().Entities.FirstOrDefaultAsync(x => x.Id == id) 
+                ?? throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, "Lab not found");
 
-            if (lab == null)
-                throw new KeyNotFoundException("Lab not found");
+            lab.DeletedTime = CoreHelper.SystemTimeNow;
 
-            if (lab.DeletedTime != null)
-                throw new InvalidOperationException("Lab has already been deleted");
-
-            lab.DeletedTime = DateTime.Now;
             await _unitOfWork.GetRepository<Lab>().UpdateAsync(lab);
             await _unitOfWork.SaveAsync();
         }
