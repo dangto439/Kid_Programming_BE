@@ -6,5 +6,6 @@ namespace KidPrograming.Contract.Services.Interfaces
     {
         Task<List<Revenue>> GetMonthlyRevenueAsync(int year);
         Task<List<TopCourseEnrollment>> GetTopCourseDashboardAsync();
+        Task<int> GetCurrentEnrollment();
     }
 }
