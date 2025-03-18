@@ -56,10 +56,11 @@ namespace KidPrograming.Controllers
         }
         [HttpGet]
         [Route("test")]
-        public async Task<IActionResult> Test()
+        public async Task<IActionResult> GetUsesdsadrById()
         {
-            await _fcmService.SendNotificationAsync("fEKp_r8WS-e9F7tGYB3jY9:APA91bGKcHjYEFLMB8fUMwPiAsLyK08KVVDKd5zlM1Is8YfNoXRcK1_AT3SGiO1vdKh3wxJyf-HJc0ZjawsD7ihW27Z5LSMfjw2_Wsa6LbUz-gLEEGnTVug","123231","afdsfs");
+          await  _fcmService.SendNotificationAsync("fEKp_r8WS-e9F7tGYB3jY9:APA91bGKcHjYEFLMB8fUMwPiAsLyK08KVVDKd5zlM1Is8YfNoXRcK1_AT3SGiO1vdKh3wxJyf-HJc0ZjawsD7ihW27Z5LSMfjw2_Wsa6LbUz-gLEEGnTVug", "sdfdsf", "dfdsf");
             return Ok();
         }
+
     }
 }
