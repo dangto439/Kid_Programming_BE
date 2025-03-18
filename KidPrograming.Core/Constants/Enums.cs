@@ -22,8 +22,9 @@ namespace KidPrograming.Core.Constants
             Canceled
         }
 
-        public enum CompletionStatus
+        public enum ProgressStatus
         {
+            NotStarted,
             InProgress,
             Completed
         }

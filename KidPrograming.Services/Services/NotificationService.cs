@@ -27,6 +27,31 @@ namespace KidPrograming.Services.Services
             _httpContextAccessor = httpContextAccessor;
         }
 
+        public async Task CreateNotificationSingle(CreateNotificationSingleModel model)
+        {
+            model.Validate();
+
+            bool checkUser = await _unitOfWork.GetRepository<User>().Entities.AnyAsync(u => u.Id == model.ReceiverId);
+
+            if (!checkUser)
+            {
+                throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, "User not found");
+            }
+
+            Notification notification = new Notification
+            {
+                Title = model.Title,
+                Message = model.Message,
+                Type = model.Type.ToString(),
+                IsRead = false,
+                ReceiverId = model.ReceiverId,
+                CreatedTime = CoreHelper.SystemTimeNow
+            };
+
+            await _unitOfWork.GetRepository<Notification>().InsertAsync(notification);
+            await _unitOfWork.SaveAsync();
+        }
+
         public async Task Create(BulkNotificationCreateModel model)
         {
             model.Validate();
@@ -73,9 +98,11 @@ namespace KidPrograming.Services.Services
 
         public async Task Delete(string notificationId)
         {
-            Notification notification = await _unitOfWork.GetRepository<Notification>().Entities.FirstOrDefaultAsync(x => x.Id == notificationId && !x.DeletedTime.HasValue) ?? throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, "Notification not found");
+            Notification notification = await _unitOfWork.GetRepository<Notification>().Entities.FirstOrDefaultAsync(x => x.Id == notificationId) ?? throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, "Notification not found");
 
-            await _unitOfWork.GetRepository<Notification>().DeleteAsync(notification);
+            notification.DeletedTime = CoreHelper.SystemTimeNow;
+
+            await _unitOfWork.GetRepository<Notification>().UpdateAsync(notification);
             await _unitOfWork.SaveAsync();
         }
 
@@ -105,7 +132,7 @@ namespace KidPrograming.Services.Services
             return paginatedCourses;
         }
 
-        public async Task<PaginatedList<ResponseNotificationModel>> GetPage(bool? sortByTitle, string? searchByTitle, bool? isRead, Enums.NotificationType? filterByType, int index, int pageSize)
+        public async Task<PaginatedList<ResponseNotificationModel>> GetPage(string? searchById, bool? sortByTitle, string? searchByTitle, bool? isRead, Enums.NotificationType? filterByType, int index, int pageSize)
         {
             IQueryable<ResponseNotificationModel> query = from notification in _unitOfWork.GetRepository<Notification>().Entities
                                                           join user in _unitOfWork.GetRepository<User>().Entities
@@ -123,6 +150,12 @@ namespace KidPrograming.Services.Services
                                                               IsRead = notification.IsRead,
                                                               CreatedTime = notification.CreatedTime
                                                           };
+            if (!string.IsNullOrWhiteSpace(searchById))
+            {
+                searchById = searchById.Trim();
+                query = query.Where(x => x.Id.Equals(searchById));
+            }
+
             if (!string.IsNullOrWhiteSpace(searchByTitle))
             {
                 searchByTitle = searchByTitle.Trim();

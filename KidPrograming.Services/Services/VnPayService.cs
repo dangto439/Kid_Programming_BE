@@ -1,25 +1,30 @@
 ﻿using KidPrograming.Contract.Repositories.Interfaces;
 using KidPrograming.Contract.Services.Interfaces;
+using KidPrograming.Core;
 using KidPrograming.Entity;
 using KidPrograming.Services.Infrastructure;
+using KidProgramming.ModelViews.ModelViews.NotificationModels;
 using KidProgramming.ModelViews.ModelViews.PaymentModels;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Globalization;
+using static KidPrograming.Core.Constants.Enums;
 
 namespace KidPrograming.Services.Services
 {
     public class VnPayService : IVnPayService
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly Authentication _authentication;
         private readonly IConfiguration _configuration;
         private readonly IPaymentService _paymentService;
         private readonly IEnrollmentService _enrollmentService;
-        private readonly IUnitOfWork _unitOfWork;
         private readonly FcmService _fcmService;
+        private readonly INotificationService _notificationService;
 
-        public VnPayService(FcmService fcmService, IConfiguration configuration, Authentication authentication, IHttpContextAccessor httpContextAccessor, IPaymentService paymentService, IEnrollmentService enrollmentService,IUnitOfWork unitOfWork)
+        public VnPayService(FcmService fcmService, IConfiguration configuration, Authentication authentication, IHttpContextAccessor httpContextAccessor, IPaymentService paymentService, IEnrollmentService enrollmentService,IUnitOfWork unitOfWork, INotificationService notificationService)
         {
             _configuration = configuration;
             _httpContextAccessor = httpContextAccessor;
@@ -28,7 +33,9 @@ namespace KidPrograming.Services.Services
             _enrollmentService = enrollmentService;
             _unitOfWork = unitOfWork;
             _fcmService = fcmService;
+            _notificationService = notificationService;
         }
+
         public string CreatePaymentUrl(PaymentInformationModel model, HttpContext context)
         {
             var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById(_configuration["TimeZoneId"]);
@@ -84,12 +91,39 @@ namespace KidPrograming.Services.Services
                     string paymentId = await _paymentService.CreateAsync(amount, paymentDate);
 
                     await _enrollmentService.CreateEnrollment(userId, paymentId, courseId);
+
+                    Course course = await _unitOfWork.GetRepository<Course>().Entities.FirstOrDefaultAsync(c => c.Id == courseId)
+                        ?? throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, "Course not found");
+                    string courseTitle = course.Title;
+
+                    var notificationSection = _configuration.GetSection("Notification");
+
+                    if (!int.TryParse(notificationSection["Type"], out int typeValue))
+                    {
+                        throw new ArgumentException($"Invalid notification type value in config: {notificationSection["Type"]}");
+                    }
+
+                    if (!Enum.IsDefined(typeof(NotificationType), typeValue))
+                    {
+                        throw new ArgumentException($"Notification type {typeValue} is not defined in the enum.");
+                    }
+
+                    NotificationType notificationType = (NotificationType)typeValue;
+
+                    CreateNotificationSingleModel model = new()
+                    {
+                        Title = notificationSection["Title"],
+                        Message = string.Format(notificationSection["Message"], courseTitle),
+                        Type = (NotificationType)typeValue,
+                        ReceiverId = userId
+                    };
+
+                    await _notificationService.CreateNotificationSingle(model);
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Error: {ex.Message}");
                 }
-
             }
 
             return response;

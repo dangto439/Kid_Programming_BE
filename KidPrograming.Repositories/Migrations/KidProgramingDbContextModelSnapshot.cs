@@ -554,7 +554,7 @@ namespace KidPrograming.Repositories.Migrations
                         .IsRequired();
 
                     b.HasOne("KidPrograming.Entity.Lab", "Lab")
-                        .WithMany()
+                        .WithMany("Submissions")
                         .HasForeignKey("LabId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -607,6 +607,11 @@ namespace KidPrograming.Repositories.Migrations
             modelBuilder.Entity("KidPrograming.Entity.Enrollment", b =>
                 {
                     b.Navigation("ChapterProgresses");
+                });
+
+            modelBuilder.Entity("KidPrograming.Entity.Lab", b =>
+                {
+                    b.Navigation("Submissions");
                 });
 
             modelBuilder.Entity("KidPrograming.Entity.User", b =>

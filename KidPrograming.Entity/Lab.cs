@@ -15,5 +15,8 @@ namespace KidPrograming.Entity
         public string Solution { get; set; }
         public string ChapterId { get; set; }
         public virtual Chapter Chapter { get; set; }
+        public ICollection<Submission> Submissions { get; set; } = new List<Submission>();
+
+
     }
 }

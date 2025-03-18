@@ -3,7 +3,9 @@ using KidPrograming.Contract.Repositories.Interfaces;
 using KidPrograming.Contract.Repositories.PaggingItems;
 using KidPrograming.Contract.Services.Interfaces;
 using KidPrograming.Core;
+using KidPrograming.Core.Constants;
 using KidPrograming.Entity;
+using KidPrograming.Services.Infrastructure;
 using KidProgramming.ModelViews.ModelViews.SubmissionModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -15,12 +17,18 @@ namespace KidPrograming.Services.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IAuthenticationService _authenticationService;
+        private readonly IChapterProgressService _chapterProgressService;
+        private readonly Authentication _authentication;
+        private readonly IHttpContextAccessor _contextAccessor;
 
-        public SubmissionService(IUnitOfWork unitOfWork, IMapper mapper, IAuthenticationService authenticationService)
+        public SubmissionService(IUnitOfWork unitOfWork, IMapper mapper, IAuthenticationService authenticationService, IChapterProgressService chapterProgressService, Authentication authentication, IHttpContextAccessor contextAccessor)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _authenticationService = authenticationService;
+            _chapterProgressService = chapterProgressService;
+            _authentication = authentication;
+            _contextAccessor = contextAccessor;
         }
 
         public async Task<PaginatedList<ResponseSubmissionModel>> GetPageAsync(
@@ -72,27 +80,23 @@ namespace KidPrograming.Services.Services
         public async Task CreateAsync(CreateSubmissionModel model)
         {
             model.Validate();
-            var lab = await _unitOfWork.GetRepository<Lab>().Entities
-        .FirstOrDefaultAsync(x => x.Id == model.LabId && x.DeletedTime == null);
-            if (lab == null)
-            {
-                throw new KeyNotFoundException("Lab not found or has been deleted");
-            }
 
-            var chapterProgress = await _unitOfWork.GetRepository<ChapterProgress>().Entities
-                .FirstOrDefaultAsync(x => x.Id == model.ChapterProgressId && x.DeletedTime == null);
-            if (chapterProgress == null)
-            {
-                throw new KeyNotFoundException("ChapterProgress not found or has been deleted");
-            }
+            Lab lab = await _unitOfWork.GetRepository<Lab>().Entities.FirstOrDefaultAsync(x => x.Id == model.LabId && !x.DeletedTime.HasValue) ??
+                throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, "Lab not found or has been deleted");
+
+            ChapterProgress chapterProgress = await _unitOfWork.GetRepository<ChapterProgress>().Entities.FirstOrDefaultAsync(x => x.Id == model.ChapterProgressId && !x.DeletedTime.HasValue) ??
+                throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, "ChapterProgress not found or has been deleted");
+
             var user = _authenticationService.GetUserInfo();
+
             var submission = _mapper.Map<Submission>(model);
             submission.UserId = user.Result.Id!;
-            submission.SubmittedTime = DateTimeOffset.UtcNow;
-            submission.CreatedTime = DateTimeOffset.UtcNow;
+            submission.SubmittedTime = CoreHelper.SystemTimeNow;
+            submission.CreatedTime = CoreHelper.SystemTimeNow;
 
             await _unitOfWork.GetRepository<Submission>().InsertAsync(submission);
             await _unitOfWork.SaveAsync();
+
         }
 
         public async Task UpdateAsync(string id, UpdateSubmissionModel model)
@@ -134,5 +138,66 @@ namespace KidPrograming.Services.Services
             await _unitOfWork.GetRepository<Submission>().UpdateAsync(submission);
             await _unitOfWork.SaveAsync();
         }
+
+        public async Task SubmitLab(string labId, int timeSpent, int score)
+        {
+            string userId = _authentication.GetUserIdFromHttpContextAccessor(_contextAccessor);
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                throw new ErrorException(StatusCodes.Status401Unauthorized, ResponseCodeConstants.NOT_FOUND, "User is not found");
+            }
+            bool labExists = await _unitOfWork.GetRepository<Lab>().Entities.AnyAsync(l => l.Id == labId && !l.DeletedTime.HasValue);
+
+            if (!labExists) throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, "Lab is not found");
+
+            var chapterProgress = await _unitOfWork.GetRepository<ChapterProgress>()
+                .Entities
+                .Include(cp => cp.Enrollment)
+                .Include(cp => cp.Chapter)
+                .ThenInclude(c => c.Lab)
+                .FirstOrDefaultAsync(cp =>
+                    cp.Enrollment.UserId == userId &&
+                    cp.Chapter.Lab.Id == labId);
+
+            if (chapterProgress == null)
+            {
+                throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, "ChapterProgress not found");
+            }
+
+            var submission = new Submission
+            {
+                UserId = userId,
+                LabId = labId,
+                Score = score,
+                TimeSpent = timeSpent,
+                ChapterProgressId = chapterProgress.Id,
+                SubmittedTime = CoreHelper.SystemTimeNow
+            };
+
+            await _unitOfWork.GetRepository<Submission>().InsertAsync(submission);
+            await _unitOfWork.SaveAsync();
+
+            await _chapterProgressService.UpdateChapterProgressAsync(chapterProgress.Id, score);
+
+            // Kiem tra xem co phai bai sang tao hay khong
+            bool isFinalChapter = await _unitOfWork.GetRepository<Chapter>()
+                .Entities
+                .Where(c => c.CourseId == chapterProgress.Chapter.CourseId)
+                .OrderByDescending(c => c.Order)
+                .Select(c => c.Id)
+                .FirstOrDefaultAsync() == chapterProgress.ChapterId;
+
+            if (isFinalChapter && score == 10)
+            {
+                var enrollment = await _unitOfWork.GetRepository<Enrollment>().GetByIdAsync(chapterProgress.EnrollmentId);
+                if (enrollment != null)
+                {
+                    enrollment.Status = Enums.StatusEnrollment.Completed.ToString();
+                    enrollment.LastUpdatedTime = CoreHelper.SystemTimeNow;
+                    await _unitOfWork.SaveAsync();
+                }
+            }
+        }    
     }
 }
