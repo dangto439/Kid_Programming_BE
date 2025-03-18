@@ -216,7 +216,15 @@ namespace KidPrograming.Repositories.Migrations
                     b.Property<int>("Result")
                         .HasColumnType("int");
 
+                    b.Property<string>("Solution")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ToolBox")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

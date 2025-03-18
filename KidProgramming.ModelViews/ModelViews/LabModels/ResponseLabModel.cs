@@ -18,5 +18,8 @@ namespace KidProgramming.ModelViews.ModelViews.LabModels
         public int? LimitedTime { get; set; }
         public string CorrectAnswer { get; set; }
         public string ChapterId { get; set; }
+        public string ToolBox { get; set; }
+        public string Solution { get; set; }
+
     }
 }

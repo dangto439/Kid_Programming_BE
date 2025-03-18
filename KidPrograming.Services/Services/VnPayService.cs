@@ -1,4 +1,6 @@
-﻿using KidPrograming.Contract.Services.Interfaces;
+﻿using KidPrograming.Contract.Repositories.Interfaces;
+using KidPrograming.Contract.Services.Interfaces;
+using KidPrograming.Entity;
 using KidPrograming.Services.Infrastructure;
 using KidProgramming.ModelViews.ModelViews.PaymentModels;
 using Microsoft.AspNetCore.Http;
@@ -14,14 +16,18 @@ namespace KidPrograming.Services.Services
         private readonly IConfiguration _configuration;
         private readonly IPaymentService _paymentService;
         private readonly IEnrollmentService _enrollmentService;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly FcmService _fcmService;
 
-        public VnPayService(IConfiguration configuration, Authentication authentication, IHttpContextAccessor httpContextAccessor, IPaymentService paymentService, IEnrollmentService enrollmentService)
+        public VnPayService(FcmService fcmService, IConfiguration configuration, Authentication authentication, IHttpContextAccessor httpContextAccessor, IPaymentService paymentService, IEnrollmentService enrollmentService,IUnitOfWork unitOfWork)
         {
             _configuration = configuration;
             _httpContextAccessor = httpContextAccessor;
             _authentication = authentication;
             _paymentService = paymentService;
             _enrollmentService = enrollmentService;
+            _unitOfWork = unitOfWork;
+            _fcmService = fcmService;
         }
         public string CreatePaymentUrl(PaymentInformationModel model, HttpContext context)
         {

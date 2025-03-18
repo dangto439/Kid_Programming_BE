@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static KidPrograming.Core.Constants.Enums;
+﻿using static KidPrograming.Core.Constants.Enums;
 
 namespace KidProgramming.ModelViews.ModelViews.LabModels
 {
@@ -16,7 +11,8 @@ namespace KidProgramming.ModelViews.ModelViews.LabModels
         public LabType? Type { get; set; }
         public int? LimitedTime { get; set; }
         public string? CorrectAnswer { get; set; }
-
+        public string ToolBox { get; set; }
+        public string Solution { get; set; }
         public List<string> Validate()
         {
             var errors = new List<string>();

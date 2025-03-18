@@ -32,7 +32,6 @@ public class FcmService
                     }
                 }
             };
-            ;
 
             string jsonPayload = JsonSerializer.Serialize(payload);
             var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
