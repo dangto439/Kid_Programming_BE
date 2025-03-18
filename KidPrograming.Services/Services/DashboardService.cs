@@ -18,6 +18,11 @@ namespace KidPrograming.Services.Services
             _mapper = mapper;
         }
 
+        public Task<int> GetCurrentEnrollment()
+        {
+            return _unitOfWork.GetRepository<Enrollment>().Entities.CountAsync(e => !e.DeletedTime.HasValue);
+        }
+
         public async Task<List<Revenue>> GetMonthlyRevenueAsync(int year)
         {
             List<Revenue> revenues = await _unitOfWork.GetRepository<Payment>().Entities

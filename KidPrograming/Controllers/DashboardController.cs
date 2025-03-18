@@ -38,5 +38,12 @@ namespace KidPrograming.Controllers
             var results = await _dashboardService.GetTopCourseDashboardAsync();
             return Ok(BaseResponseModel<List<TopCourseEnrollment>>.OkDataResponse(results, "Retrieved data sucessfully"));
         }
+        [HttpGet("current-enrollment")]
+        [CacheAtribute(1000)]
+        public async Task<IActionResult> NumberCurrentEnrollment()
+        {
+            var result = await _dashboardService.GetCurrentEnrollment();
+            return Ok(BaseResponseModel<int>.OkDataResponse(result, "Retrieved data sucessfully"));
+        }
     }
 }
