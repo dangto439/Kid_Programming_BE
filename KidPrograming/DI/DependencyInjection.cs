@@ -54,7 +54,7 @@ namespace KidPrograming.DI
         }
         public static void AddFirebase(this IServiceCollection services)
         {
-            string credentialPath = "firebase-adminsdk.json";
+            string credentialPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "firebase-adminsdk.json");
 
             if (!File.Exists(credentialPath))
             {
@@ -85,7 +85,13 @@ namespace KidPrograming.DI
 
             services.AddSingleton<FirebaseAuthHelper>();
         }
-
+        public static async Task<DateTime> GetGoogleTimeAsync()
+        {
+            using var client = new HttpClient();
+            var response = await client.GetStringAsync("http://worldtimeapi.org/api/timezone/Etc/UTC");
+            dynamic result = Newtonsoft.Json.JsonConvert.DeserializeObject(response);
+            return DateTime.Parse((string)result.datetime);
+        }
 
         public static void AddAuthenJwt(this IServiceCollection services, IConfiguration configuration)
         {
