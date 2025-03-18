@@ -10,9 +10,11 @@ namespace KidPrograming.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthenticationService _authenticationService;
-        public AuthController(IAuthenticationService authenticationService)
+        private readonly FcmService _fcmService;
+        public AuthController(IAuthenticationService authenticationService,FcmService fcmService)
         {
             _authenticationService = authenticationService;
+            _fcmService = fcmService;
         }
 
         [HttpPost("login-google")]
@@ -52,6 +54,12 @@ namespace KidPrograming.Controllers
             ResponseUserModel model = await _authenticationService.UpdateUserInfo(request);
             return Ok(BaseResponseModel<string>.OkDataResponse(model, "Updated successfully"));
         }
-
+        [HttpGet]
+        [Route("test")]
+        public async Task<IActionResult> Test()
+        {
+            await _fcmService.SendNotificationAsync("fEKp_r8WS-e9F7tGYB3jY9:APA91bGKcHjYEFLMB8fUMwPiAsLyK08KVVDKd5zlM1Is8YfNoXRcK1_AT3SGiO1vdKh3wxJyf-HJc0ZjawsD7ihW27Z5LSMfjw2_Wsa6LbUz-gLEEGnTVug","123231","afdsfs");
+            return Ok();
+        }
     }
 }
