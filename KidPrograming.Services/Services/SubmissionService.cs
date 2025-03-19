@@ -127,9 +127,9 @@ namespace KidPrograming.Services.Services
             Submission submission = await _unitOfWork.GetRepository<Submission>().GetByIdAsync(submissionId) ??
                 throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, "Submission not found");
 
-            if (score > 100 || score < 0)
+            if (score > 10 || score < 0)
             {
-                throw new ErrorException(StatusCodes.Status400BadRequest, ResponseCodeConstants.INVALID_INPUT, "Score must be ranges from 0 to 100");
+                throw new ErrorException(StatusCodes.Status400BadRequest, ResponseCodeConstants.INVALID_INPUT, "Score must be ranges from 0 to 10");
             }
 
             submission.Score = score;
@@ -137,9 +137,11 @@ namespace KidPrograming.Services.Services
 
             await _unitOfWork.GetRepository<Submission>().UpdateAsync(submission);
             await _unitOfWork.SaveAsync();
+
+            await _chapterProgressService.CheckFinalLab(submission.ChapterProgressId, score);
         }
 
-        public async Task SubmitLab(string labId, int timeSpent, int score)
+        public async Task SubmitLab(string labId, int timeSpent, string? answerCheck)
         {
             string userId = _authentication.GetUserIdFromHttpContextAccessor(_contextAccessor);
 
@@ -147,9 +149,15 @@ namespace KidPrograming.Services.Services
             {
                 throw new ErrorException(StatusCodes.Status401Unauthorized, ResponseCodeConstants.NOT_FOUND, "User is not found");
             }
-            bool labExists = await _unitOfWork.GetRepository<Lab>().Entities.AnyAsync(l => l.Id == labId && !l.DeletedTime.HasValue);
 
-            if (!labExists) throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, "Lab is not found");
+            bool labExists = await _unitOfWork.GetRepository<Lab>()
+                .Entities
+                .AnyAsync(l => l.Id == labId && !l.DeletedTime.HasValue);
+
+            if (!labExists)
+            {
+                throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, "Lab is not found");
+            }
 
             var chapterProgress = await _unitOfWork.GetRepository<ChapterProgress>()
                 .Entities
@@ -165,6 +173,16 @@ namespace KidPrograming.Services.Services
                 throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, "ChapterProgress not found");
             }
 
+            // Lấy correctAnswer của Lab
+            string? correctAnswer = await _unitOfWork.GetRepository<Lab>()
+                .Entities
+                .Where(l => l.Id == labId)
+                .Select(l => l.CorrectAnswer)
+                .FirstOrDefaultAsync();
+
+            bool isCreativeLab = string.IsNullOrEmpty(correctAnswer);
+            int score = isCreativeLab ? 0 : string.Equals(correctAnswer?.Trim(), answerCheck?.Trim(), StringComparison.OrdinalIgnoreCase) ? 10 : 0;
+
             var submission = new Submission
             {
                 UserId = userId,
@@ -172,32 +190,14 @@ namespace KidPrograming.Services.Services
                 Score = score,
                 TimeSpent = timeSpent,
                 ChapterProgressId = chapterProgress.Id,
-                SubmittedTime = CoreHelper.SystemTimeNow
+                SubmittedTime = CoreHelper.SystemTimeNow,
+                CreativeAnswer = isCreativeLab ? answerCheck : string.Empty 
             };
 
             await _unitOfWork.GetRepository<Submission>().InsertAsync(submission);
             await _unitOfWork.SaveAsync();
 
             await _chapterProgressService.UpdateChapterProgressAsync(chapterProgress.Id, score);
-
-            // Kiem tra xem co phai bai sang tao hay khong
-            bool isFinalChapter = await _unitOfWork.GetRepository<Chapter>()
-                .Entities
-                .Where(c => c.CourseId == chapterProgress.Chapter.CourseId)
-                .OrderByDescending(c => c.Order)
-                .Select(c => c.Id)
-                .FirstOrDefaultAsync() == chapterProgress.ChapterId;
-
-            if (isFinalChapter && score == 10)
-            {
-                var enrollment = await _unitOfWork.GetRepository<Enrollment>().GetByIdAsync(chapterProgress.EnrollmentId);
-                if (enrollment != null)
-                {
-                    enrollment.Status = Enums.StatusEnrollment.Completed.ToString();
-                    enrollment.LastUpdatedTime = CoreHelper.SystemTimeNow;
-                    await _unitOfWork.SaveAsync();
-                }
-            }
-        }    
+        }
     }
 }

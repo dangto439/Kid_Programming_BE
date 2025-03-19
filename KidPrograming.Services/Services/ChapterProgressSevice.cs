@@ -9,6 +9,7 @@ using KidPrograming.Services.Infrastructure;
 using KidProgramming.ModelViews.ModelViews.ChapterProgressModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace KidPrograming.Services.Services
 {
@@ -145,6 +146,31 @@ namespace KidPrograming.Services.Services
 
             await _unitOfWork.GetRepository<ChapterProgress>().UpdateAsync(chapterProgress);
             await _unitOfWork.SaveAsync();
+        }
+
+        public async Task CheckFinalLab(string chapterProgressId, int score)
+        {
+            ChapterProgress chapterProgress = await _unitOfWork.GetRepository<ChapterProgress>().Entities.FirstOrDefaultAsync(cp => cp.Id == chapterProgressId)
+                ?? throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, "ChapterProgress not found");
+
+            // Kiểm tra xem có phải chương cuối không
+            bool isFinalChapter = await _unitOfWork.GetRepository<Chapter>()
+                .Entities
+                .Where(c => c.CourseId == chapterProgress.Chapter.CourseId)
+                .OrderByDescending(c => c.Order)
+                .Select(c => c.Id)
+                .AnyAsync(id => id == chapterProgress.ChapterId);
+
+            if (isFinalChapter && score == 10)
+            {
+                var enrollment = await _unitOfWork.GetRepository<Enrollment>().GetByIdAsync(chapterProgress.EnrollmentId);
+                if (enrollment != null)
+                {
+                    enrollment.Status = Enums.StatusEnrollment.Completed.ToString();
+                    enrollment.LastUpdatedTime = CoreHelper.SystemTimeNow;
+                    await _unitOfWork.SaveAsync();
+                }
+            }
         }
     }
 }

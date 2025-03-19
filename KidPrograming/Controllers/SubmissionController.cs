@@ -65,9 +65,10 @@ namespace KidPrograming.Controllers
 
         [HttpPost]
         [Route("submit-lab")]
-        public async Task<IActionResult> SubmitLab(string labId, int timeSpent, int score)
+        public async Task<IActionResult> SubmitLab(string labId, int timeSpent, string? answerCheck)
         {
-            await _submissionService.SubmitLab(labId, timeSpent, score);
+            await _submissionService.SubmitLab(labId, timeSpent, answerCheck);
+            await _cacheService.RemoveCacheResponseAsync("/api/submissions");
             return Ok(BaseResponse.OkMessageResponse($"Created submission for lab: {labId} sucessfully "));
         }
 

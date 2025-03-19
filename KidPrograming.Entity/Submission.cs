@@ -10,7 +10,7 @@ namespace KidPrograming.Entity
         public int Score { get; set; } // 1 - 10 only
         public DateTimeOffset SubmittedTime { get; set; } = CoreHelper.SystemTimeNow;
         public int TimeSpent { get; set; }
-
+        public string? CreativeAnswer { get; set; } = string.Empty;
         public string UserId { get; set; }
         public virtual User User { get; set; }
         public string LabId { get; set; }

@@ -1,11 +1,5 @@
 ﻿using KidPrograming.Contract.Repositories.PaggingItems;
 using KidProgramming.ModelViews.ModelViews.ChapterProgressModels;
-using KidProgramming.ModelViews.ModelViews.LabModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KidPrograming.Contract.Services.Interfaces
 {
@@ -23,9 +17,14 @@ namespace KidPrograming.Contract.Services.Interfaces
         );
 
         Task CreateAsync(CreateChapterProgressModel model);
+
         //Task UpdateAsync(string id, UpdateChapterProgressModel model);
         Task DeleteAsync(string id);
+
         Task UpdateChapterProgressAsync(string chapterProgressId, int score);
+
         Task UpdateLastAccessedAsync(string chapterId);
+
+        Task CheckFinalLab(string chapterProgressId, int score);
     }
 }

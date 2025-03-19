@@ -13,6 +13,7 @@ namespace KidProgramming.ModelViews.ModelViews.CourseModels
         public int? NumOfChapter { get; set; }
 
         // public string TeacherId { get; set; }
+        public string TeacherRole { get; set; }
         public string? TeacherName { get; set; }
     }
 }

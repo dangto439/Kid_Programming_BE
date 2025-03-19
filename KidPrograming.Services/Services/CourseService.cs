@@ -78,6 +78,7 @@ namespace KidPrograming.Services.Services
                                                         ThumbnailUrl = course.ThumbnailUrl ?? null,
                                                         NumOfChapter = course.Chapters != null ? course.Chapters.Count() : 0,
                                                         TeacherName = user.FullName ?? "N/A",
+                                                        TeacherRole = user.Role,
                                                         CreatedTime = course.CreatedTime
                                                     };
             if (!string.IsNullOrWhiteSpace(searchById))
@@ -117,7 +118,8 @@ namespace KidPrograming.Services.Services
             if (!string.IsNullOrWhiteSpace(teacherName))
             {
                 teacherName = teacherName.Trim();
-                query = query.Where(x => EF.Functions.Like(x.TeacherName, $"%{teacherName}%"));
+                query = query.Where(x => EF.Functions.Like(x.TeacherName, $"%{teacherName}%")
+                                        && x.TeacherRole == Enums.Role.Teacher.ToString());
 
                 //query = query.Where(c => c.TeacherName.ToLower().Contains(teacherName));
             }
