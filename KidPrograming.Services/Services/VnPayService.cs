@@ -36,14 +36,23 @@ namespace KidPrograming.Services.Services
             _notificationService = notificationService;
         }
 
-        public string CreatePaymentUrl(PaymentInformationModel model, HttpContext context)
+        public async Task<string> CreatePaymentUrl(PaymentInformationModel model, HttpContext context)
         {
+            var userId = _authentication.GetUserIdFromHttpContextAccessor(_httpContextAccessor);
+
+            bool enrollmentExists = await _unitOfWork.GetRepository<Enrollment>().Entities.AnyAsync(e => e.UserId == userId && e.CourseId == model.CourseId && !e.DeletedTime.HasValue);
+
+            if(enrollmentExists)
+            {
+                throw new ErrorException(StatusCodes.Status409Conflict, ResponseCodeConstants.EXISTED, "Enrollment has enroll in this course");
+            }
+
             var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById(_configuration["TimeZoneId"]);
             var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneById);
             var tick = DateTime.Now.Ticks.ToString();
             var pay = new VnPayLibrary();
             var urlCallBack = _configuration["PaymentCallBack:ReturnUrl"];
-            var userId = _authentication.GetUserIdFromHttpContextAccessor(_httpContextAccessor);
+            
 
             pay.AddRequestData("vnp_Version", _configuration["Vnpay:Version"]);
             pay.AddRequestData("vnp_Command", _configuration["Vnpay:Command"]);

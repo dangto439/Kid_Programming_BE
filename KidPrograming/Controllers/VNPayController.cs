@@ -22,9 +22,9 @@ namespace KidPrograming.Controllers
         }
 
         [HttpPost("payment-url")]
-        public IActionResult CreatePaymentUrl([FromBody] PaymentInformationModel model)
+        public async Task<IActionResult> CreatePaymentUrl([FromBody] PaymentInformationModel model)
         {
-            var url = _vnPayService.CreatePaymentUrl(model, HttpContext);
+            var url =  await _vnPayService.CreatePaymentUrl(model, HttpContext);
             return Ok(new { paymentUrl = url });
         }
 
