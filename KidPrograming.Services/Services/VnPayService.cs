@@ -53,10 +53,11 @@ namespace KidPrograming.Services.Services
             pay.AddRequestData("vnp_CurrCode", _configuration["Vnpay:CurrCode"]);
             pay.AddRequestData("vnp_IpAddr", pay.GetIpAddress(context));
             pay.AddRequestData("vnp_Locale", _configuration["Vnpay:Locale"]);
-            pay.AddRequestData("vnp_OrderInfo", $"Course:{model.CourseId}|User:{userId}|Desc:{model.OrderDescription}");
+            pay.AddRequestData("vnp_OrderInfo", $"Course:{model.CourseId}|User:{userId}|Desc:{model.OrderDescription}|Type:{model.Type}");
             pay.AddRequestData("vnp_OrderType", model.OrderType);
             pay.AddRequestData("vnp_ReturnUrl", urlCallBack);
             pay.AddRequestData("vnp_TxnRef", tick);
+            //pay.AddRequestData("type", model.Type);
 
             var paymentUrl =
                 pay.CreateRequestUrl(_configuration["Vnpay:BaseUrl"], _configuration["Vnpay:HashSecret"]);
@@ -82,7 +83,7 @@ namespace KidPrograming.Services.Services
 
             string courseId = ExtractCourseId(response.OrderDescription);
             string userId = ExtractUserId(response.OrderDescription);
-
+            string type = ExtractType(response.OrderDescription);
 
             if (response.Success)
             {
@@ -125,7 +126,7 @@ namespace KidPrograming.Services.Services
                     Console.WriteLine($"Error: {ex.Message}");
                 }
             }
-
+            response.Type = type;
             return response;
         }
 
@@ -158,5 +159,21 @@ namespace KidPrograming.Services.Services
             }
             return string.Empty;
         }
+
+        private string ExtractType(string orderInfo)
+        {
+            if (string.IsNullOrEmpty(orderInfo)) return string.Empty;
+
+            var parts = orderInfo.Split('|');
+            foreach (var part in parts)
+            {
+                if (part.StartsWith("Type:"))
+                {
+                    return part.Split(':')[1];
+                }
+            }
+            return string.Empty;
+        }
+
     }
 }

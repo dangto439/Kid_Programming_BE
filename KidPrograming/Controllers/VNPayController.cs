@@ -41,7 +41,8 @@ namespace KidPrograming.Controllers
                 {
                     { "vnp_TransactionNo", response.TransactionId },
                     { "vnp_Amount", response.Amount.ToString() },
-                    { "vnp_ResponseCode", response.VnPayResponseCode }
+                    { "vnp_ResponseCode", response.VnPayResponseCode },
+                    { "type", response.Type }
                 };
 
             if (response.Success)
