@@ -392,7 +392,8 @@ namespace KidPrograming.Repositories.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ChapterProgressId");
+                    b.HasIndex("ChapterProgressId")
+                        .IsUnique();
 
                     b.HasIndex("LabId");
 
@@ -551,8 +552,8 @@ namespace KidPrograming.Repositories.Migrations
             modelBuilder.Entity("KidPrograming.Entity.Submission", b =>
                 {
                     b.HasOne("KidPrograming.Entity.ChapterProgress", "ChapterProgress")
-                        .WithMany("Submissions")
-                        .HasForeignKey("ChapterProgressId")
+                        .WithOne("Submission")
+                        .HasForeignKey("KidPrograming.Entity.Submission", "ChapterProgressId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -597,7 +598,8 @@ namespace KidPrograming.Repositories.Migrations
 
             modelBuilder.Entity("KidPrograming.Entity.ChapterProgress", b =>
                 {
-                    b.Navigation("Submissions");
+                    b.Navigation("Submission")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("KidPrograming.Entity.Course", b =>

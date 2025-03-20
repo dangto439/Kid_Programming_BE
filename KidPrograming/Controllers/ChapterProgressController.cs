@@ -40,6 +40,14 @@ namespace KidPrograming.Controllers
             return Ok(BaseResponseModel<PaginatedList<ResponseLabModel>>.OkDataResponse(result, "Retrieve ChapterProgress list successfully"));
         }
 
+        [HttpGet]
+        [Route("/calculate-progress")]
+        public async Task<IActionResult> GetProgressTotal(string courseId, string userId)
+        {
+            var result = await _chapterProgressService.CalculateTotalProgress(courseId, userId);
+            return Ok(BaseResponseModel<decimal>.OkDataResponse(result, $"Retrieve progress of course: {courseId} on user: {userId} sucessfully"));
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromBody] CreateChapterProgressModel model)
         {

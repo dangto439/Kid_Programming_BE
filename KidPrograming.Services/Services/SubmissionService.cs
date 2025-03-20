@@ -161,7 +161,7 @@ namespace KidPrograming.Services.Services
 
             var chapterProgress = await _unitOfWork.GetRepository<ChapterProgress>()
                 .Entities
-                .Include(cp => cp.Enrollment)
+                .Include(cp => cp.Submission)
                 .Include(cp => cp.Chapter)
                 .ThenInclude(c => c.Lab)
                 .FirstOrDefaultAsync(cp =>
@@ -183,20 +183,39 @@ namespace KidPrograming.Services.Services
             bool isCreativeLab = string.IsNullOrEmpty(correctAnswer);
             int score = isCreativeLab ? 0 : string.Equals(correctAnswer?.Trim(), answerCheck?.Trim(), StringComparison.OrdinalIgnoreCase) ? 10 : 0;
 
-            var submission = new Submission
-            {
-                UserId = userId,
-                LabId = labId,
-                Score = score,
-                TimeSpent = timeSpent,
-                ChapterProgressId = chapterProgress.Id,
-                SubmittedTime = CoreHelper.SystemTimeNow,
-                CreativeAnswer = isCreativeLab ? answerCheck : string.Empty 
-            };
+            // Kiểm tra xem đã có Submission chưa
+            Submission? existingSubmission = chapterProgress.Submission;
 
-            await _unitOfWork.GetRepository<Submission>().InsertAsync(submission);
+            if (existingSubmission != null)
+            {
+                // Cập nhật Submission hiện có
+                existingSubmission.Score = score;
+                existingSubmission.TimeSpent = timeSpent;
+                existingSubmission.SubmittedTime = CoreHelper.SystemTimeNow;
+                existingSubmission.CreativeAnswer = isCreativeLab ? answerCheck : string.Empty;
+
+                await _unitOfWork.GetRepository<Submission>().UpdateAsync(existingSubmission);
+            }
+            else
+            {
+                // Tạo mới Submission
+                var submission = new Submission
+                {
+                    UserId = userId,
+                    LabId = labId,
+                    Score = score,
+                    TimeSpent = timeSpent,
+                    ChapterProgressId = chapterProgress.Id,
+                    SubmittedTime = CoreHelper.SystemTimeNow,
+                    CreativeAnswer = isCreativeLab ? answerCheck : string.Empty
+                };
+
+                await _unitOfWork.GetRepository<Submission>().InsertAsync(submission);
+            }
+
             await _unitOfWork.SaveAsync();
 
+            // update chapterprogress
             await _chapterProgressService.UpdateChapterProgressAsync(chapterProgress.Id, score);
         }
     }

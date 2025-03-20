@@ -2,8 +2,6 @@
 using KidPrograming.Contract.Repositories.Interfaces;
 using KidPrograming.Contract.Repositories.PaggingItems;
 using KidPrograming.Contract.Services.Interfaces;
-using KidPrograming.Core;
-using KidPrograming.Core.Constants;
 using KidPrograming.Entity;
 using KidPrograming.Services.Infrastructure;
 using KidProgramming.ModelViews.ModelViews.EnrollmentModels;
@@ -19,36 +17,93 @@ namespace KidPrograming.Services.Services
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly Authentication _authentication;
         private readonly FcmService _fcmService;
+        private readonly IChapterProgressService _chapterProgressService;
 
-        public EnrollmentService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor httpContextAccessor, Authentication authentication, FcmService fcmService)
+        public EnrollmentService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor httpContextAccessor, Authentication authentication, FcmService fcmService, IChapterProgressService chapterProgressService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
             _authentication = authentication;
             _fcmService = fcmService;
+            _chapterProgressService = chapterProgressService;
         }
+
+        //public async Task<PaginatedList<ResponseEnrollmentModel>> CheckStatusCourseByUserId(int index, int pageSize)
+        //{
+        //    string userId = _authentication.GetUserIdFromHttpContextAccessor(_httpContextAccessor);
+
+        //    IQueryable<ResponseEnrollmentModel> query =
+        //        from course in _unitOfWork.GetRepository<Course>().Entities
+        //        join enrollment in _unitOfWork.GetRepository<Enrollment>().Entities
+        //            on new { CourseId = course.Id, UserId = userId }
+        //            equals new { enrollment.CourseId, enrollment.UserId } into enrollmentGroup
+        //        from enrollment in enrollmentGroup.DefaultIfEmpty()
+        //        where !course.DeletedTime.HasValue
+        //        select new ResponseEnrollmentModel
+        //        {
+        //            Id = course.Id,
+        //            Title = course.Title,
+        //            Progress = _chapterProgressService.CalculateTotalProgress(course.Id),
+        //            Status = enrollment != null && !enrollment.DeletedTime.HasValue && !course.DeletedTime.HasValue
+        //        };
+
+        //    return await PaginatedList<ResponseEnrollmentModel>.CreateAsync(query, index, pageSize);
+        //}
 
         public async Task<PaginatedList<ResponseEnrollmentModel>> CheckStatusCourseByUserId(int index, int pageSize)
         {
             string userId = _authentication.GetUserIdFromHttpContextAccessor(_httpContextAccessor);
 
-            IQueryable<ResponseEnrollmentModel> query =
-                from course in _unitOfWork.GetRepository<Course>().Entities
-                join enrollment in _unitOfWork.GetRepository<Enrollment>().Entities
-                    on new { CourseId = course.Id, UserId = userId }
-                    equals new { enrollment.CourseId, enrollment.UserId } into enrollmentGroup
-                from enrollment in enrollmentGroup.DefaultIfEmpty()
-                where !course.DeletedTime.HasValue
-                select new ResponseEnrollmentModel
-                {
-                    Id = course.Id,
-                    Title = course.Title,
-                    Status = enrollment != null && !enrollment.DeletedTime.HasValue && !course.DeletedTime.HasValue
-                };
+            var enrollments = await _unitOfWork.GetRepository<Enrollment>()
+                .Entities.AsNoTracking()
+                .Where(e => e.UserId == userId && !e.DeletedTime.HasValue)
+                .ToListAsync();
 
-            return await PaginatedList<ResponseEnrollmentModel>.CreateAsync(query, index, pageSize);
+            var courses = await _unitOfWork.GetRepository<Course>()
+                .Entities.AsNoTracking()
+                .Where(c => !c.DeletedTime.HasValue)
+                .ToListAsync();
+
+            var data = (from course in courses
+                        join enrollment in enrollments on course.Id equals enrollment.CourseId into enrollmentGroup
+                        from enrollment in enrollmentGroup.DefaultIfEmpty()
+                        select new
+                        {
+                            Course = course,
+                            //CourseId = course.Id,
+                            Title = course.Title,
+                            Enrollment = enrollment,
+                        }).ToList();
+
+            var responseList = new List<ResponseEnrollmentModel>();
+
+            foreach (var item in data)
+            {
+                decimal progress = item.Enrollment != null ? await _chapterProgressService.CalculateTotalProgress(item.Course.Id, item.Enrollment.UserId) : 0;
+
+                var enrollment = item.Enrollment;
+                bool hasEnrollment = enrollment != null;
+
+                responseList.Add(new ResponseEnrollmentModel
+                {
+                    Id = item.Course.Id,
+                    Title = item.Title,
+                    Progress = progress,
+                    ThumbnailUrl = item.Course.ThumbnailUrl != null ? item.Course.ThumbnailUrl : string.Empty,
+                    StatusOfCourse = hasEnrollment ? enrollment.Status : "Not Enrolled",
+                    startDate = hasEnrollment ? enrollment.CreatedTime : null,
+                    completionDate = (hasEnrollment && enrollment.LastUpdatedTime != enrollment.CreatedTime)
+                        ? enrollment.LastUpdatedTime
+                        : null,
+                    Status = hasEnrollment && !enrollment.DeletedTime.HasValue
+                });
+            }
+
+            return PaginatedList<ResponseEnrollmentModel>.Create(responseList, index, pageSize);
         }
+
+
 
 
         public async Task CreateEnrollment(string userId, string paymentId, string courseId)
@@ -92,7 +147,7 @@ namespace KidPrograming.Services.Services
         {
             IQueryable<StudentModel> enrollments = _unitOfWork.GetRepository<Enrollment>().Entities
                                     .Where(enrollment => enrollment.CourseId == courseId && !enrollment.DeletedTime.HasValue)
-                                    .Include(enrollment => enrollment.User)                                   
+                                    .Include(enrollment => enrollment.User)
                                     .Select(user => new StudentModel
                                     {
                                         Id = user.User.Id,

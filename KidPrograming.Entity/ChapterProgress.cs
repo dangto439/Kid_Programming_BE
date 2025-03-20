@@ -21,6 +21,6 @@ namespace KidPrograming.Entity
         public string ChapterId { get; set; }
         public virtual Chapter Chapter { get; set; }
 
-        public ICollection<Submission>? Submissions { get; set; }
+        public virtual Submission Submission { get; set; }
     }
 }

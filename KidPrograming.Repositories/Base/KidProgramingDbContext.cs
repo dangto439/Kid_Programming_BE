@@ -68,8 +68,8 @@ namespace KidPrograming.Repositories.Base
 
             modelBuilder.Entity<Submission>()
                 .HasOne(s => s.ChapterProgress)
-                .WithMany(cp => cp.Submissions)
-                .HasForeignKey(s => s.ChapterProgressId)
+                .WithOne(cp => cp.Submission)
+                .HasForeignKey<Submission>(s => s.ChapterProgressId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Notification>()
