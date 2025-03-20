@@ -180,7 +180,8 @@ namespace KidPrograming.Services.Services
                 .Include(x => x.ChapterProgresses)
                 .ThenInclude(x => x.Chapter)
                 .Include(x => x.ChapterProgresses)
-                .ThenInclude(cp => cp.Submissions);
+                .ThenInclude(cp => cp.Submission)
+                .ThenInclude(x => x.Lab);
             var result = new List<InforProgressModel>();
             foreach (var en in enrollment)
             {
@@ -191,8 +192,11 @@ namespace KidPrograming.Services.Services
                 List<LabScore> labScores = new();
                 foreach (var cp in en.ChapterProgresses)
                 {
-                    labScores = _mapper.Map<List<LabScore>>(cp.Submissions);
-
+                    labScores.Add(new LabScore
+                    {
+                        LabTile = cp.Submission.Lab.Title,
+                        Score = cp.Submission.Score
+                    });
 
                 }
                 result.Add(new InforProgressModel
@@ -204,5 +208,41 @@ namespace KidPrograming.Services.Services
             }
             return result;
         }
+
+        public async Task<decimal> CalculateTotalProgress(string courseId, string userId)
+        {
+            bool courseExists = await _unitOfWork.GetRepository<Course>().Entities.AnyAsync(c => c.Id == courseId);
+            if (!courseExists)
+            {
+                throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, "Course not found");
+            }
+
+            bool isEnrolled = await _unitOfWork.GetRepository<Enrollment>().Entities
+                .AnyAsync(e => e.CourseId == courseId && e.UserId == userId && !e.DeletedTime.HasValue);
+
+            if (!isEnrolled)
+            {
+                throw new ErrorException(StatusCodes.Status400BadRequest, ResponseCodeConstants.BADREQUEST, "This user hasn't enroll into the course");
+            }
+
+            var totalChapters = await _unitOfWork.GetRepository<Chapter>().Entities
+                .Where(c => c.CourseId == courseId)
+                .CountAsync(); 
+
+            if (totalChapters == 0) return 0;
+
+            int completedChapters = await _unitOfWork.GetRepository<ChapterProgress>().Entities
+                .Where(cp => cp.Enrollment != null
+                         && cp.Enrollment.UserId == userId
+                         && cp.Chapter.CourseId == courseId
+                         && cp.Status == Enums.ProgressStatus.Completed.ToString())
+                .CountAsync();
+
+            decimal progress = ((decimal)completedChapters / totalChapters) * 100;
+
+            return Math.Round(progress, 2);
+        }
+
+
     }
 }
