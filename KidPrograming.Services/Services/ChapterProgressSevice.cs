@@ -9,6 +9,7 @@ using KidPrograming.Services.Infrastructure;
 using KidProgramming.ModelViews.ModelViews.ChapterProgressModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using static System.Formats.Asn1.AsnWriter;
 
 namespace KidPrograming.Services.Services
@@ -171,6 +172,37 @@ namespace KidPrograming.Services.Services
                     await _unitOfWork.SaveAsync();
                 }
             }
+        }
+        public async Task<List<InforProgressModel>> GetInforProgressAsync(string userId)
+        {
+            var enrollment = _unitOfWork.GetRepository<Enrollment>().Entities
+                .Where(x => x.UserId == userId && x.DeletedTime == null)
+                .Include(x => x.ChapterProgresses)
+                .ThenInclude(x => x.Chapter)
+                .Include(x => x.ChapterProgresses)
+                .ThenInclude(cp => cp.Submissions);
+            var result = new List<InforProgressModel>();
+            foreach (var en in enrollment)
+            {
+                string currentChapterTitle = en.ChapterProgresses
+                     .Where(c => c.Status != Enums.ProgressStatus.Completed.ToString())
+                     .OrderBy(x => x.Chapter.Order)
+                     .FirstOrDefault()?.Chapter.Title ?? "Completed";
+                List<LabScore> labScores = new();
+                foreach (var cp in en.ChapterProgresses)
+                {
+                    labScores = _mapper.Map<List<LabScore>>(cp.Submissions);
+
+
+                }
+                result.Add(new InforProgressModel
+                {
+                    CurrentChapterTiltel = currentChapterTitle,
+                    LabScores = labScores
+                });
+
+            }
+            return result;
         }
     }
 }

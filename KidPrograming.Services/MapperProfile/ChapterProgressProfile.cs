@@ -17,6 +17,9 @@ namespace KidPrograming.Services.MapperProfile
             CreateMap<ChapterProgress, ResponseChapterProgressModel>();
             CreateMap<CreateChapterProgressModel, ChapterProgress>();
             CreateMap<UpdateChapterProgressModel, ChapterProgress>();
+            CreateMap<Submission, LabScore>()
+                     .ForMember(dest => dest.LabTile, opt => opt.MapFrom(src => src.Lab.Title))
+                     .ForMember(dest => dest.Score, opt => opt.MapFrom(src => src.Score));
         }
     }
 }

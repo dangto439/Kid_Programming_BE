@@ -26,5 +26,6 @@ namespace KidPrograming.Contract.Services.Interfaces
         Task UpdateLastAccessedAsync(string chapterId);
 
         Task CheckFinalLab(string chapterProgressId, int score);
+        Task<List<InforProgressModel>> GetInforProgressAsync(string userId);
     }
 }
