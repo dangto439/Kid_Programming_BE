@@ -73,5 +73,12 @@ namespace KidPrograming.Controllers
             await _cacheService.RemoveCacheResponseAsync("/api/chapter-progress");
             return Ok(BaseResponse.OkMessageResponse("Deleted successfully"));
         }
+        [HttpGet]
+        [Route("infor-progress")]
+        public async Task<IActionResult> GetInforProgress(string userId)
+        {
+            var results = await _chapterProgressService.GetInforProgressAsync(userId);
+            return Ok(BaseResponseModel<PaginatedList<List<InforProgressModel>>>.OkDataResponse(results, "Retrieve infor list successfully"));
+        }
     }
 }

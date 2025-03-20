@@ -122,8 +122,8 @@ namespace KidPrograming.Services.Services
                 await _unitOfWork.SaveAsync();
             }
 
-               
-                
+
+
 
             return await _authentication.CreateToken(user, _jwtSettings);
         }
@@ -171,4 +171,3 @@ namespace KidPrograming.Services.Services
         }
     }
 }
-
