@@ -61,7 +61,7 @@ namespace KidPrograming.Services.Services
             await _unitOfWork.SaveAsync();
         }
 
-        public async Task<PaginatedList<ResponseCourseModel>> GetPage(bool? sortByTitle, bool? sortByPrice, string? searchById, string? searchByTitle, string? searchBySubject, string? teacherName, decimal? minPrice, decimal? maxPrice, int index, int pageSize)
+        public async Task<PaginatedList<ResponseCourseModel>> GetPage(bool? sortByTitle, bool? sortByPrice, string? searchById, string? searchByTitle, string? searchBySubject, string? teacherId, string? teacherName, decimal? minPrice, decimal? maxPrice, int index, int pageSize)
         {
             IQueryable<ResponseCourseModel> query = from course in _unitOfWork.GetRepository<Course>().Entities
                                                     join user in _unitOfWork.GetRepository<User>().Entities
@@ -77,6 +77,7 @@ namespace KidPrograming.Services.Services
                                                         Price = course.Price ?? 0,
                                                         ThumbnailUrl = course.ThumbnailUrl ?? null,
                                                         NumOfChapter = course.Chapters != null ? course.Chapters.Count() : 0,
+                                                        TeacherId = course.TeacherId,
                                                         TeacherName = user.FullName ?? "N/A",
                                                         TeacherRole = user.Role,
                                                         CreatedTime = course.CreatedTime
@@ -113,6 +114,12 @@ namespace KidPrograming.Services.Services
             if (maxPrice.HasValue)
             {
                 query = query.Where(c => c.Price <= maxPrice);
+            }
+
+            if (!string.IsNullOrWhiteSpace(teacherId))
+            {
+                teacherId = teacherId.Trim();
+                query = query.Where(x => x.TeacherId.Equals(teacherId) && x.TeacherRole == Enums.Role.Teacher.ToString());
             }
 
             if (!string.IsNullOrWhiteSpace(teacherName))

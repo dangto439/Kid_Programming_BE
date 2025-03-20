@@ -11,8 +11,7 @@ namespace KidProgramming.ModelViews.ModelViews.CourseModels
         public string? ThumbnailUrl { get; set; }
         public decimal? Price { get; set; }
         public int? NumOfChapter { get; set; }
-
-        // public string TeacherId { get; set; }
+        public string TeacherId { get; set; }
         public string TeacherRole { get; set; }
         public string? TeacherName { get; set; }
     }

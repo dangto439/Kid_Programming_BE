@@ -22,9 +22,9 @@ namespace KidPrograming.Controllers
 
         [HttpGet]
         [CacheAtribute(1000)]
-        public async Task<IActionResult> Get(bool? sortByTitle, bool? sortByPrice, string? searchById, string? searchByTitle, string? searchBySubject, string? teacherName, decimal? minPrice, decimal? maxPrice, int index = 1, int pageSize = 10)
+        public async Task<IActionResult> Get(bool? sortByTitle, bool? sortByPrice, string? searchById, string? searchByTitle, string? searchBySubject, string? teacherId, string? teacherName, decimal? minPrice, decimal? maxPrice, int index = 1, int pageSize = 10)
         {
-            PaginatedList<ResponseCourseModel> result = await _courseService.GetPage(sortByTitle, sortByPrice, searchById, searchByTitle, searchBySubject, teacherName, minPrice, maxPrice, index, pageSize);
+            PaginatedList<ResponseCourseModel> result = await _courseService.GetPage(sortByTitle, sortByPrice, searchById, searchByTitle, searchBySubject, teacherId, teacherName, minPrice, maxPrice, index, pageSize);
             return Ok(BaseResponseModel<PaginatedList<ResponseCourseModel>>.OkDataResponse(result, "Retrieve course list successfully"));
         }
 
@@ -32,7 +32,7 @@ namespace KidPrograming.Controllers
         public async Task<IActionResult> Create(CreateCourseModel model)
         {
             await _courseService.Create(model);
-            await _cacheService.RemoveCacheResponseAsync("/api/courses");           
+            await _cacheService.RemoveCacheResponseAsync("/api/courses");
             return Ok(BaseResponse.OkMessageResponse("Created successfully"));
         }
 
@@ -40,7 +40,7 @@ namespace KidPrograming.Controllers
         public async Task<IActionResult> Update(string id, UpdateCourseModel model)
         {
             await _courseService.Update(id, model);
-            await _cacheService.RemoveCacheResponseAsync("/api/courses");           
+            await _cacheService.RemoveCacheResponseAsync("/api/courses");
             return Ok(BaseResponse.OkMessageResponse("Updated successfully"));
         }
 
@@ -48,7 +48,7 @@ namespace KidPrograming.Controllers
         public async Task<IActionResult> Delete(string id)
         {
             await _courseService.Delete(id);
-            await _cacheService.RemoveCacheResponseAsync("/api/courses");           
+            await _cacheService.RemoveCacheResponseAsync("/api/courses");
             return Ok(BaseResponse.OkMessageResponse("Deleted successfully"));
         }
     }
