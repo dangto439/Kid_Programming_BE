@@ -20,7 +20,11 @@ namespace KidPrograming.Controllers
             _cacheService = cacheService;
             _configuration = configuration;
         }
-
+        /// <summary>
+        /// Payment to buy course
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost("payment-url")]
         public async Task<IActionResult> CreatePaymentUrl([FromBody] PaymentInformationModel model)
         {

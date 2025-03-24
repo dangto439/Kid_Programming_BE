@@ -20,7 +20,7 @@ namespace KidPrograming.Controllers
         /// <summary>
         /// Get monthly revenue of a year
         /// </summary>
-        /// <param name="year">year you want to get data</param>
+        /// <param name="year">Input the year you want to get data</param>
         /// <returns></returns>
         [HttpGet("revenue")]
         [CacheAtribute(1000)]

@@ -20,6 +20,20 @@ namespace KidPrograming.Controllers
             _cacheService = cacheService;
         }
 
+        /// <summary>
+        /// Get submissions list (search optional)
+        /// </summary>
+        /// <param name="searchById"></param>
+        /// <param name="userId"></param>
+        /// <param name="labId"></param>
+        /// <param name="chapterProgressId"></param>
+        /// <param name="minScore"></param>
+        /// <param name="maxScore"></param>
+        /// <param name="sortByScore"></param>
+        /// <param name="sortByTimeSpent"></param>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
         [HttpGet]
         [CacheAtribute(1000)]
         public async Task<IActionResult> GetPageAsync(
@@ -38,6 +52,11 @@ namespace KidPrograming.Controllers
             return Ok(BaseResponseModel<PaginatedList<ResponseSubmissionModel>>.OkDataResponse(result, "Retrieve Submission list successfully"));
         }
 
+        /// <summary>
+        /// Create Submission (no need to use it instead of using api/submission/submit-lab)
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateSubmissionModel model)
         {
@@ -46,6 +65,12 @@ namespace KidPrograming.Controllers
             return Ok(BaseResponse.OkMessageResponse("Created successfully"));
         }
 
+        /// <summary>
+        /// Update Submission by submissionId (don't need to use)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPut]
         public async Task<IActionResult> Update(string id, [FromBody] UpdateSubmissionModel model)
         {
@@ -54,6 +79,12 @@ namespace KidPrograming.Controllers
             return Ok(BaseResponse.OkMessageResponse("Updated successfully"));
         }
 
+        /// <summary>
+        /// Update score for submission (can be used by Teacher to grade Creative-Lab)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="score"></param>
+        /// <returns></returns>
         [HttpPatch]
         [Route("score")]
         public async Task<IActionResult> UpdateScore(string id, int score)
@@ -63,6 +94,13 @@ namespace KidPrograming.Controllers
             return Ok(BaseResponse.OkMessageResponse("Updated score sucessfully"));
         }
 
+        /// <summary>
+        /// To be used when student press submit the lab
+        /// </summary>
+        /// <param name="labId"></param>
+        /// <param name="timeSpent"></param>
+        /// <param name="answerCheck"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("submit-lab")]
         public async Task<IActionResult> SubmitLab(string labId, int timeSpent, string? answerCheck)
@@ -72,6 +110,12 @@ namespace KidPrograming.Controllers
             return Ok(BaseResponse.OkMessageResponse($"Created submission for lab: {labId} sucessfully "));
         }
 
+
+        /// <summary>
+        /// Delete submission by submissionId
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete]
         public async Task<IActionResult> Delete(string id)
         {

@@ -20,6 +20,17 @@ namespace KidPrograming.Controllers
             _cacheService = cacheService;
         }
 
+        /// <summary>
+        /// Get lessons list (search optional)
+        /// </summary>
+        /// <param name="sortByTitle"></param>
+        /// <param name="searchByTitle"></param>
+        /// <param name="searchByContent"></param>
+        /// <param name="searchById"></param>
+        /// <param name="chapterId"></param>
+        /// <param name="index"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
         [HttpGet]
         [CacheAtribute(1000)]
         public async Task<IActionResult> Get(
@@ -37,6 +48,11 @@ namespace KidPrograming.Controllers
             return Ok(BaseResponseModel<PaginatedList<ResponseLessonModel>>.OkDataResponse(result, "Retrieve lesson list successfully"));
         }
 
+        /// <summary>
+        /// Create Lesson
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateLessonModel model)
         {
@@ -45,6 +61,12 @@ namespace KidPrograming.Controllers
             return Ok(BaseResponse.OkMessageResponse("Created successfully"));
         }
 
+        /// <summary>
+        /// Update Lesson by lessonId
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPut]
         public async Task<IActionResult> Update(string id, [FromBody] UpdateLessonModel model)
         {
@@ -53,6 +75,11 @@ namespace KidPrograming.Controllers
             return Ok(BaseResponse.OkMessageResponse("Updated successfully"));
         }
 
+        /// <summary>
+        /// Delete Lesson by lessonId
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete]
         public async Task<IActionResult> Delete(string id)
         {
