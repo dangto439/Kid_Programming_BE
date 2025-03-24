@@ -115,6 +115,53 @@ namespace KidPrograming.Services.Services
             }
         }
 
+        public async Task<PaginatedList<ResponseEnrollmentModel>> GetEronllmentAsync(int index, int pageSize)
+        {
+            string userId = _authentication.GetUserIdFromHttpContextAccessor(_httpContextAccessor);
+
+            var data = from course in _unitOfWork.GetRepository<Course>().Entities.AsNoTracking()
+                       join enrollment in _unitOfWork.GetRepository<Enrollment>().Entities.
+                       Where(en => en.UserId == userId).AsNoTracking()
+                           on new { CourseId = course.Id, UserId = userId }
+                           equals new { enrollment.CourseId, enrollment.UserId } into enrollmentGroup
+                       from enrollment in enrollmentGroup
+                       where(!course.DeletedTime.HasValue && (enrollment == null || !enrollment.DeletedTime.HasValue))
+                       select new EnrollmentModel
+                       {
+                           CourseId = course.Id,
+                           Title = course.Title,
+                           Enrollment = enrollment,
+                           ThumbnailUrl = course.ThumbnailUrl,
+                           PaymentDate = enrollment != null ? enrollment.Payment.PaymentDate : (DateTimeOffset?)null,
+                           Price = enrollment != null ? enrollment.Course.Price : null
+                       };
+            var list = await PaginatedList<EnrollmentModel>.CreateAsync(data, index, pageSize);
+            var responseList = new List<ResponseEnrollmentModel>();
+
+            foreach (var item in list.Items)
+            {
+                decimal progress = 0;
+                if (item.Enrollment != null && !item.Enrollment.DeletedTime.HasValue)
+                {
+                    progress = await _chapterProgressService.CalculateTotalProgress(item.CourseId, userId);
+                }
+
+                responseList.Add(new ResponseEnrollmentModel
+                {
+                    Id = item.CourseId,
+                    Title = item.Title,
+                    Progress = progress,
+                    Status = item.Enrollment != null && !item.Enrollment.DeletedTime.HasValue,
+                    ThumbnailUrl = item.ThumbnailUrl,
+                    Price = item.Price,
+                    PaymentDate = item.PaymentDate
+
+                });
+            }
+
+            return new PaginatedList<ResponseEnrollmentModel>(responseList, list.TotalCount, list.PageNumber, list.PageSize);
+        }
+
         public async Task<PaginatedList<StudentModel>> GetStudentByCourseId(string courseId, string? searchByUserName, int index = 1, int pageSize = 10)
         {
             bool courseExists = await _unitOfWork.GetRepository<Course>().Entities.AnyAsync(c => c.Id == courseId);

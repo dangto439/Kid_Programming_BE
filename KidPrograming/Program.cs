@@ -19,6 +19,12 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+});
+
 var app = builder.Build();
 app.UseCors("CorsPolicy");
 
@@ -30,9 +36,9 @@ app.UseSwaggerUI(c =>
 
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseMiddleware<PermissionMiddleware>();
+app.UseAuthentication();
 app.UseHttpsRedirection();
 app.UseAuthorization();
-app.UseAuthentication();
 app.MapControllers();
 
 app.Run();
