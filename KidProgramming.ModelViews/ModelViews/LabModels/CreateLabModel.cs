@@ -30,10 +30,10 @@ namespace KidProgramming.ModelViews.ModelViews.LabModels
             if (string.IsNullOrWhiteSpace(Question))
                 errors.Add("Question is required.");
             if (string.IsNullOrWhiteSpace(Solution))
-                errors.Add("Title is required.");
+                errors.Add("Solution is required.");
 
             if (string.IsNullOrWhiteSpace(ToolBox))
-                errors.Add("Question is required.");
+                errors.Add("Toolbox is required.");
 
             if (string.IsNullOrWhiteSpace(CorrectAnswer))
                 errors.Add("Correct Answer is required.");

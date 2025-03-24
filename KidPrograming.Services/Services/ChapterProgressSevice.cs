@@ -194,14 +194,14 @@ namespace KidPrograming.Services.Services
                 {
                     labScores.Add(new LabScore
                     {
-                        LabTile = cp.Submission.Lab.Title,
+                        LabTitle = cp.Submission.Lab.Title,
                         Score = cp.Submission.Score
                     });
 
                 }
                 result.Add(new InforProgressModel
                 {
-                    CurrentChapterTiltel = currentChapterTitle,
+                    CurrentChapterTitle = currentChapterTitle,
                     LabScores = labScores
                 });
 

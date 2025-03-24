@@ -5,6 +5,7 @@ using KidPrograming.Core.Base;
 using KidProgramming.ModelViews.ModelViews.ChapterProgressModels;
 using KidProgramming.ModelViews.ModelViews.LabModels;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace KidPrograming.Controllers
 {
@@ -21,6 +22,18 @@ namespace KidPrograming.Controllers
             _cacheService = cacheService;
         }
 
+        /// <summary>
+        /// Get ChapterProgress list (search optional)
+        /// </summary>
+        /// <param name="searchById"></param>
+        /// <param name="chapterId"></param>
+        /// <param name="enrollmentId"></param>
+        /// <param name="searchKeyword"></param>
+        /// <param name="sortByProgress"></param>
+        /// <param name="sortByLastAccessed"></param>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
         [HttpGet]
         [CacheAtribute(1000)]
         public async Task<IActionResult> GetPageAsync(
@@ -40,14 +53,25 @@ namespace KidPrograming.Controllers
             return Ok(BaseResponseModel<PaginatedList<ResponseLabModel>>.OkDataResponse(result, "Retrieve ChapterProgress list successfully"));
         }
 
+        /// <summary>
+        /// Get progress for a course
+        /// </summary>
+        /// <param name="courseId"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         [HttpGet]
-        [Route("/calculate-progress")]
-        public async Task<IActionResult> GetProgressTotal(string courseId, string userId)
+        [Route("calculate-progress")]
+        public async Task<IActionResult> GetProgressTotal([Required] string courseId, [Required] string userId)
         {
             var result = await _chapterProgressService.CalculateTotalProgress(courseId, userId);
             return Ok(BaseResponseModel<decimal>.OkDataResponse(result, $"Retrieve progress of course: {courseId} on user: {userId} sucessfully"));
         }
 
+        /// <summary>
+        /// Create ChapterProgress (don't use bcs it has integrated auto insert into /api/vnpay when enroll successfully the course)
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromBody] CreateChapterProgressModel model)
         {
@@ -56,6 +80,11 @@ namespace KidPrograming.Controllers
             return Ok(BaseResponse.OkMessageResponse("Created successfully"));
         }
 
+        /// <summary>
+        /// Update Last Accessed of ChapterProgress for OnlineUser by ChapterId
+        /// </summary>
+        /// <param name="chapterId"></param>
+        /// <returns></returns>
         [HttpPut]
         [Route("update-last-accessed/{chapterId}")]
         public async Task<IActionResult> UpdateLastAccessed(string chapterId)
@@ -65,6 +94,12 @@ namespace KidPrograming.Controllers
             return Ok(BaseResponse.OkMessageResponse("Updated successfully"));
         }
 
+        /// <summary>
+        /// Update Score of ChapterProgress by chapterProgressId (don't use, bcs it has integrated into /api/submission/submit-lab)
+        /// </summary>
+        /// <param name="chapterProgressId"></param>
+        /// <param name="score"></param>
+        /// <returns></returns>
         [HttpPut]
         [Route("update-score/{chapterProgressId}")]
         public async Task<IActionResult> UpdateProgress(string chapterProgressId, int score)
@@ -74,6 +109,11 @@ namespace KidPrograming.Controllers
             return Ok(BaseResponse.OkMessageResponse("Updated successfully"));
         }
 
+        /// <summary>
+        /// Delete ChapterProgress by ChapterProgressId
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete]
         public async Task<IActionResult> DeleteAsync(string id)
         {
@@ -81,6 +121,7 @@ namespace KidPrograming.Controllers
             await _cacheService.RemoveCacheResponseAsync("/api/chapter-progress");
             return Ok(BaseResponse.OkMessageResponse("Deleted successfully"));
         }
+
         [HttpGet]
         [Route("infor-progress")]
         public async Task<IActionResult> GetInforProgress(string userId)
