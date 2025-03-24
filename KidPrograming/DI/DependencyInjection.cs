@@ -12,6 +12,8 @@ using System.Text;
 using FirebaseAdmin.Auth;
 using FirebaseAdmin.Messaging;
 using KidPrograming.Core.Utils;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 namespace KidPrograming.DI
 {
     public static class DependencyInjection
@@ -116,6 +118,17 @@ namespace KidPrograming.DI
                 };
                 e.SaveToken = true;
                 e.RequireHttpsMetadata = true;
+                e.Events = new JwtBearerEvents
+                {
+                    OnChallenge = context =>
+                    {
+                        context.HandleResponse();
+                        context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                        context.Response.ContentType = "application/json";
+                        var result = new { message = "You do not have permission!" };
+                        return context.Response.WriteAsync(JsonConvert.SerializeObject(result));
+                    }
+                };
             });
         }
         public static void JwtSettingsConfig(this IServiceCollection services, IConfiguration configuration)

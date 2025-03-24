@@ -2,10 +2,12 @@
 using KidPrograming.Contract.Services.Interfaces;
 using KidPrograming.Core.Base;
 using KidProgramming.ModelViews.ModelViews.DashboardModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KidPrograming.Controllers
 {
+    [Authorize(Policy = "AdminOnly")]
     [Route("api/dashboards")]
     [ApiController]
     public class DashboardController : ControllerBase

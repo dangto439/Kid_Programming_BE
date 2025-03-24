@@ -115,6 +115,60 @@ namespace KidPrograming.Services.Services
             }
         }
 
+        public async Task<PaginatedList<ResponseEnrollmentModel>> GetEronllmentAsync(int index, int pageSize)
+        {
+            string userId = _authentication.GetUserIdFromHttpContextAccessor(_httpContextAccessor);
+
+            var data = _unitOfWork.GetRepository<Course>().Entities.AsNoTracking()
+                             .GroupJoin(
+                                 _unitOfWork.GetRepository<Enrollment>().Entities
+                                     .Where(en => en.UserId == userId && !en.DeletedTime.HasValue)
+                                     .AsNoTracking(),
+                                 course => course.Id,
+                                 enrollment => enrollment.CourseId,
+                                 (course, enrollmentGroup) => new { course, enrollmentGroup }
+                             )
+                             .SelectMany(
+                                 x => x.enrollmentGroup,
+                                 (x, enrollment) => new EnrollmentModel
+                                 {
+                                     CourseId = x.course.Id,
+                                     Title = x.course.Title,
+                                     Enrollment = enrollment,
+                                     ThumbnailUrl = x.course.ThumbnailUrl,
+                                     PaymentDate = enrollment != null ? enrollment.Payment.PaymentDate : (DateTimeOffset?)null,
+                                     Price = enrollment != null ? enrollment.Course.Price : null
+                                 }
+                             )
+                            .Where(model => !model.Enrollment.DeletedTime.HasValue);
+
+            var list = await PaginatedList<EnrollmentModel>.CreateAsync(data, index, pageSize);
+            var responseList = new List<ResponseEnrollmentModel>();
+
+            foreach (var item in list.Items)
+            {
+                decimal progress = 0;
+                if (item.Enrollment != null && !item.Enrollment.DeletedTime.HasValue)
+                {
+                    progress = await _chapterProgressService.CalculateTotalProgress(item.CourseId, userId);
+                }
+
+                responseList.Add(new ResponseEnrollmentModel
+                {
+                    Id = item.CourseId,
+                    Title = item.Title,
+                    Progress = progress,
+                    Status = item.Enrollment != null && !item.Enrollment.DeletedTime.HasValue,
+                    ThumbnailUrl = item.ThumbnailUrl,
+                    Price = item.Price,
+                    PaymentDate = item.PaymentDate
+
+                });
+            }
+
+            return new PaginatedList<ResponseEnrollmentModel>(responseList, data.Count(), index, pageSize);
+        }
+
         public async Task<PaginatedList<StudentModel>> GetStudentByCourseId(string courseId, string? searchByUserName, int index = 1, int pageSize = 10)
         {
             bool courseExists = await _unitOfWork.GetRepository<Course>().Entities.AnyAsync(c => c.Id == courseId);

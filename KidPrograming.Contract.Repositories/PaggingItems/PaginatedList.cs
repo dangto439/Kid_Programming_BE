@@ -15,6 +15,8 @@ namespace KidPrograming.Contract.Repositories.PaggingItems
             TotalPages = (int)Math.Ceiling(count / (double)pageSize);
             TotalCount = count;
             Items = items;
+            PageSize = pageSize;
+
         }
         public bool HasPreviousPage => PageNumber > 1;
         public bool HasNextPage => PageNumber < TotalPages;
