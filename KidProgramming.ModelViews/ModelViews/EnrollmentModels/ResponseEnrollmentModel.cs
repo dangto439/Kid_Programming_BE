@@ -11,6 +11,9 @@ namespace KidProgramming.ModelViews.ModelViews.EnrollmentModels
         [Column(TypeName = "decimal(5,2)")]
         [Range(0, 100)]
         public decimal Progress { get; set; } = 0;
+        [Column(TypeName = "decimal(19,0)")]
+        public decimal? Price { get; set; }
+        public DateTimeOffset? PaymentDate { get; set; }
         public string? ThumbnailUrl { get; set; }
 
     }
