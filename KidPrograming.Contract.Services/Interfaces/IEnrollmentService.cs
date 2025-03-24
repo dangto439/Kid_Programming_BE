@@ -8,6 +8,6 @@ namespace KidPrograming.Contract.Services.Interfaces
         Task CreateEnrollment(string userId, string paymentId,string courseId);
         Task<PaginatedList<StudentModel>> GetStudentByCourseId(string courseId, string? searchByUserName, int index = 1, int pageSize = 10);
         Task<PaginatedList<ResponseEnrollmentModel>> CheckStatusCourseByUserId(int index, int pageSize);
-        Task<PaginatedList<ResponseEnrollmentModel>> GetEronllmentAsync(int index, int pageSize);
+        Task<PaginatedList<ResponseEnrollmentModel>> GetEronllmentAsync(string? courseId, int index, int pageSize);
     }
 }

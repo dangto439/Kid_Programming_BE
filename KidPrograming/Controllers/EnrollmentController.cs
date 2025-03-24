@@ -31,9 +31,9 @@ namespace KidPrograming.Controllers
             return Ok(BaseResponseModel<PaginatedList<ResponseEnrollmentModel>>.OkDataResponse(result, "Retrieved course status list for user successfully"));
         }
         [HttpGet("enrolled-courses")]
-        public async Task<IActionResult> GetEnrollment(int index = 1, int pageSize = 10)
+        public async Task<IActionResult> GetEnrollment(string? courseId ,int index = 1, int pageSize = 10)
         {
-            PaginatedList<ResponseEnrollmentModel> result = await _enrollmentService.GetEronllmentAsync(index, pageSize);
+            PaginatedList<ResponseEnrollmentModel> result = await _enrollmentService.GetEronllmentAsync(courseId,index, pageSize);
             return Ok(BaseResponseModel<PaginatedList<ResponseEnrollmentModel>>.OkDataResponse(result, "Retrieved course status list for user successfully"));
         }
     }

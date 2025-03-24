@@ -186,7 +186,7 @@ namespace KidPrograming.Services.Services
             foreach (var en in enrollment)
             {
                 string currentChapterTitle = en.ChapterProgresses
-                     .Where(c => c.Status != Enums.ProgressStatus.Completed.ToString())
+                     .Where(c => c.Status != Enums.ProgressStatus.InProgress.ToString())
                      .OrderBy(x => x.Chapter.Order)
                      .FirstOrDefault()?.Chapter.Title ?? "Completed";
                 List<LabScore> labScores = new();

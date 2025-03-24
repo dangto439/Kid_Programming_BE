@@ -115,14 +115,14 @@ namespace KidPrograming.Services.Services
             }
         }
 
-        public async Task<PaginatedList<ResponseEnrollmentModel>> GetEronllmentAsync(int index, int pageSize)
+        public async Task<PaginatedList<ResponseEnrollmentModel>> GetEronllmentAsync(string? courseId,int index, int pageSize)
         {
             string userId = _authentication.GetUserIdFromHttpContextAccessor(_httpContextAccessor);
 
             var data = _unitOfWork.GetRepository<Course>().Entities.AsNoTracking()
                              .GroupJoin(
                                  _unitOfWork.GetRepository<Enrollment>().Entities
-                                     .Where(en => en.UserId == userId && !en.DeletedTime.HasValue)
+                                     .Where(en => en.UserId == userId && !en.DeletedTime.HasValue &&(courseId == null || en.CourseId == courseId))
                                      .AsNoTracking(),
                                  course => course.Id,
                                  enrollment => enrollment.CourseId,
