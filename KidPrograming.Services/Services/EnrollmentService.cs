@@ -119,22 +119,29 @@ namespace KidPrograming.Services.Services
         {
             string userId = _authentication.GetUserIdFromHttpContextAccessor(_httpContextAccessor);
 
-            var data = from course in _unitOfWork.GetRepository<Course>().Entities.AsNoTracking()
-                       join enrollment in _unitOfWork.GetRepository<Enrollment>().Entities.
-                       Where(en => en.UserId == userId).AsNoTracking()
-                           on new { CourseId = course.Id, UserId = userId }
-                           equals new { enrollment.CourseId, enrollment.UserId } into enrollmentGroup
-                       from enrollment in enrollmentGroup
-                       where(!course.DeletedTime.HasValue && (enrollment == null || !enrollment.DeletedTime.HasValue))
-                       select new EnrollmentModel
-                       {
-                           CourseId = course.Id,
-                           Title = course.Title,
-                           Enrollment = enrollment,
-                           ThumbnailUrl = course.ThumbnailUrl,
-                           PaymentDate = enrollment != null ? enrollment.Payment.PaymentDate : (DateTimeOffset?)null,
-                           Price = enrollment != null ? enrollment.Course.Price : null
-                       };
+            var data = _unitOfWork.GetRepository<Course>().Entities.AsNoTracking()
+                             .GroupJoin(
+                                 _unitOfWork.GetRepository<Enrollment>().Entities
+                                     .Where(en => en.UserId == userId && !en.DeletedTime.HasValue)
+                                     .AsNoTracking(),
+                                 course => course.Id,
+                                 enrollment => enrollment.CourseId,
+                                 (course, enrollmentGroup) => new { course, enrollmentGroup }
+                             )
+                             .SelectMany(
+                                 x => x.enrollmentGroup,
+                                 (x, enrollment) => new EnrollmentModel
+                                 {
+                                     CourseId = x.course.Id,
+                                     Title = x.course.Title,
+                                     Enrollment = enrollment,
+                                     ThumbnailUrl = x.course.ThumbnailUrl,
+                                     PaymentDate = enrollment != null ? enrollment.Payment.PaymentDate : (DateTimeOffset?)null,
+                                     Price = enrollment != null ? enrollment.Course.Price : null
+                                 }
+                             )
+                            .Where(model => !model.Enrollment.DeletedTime.HasValue);
+
             var list = await PaginatedList<EnrollmentModel>.CreateAsync(data, index, pageSize);
             var responseList = new List<ResponseEnrollmentModel>();
 
@@ -159,7 +166,7 @@ namespace KidPrograming.Services.Services
                 });
             }
 
-            return new PaginatedList<ResponseEnrollmentModel>(responseList, list.TotalCount, list.PageNumber, list.PageSize);
+            return new PaginatedList<ResponseEnrollmentModel>(responseList, data.Count(), index, pageSize);
         }
 
         public async Task<PaginatedList<StudentModel>> GetStudentByCourseId(string courseId, string? searchByUserName, int index = 1, int pageSize = 10)
