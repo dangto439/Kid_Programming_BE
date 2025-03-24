@@ -41,13 +41,15 @@ namespace KidPrograming.Services.Services
                                   on new { CourseId = course.Id, UserId = userId }
                                   equals new { enrollment.CourseId, enrollment.UserId } into enrollmentGroup
                               from enrollment in enrollmentGroup.DefaultIfEmpty()
-                              where !course.DeletedTime.HasValue && !enrollment.DeletedTime.HasValue
+                              where !course.DeletedTime.HasValue && (enrollment == null || !enrollment.DeletedTime.HasValue)
                               select new
                               {
                                   CourseId = course.Id,
                                   Title = course.Title,
                                   Enrollment = enrollment,
-                                  ThumbnailUrl = course.ThumbnailUrl
+                                  ThumbnailUrl = course.ThumbnailUrl,
+                                  PaymentDate = enrollment != null ? enrollment.Payment.PaymentDate : (DateTimeOffset?)null,
+                                  Price = enrollment != null ? enrollment.Course.Price : null
                               }).ToListAsync();
 
             var responseList = new List<ResponseEnrollmentModel>();
@@ -66,7 +68,10 @@ namespace KidPrograming.Services.Services
                     Title = item.Title,
                     Status = item.Enrollment != null && !item.Enrollment.DeletedTime.HasValue,
                     Progress = progress,
-                    ThumbnailUrl = item.ThumbnailUrl
+                    ThumbnailUrl = item.ThumbnailUrl,
+                    Price = item.Price,
+                    PaymentDate = item.PaymentDate
+                    
                 });
             }
 
