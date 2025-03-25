@@ -193,7 +193,7 @@ namespace KidPrograming.Services.Services
                 List<LabScore> labScores = new();
                 foreach (var cp in en.ChapterProgresses)
                 {
-                    if(cp.Submission.Score != null) { 
+                    if(cp.Submission != null) { 
                     labScores.Add(new LabScore
                     {
                         LabTitle = cp.Submission.Lab.Title,
