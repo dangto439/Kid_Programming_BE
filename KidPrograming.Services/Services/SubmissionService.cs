@@ -180,6 +180,15 @@ namespace KidPrograming.Services.Services
                 .Select(l => l.CorrectAnswer)
                 .FirstOrDefaultAsync();
 
+            if (!string.IsNullOrEmpty(correctAnswer) && !string.IsNullOrEmpty(answerCheck))
+            {
+                if (correctAnswer.Contains(" ") || answerCheck.Contains(" "))
+                {
+                    correctAnswer = correctAnswer.Replace(" ", "\n");
+                    answerCheck = answerCheck.Replace(" ", "\n");
+                }
+            }
+
             bool isCreativeLab = string.IsNullOrEmpty(correctAnswer);
             int score = isCreativeLab ? 0 : string.Equals(correctAnswer?.Trim(), answerCheck?.Trim(), StringComparison.OrdinalIgnoreCase) ? 10 : 0;
 

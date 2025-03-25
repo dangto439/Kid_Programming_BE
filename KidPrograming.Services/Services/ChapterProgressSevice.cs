@@ -9,8 +9,6 @@ using KidPrograming.Services.Infrastructure;
 using KidProgramming.ModelViews.ModelViews.ChapterProgressModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using static System.Formats.Asn1.AsnWriter;
 
 namespace KidPrograming.Services.Services
 {
@@ -113,6 +111,7 @@ namespace KidPrograming.Services.Services
             await _unitOfWork.GetRepository<ChapterProgress>().UpdateAsync(entity);
             await _unitOfWork.SaveAsync();
         }
+
         // ==================== //
         public async Task UpdateChapterProgressAsync(string chapterProgressId, int score)
         {
@@ -173,6 +172,7 @@ namespace KidPrograming.Services.Services
                 }
             }
         }
+
         public async Task<List<InforProgressModel>> GetInforProgressAsync(string userId)
         {
             var enrollment = _unitOfWork.GetRepository<Enrollment>().Entities
@@ -189,22 +189,23 @@ namespace KidPrograming.Services.Services
                      .Where(c => c.Status != Enums.ProgressStatus.InProgress.ToString())
                      .OrderBy(x => x.Chapter.Order)
                      .FirstOrDefault()?.Chapter.Title ?? "Completed";
+
                 List<LabScore> labScores = new();
                 foreach (var cp in en.ChapterProgresses)
                 {
+                    if(cp.Submission.Score != null) { 
                     labScores.Add(new LabScore
                     {
                         LabTitle = cp.Submission.Lab.Title,
                         Score = cp.Submission.Score
                     });
-
+                    }
                 }
                 result.Add(new InforProgressModel
                 {
                     CurrentChapterTitle = currentChapterTitle,
                     LabScores = labScores
                 });
-
             }
             return result;
         }
@@ -227,7 +228,7 @@ namespace KidPrograming.Services.Services
 
             var totalChapters = await _unitOfWork.GetRepository<Chapter>().Entities
                 .Where(c => c.CourseId == courseId)
-                .CountAsync(); 
+                .CountAsync();
 
             if (totalChapters == 0) return 0;
 
@@ -242,7 +243,5 @@ namespace KidPrograming.Services.Services
 
             return Math.Round(progress, 2);
         }
-
-
     }
 }
