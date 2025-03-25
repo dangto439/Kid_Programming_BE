@@ -125,6 +125,7 @@ namespace KidPrograming.Services.Services
                         Title = notificationSection["Title"],
                         Message = string.Format(notificationSection["Message"], courseTitle),
                         Type = (NotificationType)typeValue,
+                        CourseId = courseId,
                         ReceiverId = userId
                     };
 

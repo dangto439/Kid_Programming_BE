@@ -1,5 +1,4 @@
 ﻿using KidPrograming.Core;
-using KidPrograming.Core.Constants;
 using Microsoft.AspNetCore.Http;
 using static KidPrograming.Core.Constants.Enums;
 
@@ -9,6 +8,7 @@ namespace KidProgramming.ModelViews.ModelViews.NotificationModels
     {
         public string Title { get; set; }
         public string Message { get; set; }
+        public string? CourseId { get; set; }
         public NotificationType Type { get; set; }
         public string ReceiverId { get; set; }
 
