@@ -150,8 +150,13 @@ namespace KidPrograming.Services.Services
 
         public async Task CheckFinalLab(string chapterProgressId, int score)
         {
-            ChapterProgress chapterProgress = await _unitOfWork.GetRepository<ChapterProgress>().Entities.FirstOrDefaultAsync(cp => cp.Id == chapterProgressId)
+            ChapterProgress chapterProgress = await _unitOfWork.GetRepository<ChapterProgress>()
+                .Entities
+                .Include(cp => cp.Chapter) // Ensure Chapter is loaded
+                .Include(cp => cp.Enrollment) // Ensure Enrollment is loaded
+                .FirstOrDefaultAsync(cp => cp.Id == chapterProgressId)
                 ?? throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, "ChapterProgress not found");
+
 
             // Kiểm tra xem có phải chương cuối không
             bool isFinalChapter = await _unitOfWork.GetRepository<Chapter>()
