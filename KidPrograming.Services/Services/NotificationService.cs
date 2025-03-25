@@ -44,6 +44,7 @@ namespace KidPrograming.Services.Services
                 Message = model.Message,
                 Type = model.Type.ToString(),
                 IsRead = false,
+                CourseId = model.CourseId,
                 ReceiverId = model.ReceiverId,
                 CreatedTime = CoreHelper.SystemTimeNow
             };
@@ -124,6 +125,7 @@ namespace KidPrograming.Services.Services
                                                               Type = notification.Type.ToString(),
                                                               ReceiverId = notification.ReceiverId,
                                                               ReceiverName = user.FullName ?? "N/A",
+                                                              CourseId = notification.CourseId,
                                                               IsRead = notification.IsRead,
                                                               CreatedTime = notification.CreatedTime
                                                           };

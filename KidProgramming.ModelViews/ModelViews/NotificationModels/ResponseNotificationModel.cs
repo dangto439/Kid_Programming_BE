@@ -10,5 +10,6 @@ namespace KidProgramming.ModelViews.ModelViews.NotificationModels
         public string ReceiverId { get; set; }
         public string ReceiverName { get; set; }
         public bool IsRead { get; set; }
+        public string? CourseId { get; set; }
     }
 }
