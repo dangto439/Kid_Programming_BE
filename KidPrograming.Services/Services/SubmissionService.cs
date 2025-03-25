@@ -234,7 +234,7 @@ namespace KidPrograming.Services.Services
                     .ThenInclude(l => l.Chapter)
                 .Where(s => s.Lab.Chapter.CourseId == courseId)
                 .FirstOrDefaultAsync(s => s.UserId == userId && !string.IsNullOrEmpty(s.CreativeAnswer) && !s.DeletedTime.HasValue)
-                ?? throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, "Creative submission not found");
+                ?? throw new ErrorException(StatusCodes.Status200OK, ResponseCodeConstants.NOT_FOUND, "Creative submission not found");
 
             ResponseCreativeModel response = new()
             {
