@@ -87,11 +87,31 @@ namespace KidPrograming.Services.Services
                 throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, "Chapter not found");
             }
 
-            bool exists = await _unitOfWork.GetRepository<Lab>().Entities.AnyAsync(x => x.ChapterId == model.ChapterId && x.Question == model.Question && !x.DeletedTime.HasValue);
+            Lab? existingLab = await _unitOfWork.GetRepository<Lab>().Entities
+                .FirstOrDefaultAsync(l => l.ChapterId == model.ChapterId);
 
-            if (exists)
+            if (existingLab != null)
             {
-                throw new ErrorException(StatusCodes.Status409Conflict, ResponseCodeConstants.EXISTED, $"Lab: {(model.Question)} has duplicated");
+                if (existingLab.DeletedTime.HasValue)
+                {
+                    existingLab.Question = model.Question;
+                    existingLab.Title = model.Title;
+                    existingLab.Description = model.Description;
+                    existingLab.Result = model.Result;
+                    existingLab.Type = model.Type.ToString();
+                    existingLab.LimitedTime = model.LimitedTime;
+                    existingLab.CorrectAnswer = model.CorrectAnswer;
+                    existingLab.ToolBox = model.ToolBox;
+                    existingLab.Solution = model.Solution;
+                    existingLab.ChapterId = model.ChapterId;
+                    existingLab.DeletedTime = null;
+
+                    await _unitOfWork.GetRepository<Lab>().UpdateAsync(existingLab);
+                    await _unitOfWork.SaveAsync();
+                    return;
+                }
+
+                throw new ErrorException(StatusCodes.Status400BadRequest, ResponseCodeConstants.BADREQUEST, "Each chapter only has 1 single lab");
             }
 
             Lab lab = _mapper.Map<Lab>(model);
@@ -126,7 +146,7 @@ namespace KidPrograming.Services.Services
 
         public async Task DeleteAsync(string id)
         {
-            Lab lab = await _unitOfWork.GetRepository<Lab>().Entities.FirstOrDefaultAsync(x => x.Id == id) 
+            Lab lab = await _unitOfWork.GetRepository<Lab>().Entities.FirstOrDefaultAsync(x => x.Id == id)
                 ?? throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, "Lab not found");
 
             lab.DeletedTime = CoreHelper.SystemTimeNow;
