@@ -52,6 +52,14 @@ namespace KidPrograming.Controllers
             return Ok(BaseResponseModel<PaginatedList<ResponseSubmissionModel>>.OkDataResponse(result, "Retrieve Submission list successfully"));
         }
 
+        [HttpGet]
+        [Route("creative-answer")]
+        public async Task<IActionResult> GetCreativeSubmission(string userId, string courseId)
+        {
+            var result = await _submissionService.GetCreativeSubmissionAsync(userId, courseId);
+            return Ok(BaseResponseModel<ResponseCreativeModel>.OkDataResponse(result, "Retrieve Creative Submission successfully"));
+        }
+
         /// <summary>
         /// Create Submission (no need to use it instead of using api/submission/submit-lab)
         /// </summary>
