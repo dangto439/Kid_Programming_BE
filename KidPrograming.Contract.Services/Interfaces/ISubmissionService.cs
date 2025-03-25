@@ -25,6 +25,9 @@ namespace KidPrograming.Contract.Services.Interfaces
         Task DeleteAsync(string id);
 
         Task UpdateScoreAsync(string submissionId, int score);
+
         Task SubmitLab(string labId, int timeSpent, string? answerCheck);
+
+        Task <ResponseCreativeModel> GetCreativeSubmissionAsync(string userId, string courseId);
     }
 }

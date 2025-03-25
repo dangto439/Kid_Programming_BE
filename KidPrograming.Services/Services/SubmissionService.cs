@@ -3,7 +3,6 @@ using KidPrograming.Contract.Repositories.Interfaces;
 using KidPrograming.Contract.Repositories.PaggingItems;
 using KidPrograming.Contract.Services.Interfaces;
 using KidPrograming.Core;
-using KidPrograming.Core.Constants;
 using KidPrograming.Entity;
 using KidPrograming.Services.Infrastructure;
 using KidProgramming.ModelViews.ModelViews.SubmissionModels;
@@ -226,6 +225,27 @@ namespace KidPrograming.Services.Services
 
             // update chapterprogress
             await _chapterProgressService.UpdateChapterProgressAsync(chapterProgress.Id, score);
+        }
+
+        public async Task<ResponseCreativeModel> GetCreativeSubmissionAsync(string userId, string courseId)
+        {
+            Submission creativeSubmission = await _unitOfWork.GetRepository<Submission>().Entities
+                .Include(s => s.Lab)
+                    .ThenInclude(l => l.Chapter)
+                .Where(s => s.Lab.Chapter.CourseId == courseId)
+                .FirstOrDefaultAsync(s => s.UserId == userId && !string.IsNullOrEmpty(s.CreativeAnswer) && !s.DeletedTime.HasValue)
+                ?? throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, "Creative submission not found");
+
+            ResponseCreativeModel response = new()
+            {
+                SubmissionId = creativeSubmission.Id,
+                SubmittedTime = creativeSubmission.SubmittedTime,
+                DescriptionLab = creativeSubmission.Lab.Description!,
+                Score = creativeSubmission.Score,
+                AnswerCheck = creativeSubmission.CreativeAnswer!
+            };
+
+            return response;
         }
     }
 }
