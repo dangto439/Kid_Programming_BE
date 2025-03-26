@@ -54,6 +54,15 @@ namespace KidPrograming.Controllers
             ResponseUserModel model = await _authenticationService.UpdateUserInfo(request);
             return Ok(BaseResponseModel<string>.OkDataResponse(model, "Updated successfully"));
         }
+
+        [HttpPut]
+        [Route("teacher-role/{userId}")]
+        public async Task<IActionResult> UpdateTeacherRole(string userId)
+        {
+            var result = await _authenticationService.UpdateTeacherRole(userId);
+            return Ok(BaseResponseModel<string>.OkDataResponse(result, "Updated role sucessfully"));
+        }
+
         [HttpGet]
         [Route("test")]
         public async Task<IActionResult> GetUsesdsadrById()

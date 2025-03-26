@@ -128,6 +128,33 @@ namespace KidPrograming.Services.Services
             return await _authentication.CreateToken(user, _jwtSettings);
         }
 
+        public async Task<ResponseUserModel> UpdateTeacherRole(string userId)
+        {
+            User user = await _unitOfWork.GetRepository<User>()
+                .Entities
+                .FirstOrDefaultAsync(u => u.Id == userId && !u.DeletedTime.HasValue)
+                ?? throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, "User not found");
+
+            bool isUpdated = false;
+
+            if (user.Role != Enums.Role.Teacher.ToString())
+            {
+                user.Role = Enums.Role.Teacher.ToString();
+                isUpdated = true;
+            }
+
+            user.LastUpdatedTime = CoreHelper.SystemTimeNow; 
+
+            if (isUpdated)
+            {
+                await _unitOfWork.GetRepository<User>().UpdateAsync(user);
+            }
+
+            await _unitOfWork.SaveAsync();
+
+            return _mapper.Map<ResponseUserModel>(user);
+        }
+
         public async Task<ResponseUserModel> UpdateUserInfo(UpdateUserModel request)
         {
             string userId = _authentication.GetUserIdFromHttpContextAccessor(_httpContextAccessor);
