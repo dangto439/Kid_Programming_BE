@@ -11,6 +11,7 @@ namespace KidPrograming.Contract.Services.Interfaces
         Task<ResponseUserModel> UpdateUserInfo(UpdateUserModel request);
         Task<ResponseUserModel> GetUserById(string id);
         Task<List<ResponseUserModel>> GetAllUser(string? searchById, Enums.Role? searchByRole, string? searchByName, int pageIndex = 1, int pageSize = 10);
+        Task<ResponseUserModel> UpdateTeacherRole(string userId);
 
     }
 }
