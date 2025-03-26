@@ -39,8 +39,9 @@ namespace KidPrograming.Core.Constants
 
         public enum NotificationType
         {
+            Remind,
             CourseUpdate,
-            Assignment,
+            Lab,
             Payment,
             System
         }
