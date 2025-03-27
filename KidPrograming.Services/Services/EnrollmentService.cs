@@ -115,7 +115,7 @@ namespace KidPrograming.Services.Services
             }
         }
 
-        public async Task<PaginatedList<ResponseEnrollmentModel>> GetEronllmentAsync(string? courseId,int index, int pageSize)
+        public async Task<PaginatedList<EnrolledCourserModel>> GetEronllmentAsync(string? courseId,int index, int pageSize)
         {
             string userId = _authentication.GetUserIdFromHttpContextAccessor(_httpContextAccessor);
 
@@ -143,7 +143,7 @@ namespace KidPrograming.Services.Services
                             .Where(model => !model.Enrollment.DeletedTime.HasValue);
 
             var list = await PaginatedList<EnrollmentModel>.CreateAsync(data, index, pageSize);
-            var responseList = new List<ResponseEnrollmentModel>();
+            var responseList = new List<EnrolledCourserModel>();
 
             foreach (var item in list.Items)
             {
@@ -153,7 +153,7 @@ namespace KidPrograming.Services.Services
                     progress = await _chapterProgressService.CalculateTotalProgress(item.CourseId, userId);
                 }
 
-                responseList.Add(new ResponseEnrollmentModel
+                responseList.Add(new EnrolledCourserModel
                 {
                     Id = item.CourseId,
                     Title = item.Title,
@@ -161,12 +161,13 @@ namespace KidPrograming.Services.Services
                     Status = item.Enrollment != null && !item.Enrollment.DeletedTime.HasValue,
                     ThumbnailUrl = item.ThumbnailUrl,
                     Price = item.Price,
-                    PaymentDate = item.PaymentDate
+                    PaymentDate = item.PaymentDate,
+                    EnrollmentId = item.Enrollment!.Id
 
                 });
             }
 
-            return new PaginatedList<ResponseEnrollmentModel>(responseList, data.Count(), index, pageSize);
+            return new PaginatedList<EnrolledCourserModel>(responseList, data.Count(), index, pageSize);
         }
 
         public async Task<PaginatedList<StudentModel>> GetStudentByCourseId(string courseId, string? searchByUserName, int index = 1, int pageSize = 10)
