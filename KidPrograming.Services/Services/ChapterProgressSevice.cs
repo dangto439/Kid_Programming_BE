@@ -112,7 +112,6 @@ namespace KidPrograming.Services.Services
             await _unitOfWork.SaveAsync();
         }
 
-        // ==================== //
         public async Task UpdateChapterProgressAsync(string chapterProgressId, int score)
         {
             ChapterProgress chapterProgress = await _unitOfWork.GetRepository<ChapterProgress>().GetByIdAsync(chapterProgressId)

@@ -1,0 +1,21 @@
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+
+namespace KidProgramming.ModelViews.ModelViews.EnrollmentModels
+{
+    public class EnrolledCourserModel
+    {
+        public string Id { get; set; }
+        public string EnrollmentId { get; set; }
+        public string Title { get; set; }
+        public bool Status { get; set; }
+        [Column(TypeName = "decimal(5,2)")]
+        [Range(0, 100)]
+        public decimal Progress { get; set; } = 0;
+        [Column(TypeName = "decimal(19,0)")]
+        public decimal? Price { get; set; }
+        public DateTimeOffset? PaymentDate { get; set; }
+        public string? ThumbnailUrl { get; set; }
+
+    }
+}
