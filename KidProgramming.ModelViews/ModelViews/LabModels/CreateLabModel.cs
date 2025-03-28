@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static KidPrograming.Core.Constants.Enums;
+﻿using static KidPrograming.Core.Constants.Enums;
 
 namespace KidProgramming.ModelViews.ModelViews.LabModels
 {
@@ -39,8 +34,8 @@ namespace KidProgramming.ModelViews.ModelViews.LabModels
             if (string.IsNullOrWhiteSpace(CorrectAnswer))
                 errors.Add("Correct Answer is required.");
 
-            if (Result <= 0)
-                errors.Add("Result must be greater than 0.");
+            if (Result <= 0 || Result > 10)
+                errors.Add("Result is not valid.");
 
             if (string.IsNullOrWhiteSpace(ChapterId))
                 errors.Add("ChapterId is required.");

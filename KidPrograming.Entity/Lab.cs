@@ -1,4 +1,5 @@
 using KidPrograming.Core.Base;
+using System.ComponentModel.DataAnnotations;
 
 namespace KidPrograming.Entity
 {
@@ -7,6 +8,7 @@ namespace KidPrograming.Entity
         public string Question { get; set; } = string.Empty;
         public string Title { get; set; } = string.Empty;
         public string? Description { get; set; }
+        [Range(1, 10, ErrorMessage = "Result must be between 1 to 10")]
         public int Result { get; set; }
         public string Type { get; set; }
         public int? LimitedTime { get; set; } 
